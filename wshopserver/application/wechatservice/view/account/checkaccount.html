@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title>对账查询</title>
+		<link rel="stylesheet" href="//cdn.bootcss.com/weui/1.1.1/style/weui.min.css">
+		<link rel="stylesheet" href="//cdn.bootcss.com/jquery-weui/1.1.1/css/jquery-weui.min.css">
+		<style>
+			body {
+				height: 100% !important;
+				background: #E7E7E7 !important;
+			}
+			
+			.product_desc {
+				color: #808080;
+				font-size: 12px;
+			}
+			.weui-cells:before{
+				border: 0px;
+			}
+			.weui-cells:after{
+				border: 0px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="page">
+			<div class="page__bd page__bd_spacing">
+				<div class="weui-cells" style="margin: 5px;border-radius: 5px;">
+					<div class="weui-panel__hd weui-cell ">
+						<div class="title-left">筛选条件</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__hd"><label for="" class="weui-label">日期范围</label></div>
+						<div class="weui-cell__bd" style="display: flex;flex-direction:row;justify-content:flex-start;align-items:flex-start;">
+							<input id="startdate" class="weui-input" type="text" value="" placeholder="开始日期" style="float: left;">
+							<input id="enddate" class="weui-input" type="text" value="" placeholder="截止日期" style="float: left;">
+						</div>
+					</div>
+				</div>
+				<div class="weui-cells" style="margin: 5px;border-radius: 5px;text-align: center;padding-top: 15px;padding-bottom: 15px;">
+					<p>收款总额（元）</p>
+					<p style="font-size: 18px;color: red;">8888.8</p>
+				</div>
+				<div class="weui-cells" style="margin: 5px;border-radius: 5px;">
+					<div class="weui-panel__hd weui-cell ">
+						<div class="title-left">交易明细</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__bd product_desc">
+							<p class="">日收款结算</p>
+							<p class="">2017-8-29</p>
+						</div>
+						<div class="weui-cell__ft product_price">8888.00</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__bd product_desc">
+							<p class="">日收款结算</p>
+							<p class="">2017-8-29</p>
+						</div>
+						<div class="weui-cell__ft product_price">8888.00</div>
+					</div>
+				</div>
+
+				<div class="weui-btn-area">
+					<a class="weui-btn weui-btn_default" href="javascript:" id="showTooltips" style="background: white;">返回</a>
+				</div>
+			</div>
+		</div>
+	</body>
+	<!-- body 最后 -->
+	<script src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+	<script src="//cdn.bootcss.com/jquery-weui/1.1.1/js/jquery-weui.min.js"></script>
+	<script>
+		$(function() {
+			$("#startdate").calendar();
+			$("#enddate").calendar();
+		});
+	</script>
+
+</html>

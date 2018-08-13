@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+</head>
+<body style="text-align:center;">
+<h2 >主控平台回调模拟</h2>
+<center>
+<table style="text-align: center;color: grey;">
+    <thead>
+    <tr style="font-size:14px;">
+        <th>机柜二维码(id:888)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><img src="__STATIC__/admin/assets/images/machine888.png" style="width:120px;height:120px;"/></td>
+
+    </tr>
+    </tbody>
+</table>
+    </center>
+<p style="color: grey;">测试流程：微信扫描机柜二维码进入开柜页面->点击芝麻开门->手动刷新本页面->本页面对应订单点击开门->本页面点击关门->本页面点击推送订单结果->小程序支付</p>
+
+
+<center>
+
+
+<table border="1" style="text-align: center;font-size:14px;">
+    <thead>
+    <tr style="background: #e7e7e7;">
+        <!--<th width="" style="padding:10px 15px;">订单id</th>-->
+        <th width="" style="padding:10px 15px;">订单编号</th>
+        <th width="">创建时间</th>
+        <th width="">机柜id</th>
+        <th width="">订单状态</th>
+        <th width="">开门状态</th>
+        <th width="">金额</th>
+        <th width="">用户id</th>
+        <th width="">用户名</th>
+        <th width="">操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {volist name="orders" id="vo"}
+    <tr style="color:grey">
+        <!--<td style="padding:10px 15px;">{$vo.orderid}</td>-->
+        <td style="padding:10px 15px;">{$vo.orderno}</td>
+        <td>{$vo.createtime}</td>
+        <td>{$vo.machineid}</td>
+        <td>
+            {if condition="$vo.orderstatus eq 1"} 购物中
+            {elseif condition="$vo.orderstatus eq 2"/}待结账
+            {elseif condition="$vo.orderstatus eq 3"/}已取消
+            {elseif condition="$vo.orderstatus eq 4"/}待支付
+            {elseif condition="$vo.orderstatus eq 5"/}已付款
+            {elseif condition="$vo.orderstatus eq 6"/}已欠费
+            {elseif condition="$vo.orderstatus eq 7"/}转退款
+            {elseif condition="$vo.orderstatus eq 8"/}已完成{/if}
+        </td>
+        <td>
+            {if condition="$vo.doorstatus eq 1"} 待开柜
+            {elseif condition="$vo.doorstatus eq 2"/}已开柜
+            {elseif condition="$vo.doorstatus eq 3"/}未开柜
+            {elseif condition="$vo.doorstatus eq 4"/}已关柜{/if}
+        </td>
+        <td>{$vo.totalfee/100}元</td>
+        <td>{$vo.userid}</td>
+        <td>{$vo.nickname}</td>
+        <td style="padding:10px 15px;">
+            <input type="button" value="开门" style="font-size:14px;background: lightgray" onclick="javascript:opendoor('{$vo.orderid}');">
+            <input type="button" value="关门" style="font-size:14px;background: coral" onclick="javascript:closedoor('{$vo.orderid}');">
+            <input type="button" value="推送订单结果" style="font-size:14px;background:lightgreen" onclick="javascript:orderstatus('{$vo.orderid}');">
+        </td>
+    </tr>
+    {/volist}
+    </tbody>
+</table>
+    <p style="color:#808080;font-size:14px;">注：默认拉取最近十条订单, 用户名只有在小程序个人中心点击 更新信息 才会展示 </p>
+</center>
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    var serverurl = 'https://t.wemall.com.cn/';
+//    var serverurl = 'http://192.168.1.104:8888/';
+    function opendoor(orderid) {
+        $.ajax({
+            type: "GET",
+            url: serverurl+"callbackapi/device/open",
+            data: {deviceOpenRes:"success", code:200,order_id:orderid,msg:"success",type:1},
+            dataType: "json",
+            success: function(data){
+                location.reload();
+                alert('成功');
+            }
+        });
+    }
+    function closedoor(orderid) {
+        $.ajax({
+            type: "GET",
+            url: serverurl+"callbackapi/device/close",
+            data: {deviceOpenRes:"success", code:200,order_id:orderid,msg:"success",type:1},
+            dataType: "json",
+            success: function(data){
+                location.reload();
+                alert('成功');
+
+            }
+        });
+    }
+    function orderstatus(orderid) {
+        $.ajax({
+            type: "GET",
+            url: serverurl+"callbackapi/order/order",
+            data: {deviceOpenRes:"success", code:200,order_id:orderid,msg:"success",type:1},
+            dataType: "json",
+            success: function(data){
+                location.reload();
+                alert('成功');
+            }
+        });
+    }
+</script>
+
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+{include file="public/layerheader" /}
+<style>
+	.box{
+		margin-bottom: 0px;
+	}
+	.box .box-content{
+		padding: 0px;
+		padding-top: 10px;
+		border: 0px;
+	}
+	.form-actions{
+		margin-bottom: 0px;
+		text-align: right;
+	}
+.error{
+	color:red;
+}
+</style>
+</head>
+<body class='contrast-red '>
+
+<div class='container-fluid'>
+        <div class="row-fluid">
+    <div class="span12 box">
+        <div class="box-content">
+            <form id="form-category-add"  action="update" class="form form-horizontal "  method="post" style="margin-bottom: 0;"><div style="margin:0;padding:0;display:inline"></div>
+                <input name="merchantid" value="{$merchant.merchantid}" type="hidden"/>
+                <div class="control-group">
+                    <label class="control-label" for="username">联系人姓名：</label>
+                    <div class="controls">
+                        <input id="username" name="username"  placeholder="" type="text" value="{$sysuser.username}">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="mobile">联系人电话：</label>
+                    <div class="controls">
+                        <input id="mobile" name="mobile" placeholder="" type="text" value="{$merchant.mobile}">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="nickname">微信昵称：</label>
+                    <div class="controls">
+                        <input id="nickname" name="nickname" placeholder="" type="text" value="{$sysuser.nickname}">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="merchantname">商户名称：</label>
+                    <div class="controls">
+                        <input id="merchantname" name="merchantname" placeholder="" type="text" value="{$merchant.merchantname}">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="location">公司地址：</label>
+                    <div class="controls">
+                        <input id="location" name="location" placeholder="" type="text" value="{$merchant.location}">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="remark">备注：</label>
+                    <div class="controls">
+                        <textarea id="remark" name="remark" >{$merchant.remark}</textarea>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">
+                        保存
+                    </button>
+                    <button class="btn" type="button" onclick="javascript:close_layer();">取消</button>
+                </div>
+            </form>
+        </div>
+        
+    </div>
+</div>
+    </div>
+{include file="public/footer" /}
+<script>
+	function close_layer(){
+			var index = parent.layer.getFrameIndex(window.name);
+			parent.$('.btn-refresh').click();
+			parent.layer.close(index);
+	}
+
+
+
+    $(function(){
+        $("#form-category-add").validate({
+            rules:{
+                username:{
+                    required:true
+                },
+                mobile:{
+                    required:true
+                },
+                merchantname:{
+                    required:true
+                },
+                location:{
+                    required:true
+                }
+            },
+            onkeyup:false,
+            focusCleanup:true,
+            success:"valid",
+            submitHandler:function(form){
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: 'update',
+                    data: $('#form-category-add').serialize(),
+                    success: function (result) {
+                        if(result.code == 1){
+                            parent.location.reload();
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        }else{
+                            alert(result.msg);
+                        }
+                    },
+                    error: function(data) {
+                        alert("error:"+data.responseText);
+                    }
+                });
+            }
+        });
+    });
+
+</script>
+</body>
+</html>

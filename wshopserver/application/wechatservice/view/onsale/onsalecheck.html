@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>上货调整</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/weui/1.1.2/style/weui.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/jquery-weui/1.1.2/css/jquery-weui.min.css">
+    <link rel="stylesheet" href="__STATIC__/wechatservice/css/mui.min.css">
+    <style>
+        html,
+        body {
+            background-color: #efeff4;
+        }
+
+    </style>
+    <style>
+
+
+        .expand_item .turn_up:after {
+            transform: matrix(0.71, -0.71, 0.71, 0.71, 0, 0);
+        }
+
+        .expand_item .turn_down:after {
+            transform: matrix(.71, .71, .71, -.71, 0, 0)
+        }
+
+        .g_item {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            margin-top: 5px;
+            padding: 11px 10px;
+            padding-bottom: 0px;
+        }
+
+        .g_item .item1 p {
+            margin-top: 5px;
+        }
+
+        .g_item .item2 {
+            margin-left: 5px;
+            width:100%;
+        }
+
+        .g_item .item2 p {
+            margin-top: 5px;
+        }
+
+        .box {
+            margin: 5px;
+            border-radius: 5px;
+        }
+        .spinner{
+            width:165px;
+            height:32px;
+        }
+        .spinner .value{
+            background:#ffffff;
+            color:#333333;
+        }
+        .spinner button {
+            border: none;
+            width: 40px;
+            height:32px;
+            color: #333333;
+            font: 22px Arial bold;
+            padding: 0;
+            outline: none;
+            border:1px solid #d7d7d7;
+        }
+        .spinner .value {
+            background-position: unset;
+            width: 80px;
+            height: 32px;
+            border: none;
+            text-align: center;
+            font-family: Arial;
+            border-top:1px solid #d7d7d7;
+            border-bottom:1px solid #d7d7d7;
+        }
+        .weui-media-box__title{
+            font-size:14px;
+        }
+    </style>
+</head>
+
+<body class="">
+<div class="page" style="padding-bottom:60px;">
+    <div class="page__bd page__bd_spacing">
+                {volist name="machine.floors" id="floor"}
+                <div class="weui-media-box weui-media-box_appmsg" style="padding:10px 0px;">
+                    <div class="weui-media-box__bd">
+                            <div class="weui-flex">
+                                <div class="weui-flex__item" style="padding-left:10px;color:grey;font-size:16px;">第{$floor.floor}层（{$floor.pos}）</div>
+                            </div>
+                            {volist name="floor.goods" id="good"}
+                            <div class="g_item"  style="background: white;">
+                                <div class="item1">
+                                    <img src="{$good.picurl}" style="width:52px;height:52px;">
+                                </div>
+                                <div class="item2">
+                                    <p class="weui-media-box__title">{$good.goodsname}</p>
+                                    <p class="weui-media-box__desc">规格：{$good.spec} 价格：{$good.goodsname}，</p>
+
+                                    <div style="display: flex;display: -webkit-flex; flex-direction: row;align-content:flex-end;justify-content:flex-end">
+                                        <p style="width:60px;">数量：</p>
+                                        <input class="addBtn min" type="button" value="-" style="height:35px;border-right:0px;border-radius: 0px;"/>
+                                        <input name="goodscount" class="join-money" type="text" data-pos="{$floor.pos}"
+                                               data-precount="{$good.count}" data-goodsid="{$good.goodsid}"
+                                               value="{$good.count}" style="font-size:14px;text-align: center;width:80px;height:35px;border-radius: 0px;">
+                                        <input class="addBtn add" type="button" value="+" style="height:35px;border-left:0px;border-radius: 0px;"/>
+                                    </div>
+                                </div>
+                            </div>
+                            {/volist}
+                    </div>
+                </div>
+                {/volist}
+            </div>
+</div>
+<!-- 容器 -->
+
+<div class="flex-row"
+     style="display: flex;flex-direction:row;justify-content:center;align-items:center;position:fixed;bottom:0;z-index: 99999;width:100%;background:#f7f7f7;padding:10px 0;">
+    <button class="weui-btn weui-btn_default closeselectmodal" style="margin-top:0px;line-height:1;width:40%;height:42px;"  id="ss">取消</button>
+    <button class="weui-btn weui-btn_primary confirmselect" style="margin-top:0px;line-height:1;width:40%;height:42px;" id="confirmselect">提交</button>
+</div>
+</body>
+<!-- body 最后 -->
+<script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-weui/1.1.2/js/jquery-weui.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-weui/1.1.2/js/swiper.min.js"></script>
+
+<! -- 引入微信官方的JSSDK 1.2版本-->
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script type="text/javascript">
+    var adds = new Array();
+    var mins = new Array();
+    $(function(){
+        $(".add").click(function(e) {
+            var prevalue = $(e.target).prev().val();
+            $(e.target).prev().val(parseInt(prevalue)+1);
+            // t.val(parseInt(t.val()) + 1); //点击加号输入框数值加1
+            // updateMoney();  //显示总金额
+        });
+        $(".min").click(function(e){
+            var prevalue = $(e.target).next().val();
+            if(prevalue > 0){
+                $(e.target).next().val(parseInt(prevalue)-1);
+            }
+
+        });
+    });
+    $("#confirmselect").click(function(){
+        $("input[name='goodscount']").each(
+            function(){
+                var count = parseInt($(this).val());
+                var precount = parseInt($(this).attr('data-precount'));
+                var goodsid = $(this).attr('data-goodsid');
+                var pos = $(this).attr('data-pos');
+                if(count>precount){
+                    var add = [goodsid,pos,count-precount];
+                    adds.push(add);
+                }else if(count<precount){
+                    var min = [goodsid,pos,precount-count];
+                    mins.push(min);
+                }
+
+            }
+        )
+        $('#confirmselect').html('正在操作..');
+        $('#confirmselect').attr("disabled",true);
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: '/wechatservice/onsale/savecheck',
+            data: {adds:adds, mins:mins,machineid:'{$machine.machineid}',userid:'{$userid}',historyid:'{$historyid}'},
+            success: function (result) {
+                if(result.code == 1){
+                    alert('操作成功');
+                    WeixinJSBridge.call('closeWindow');
+                }else{
+                    alert(result.data.message);
+                    $('#confirmselect').html('提交');
+                    $('#confirmselect').attr("disabled",false);
+                    window.location.reload();
+                }
+            },
+            error: function(data) {
+                alert("error:"+data.responseText);
+            }
+        });
+    });
+    $('.closeselectmodal').click(function(){
+        backtop();
+    });
+    function backtop() {
+        WeixinJSBridge.call('closeWindow');
+    }
+</script>
+
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>检测机柜</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    {include file="common/header" /}
+    <style>
+        .button{
+            margin: 10px;
+            position: fixed;
+            bottom: 88px;
+        }
+        .mybutton {
+            margin-right: 10px;
+            color: black;
+            width: 90px;
+        }
+        .button .weui-btn{
+            padding: 0 5px;
+        }
+        .testbtn {
+            text-align: center;
+            margin: 0px auto;
+            width: 200px;
+            font-size: 0.5rem;
+        }
+        .video {
+            width: 80%;
+        }
+        .btn {
+            padding: 0 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contianor">
+        <div class="tit">摄像头检测</div>
+        <div class="dev_detail" style="display: block;">
+            <div class="dev_detail_tit">基础信息</div>
+            <div class="dev_detail_info">
+                <p>序列号:
+                    <span id="sn">1087</span>
+                </p>
+                <p>是否能储存视频功能:
+                    <span id="save_video">否</span>
+                </p>
+                <p>监控方式:
+                    <span id="lock_list">基于订单录像</span>
+                </p>
+                <p>编码格式:
+                    <span id="stream_chn">主码流</span>
+                </p>
+                <p>是否在线:
+                    <span id="online">是</span>
+                </p>
+                <p>测试结果:
+                    <span id="testresult">未测试</span>
+                </p>
+
+            </div>
+        </div>
+        <div style="text-align: center;display: none" id="videodiv">
+            <video class="video" controls="controls"  src=""></video>
+            <div class="pro">正在加载中......(<span id="process">10</span>%)</div>
+            <div class="weui-flex testbtn" >
+                <div class="btn nopass" style="color: red">测试失败</div>
+                <div class="btn pass" style="color: green">测试通过</div>
+            </div>
+        </div>
+        
+        <div class="weui-flex button">
+            
+            <div class=" weui-btn weui-btn_mini weui-btn_plain-primary footerbtn mybutton" id="resetCam">初始化</div>
+            <div class=" weui-btn weui-btn_mini weui-btn_plain-primary footerbtn mybutton" style="margin-top: unset;" id="testCam">测试摄像头</div>
+        </div>
+    </div>
+    {include file="common/footer" /}
+</body>
+<script>
+    $(document).ready(function () {
+        getCamInfo()
+    })
+    function getCamInfo(){
+        var dev_uid = getCookie("dev_uid");
+        if(!dev_uid) {
+            $.alert('获取不到uid');
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: url + 'QueryCam',
+            async: false,
+            data: { devuid: dev_uid },
+            dataType: 'json',
+            success: function (res) {
+                //请求成功dev_uid
+                if (res.code == 0) {
+                    var save_video = '';
+                    var stream_chn = '';
+                    var online = '';
+                    $('#sn').html(res.output.sn);
+                    if (res.output.save_video === true) {
+                        save_video = '是'
+                    } else if (res.output.save_video == false) {
+                        save_video = '否'
+                    } else {
+                        save_video = '未知状态'
+                    }
+                    if (res.output.stream_chn == 2) {
+                        stream_chn = '子码流';
+                    } else if (res.output.stream_chn == 1) {
+                        stream_chn = '主码流';
+                    } else {
+                        stream_chn = '未知状态,状态码:' + res.output.stream_chn;
+                    }
+                    if (res.output.online === true) {
+                        online = '在线'
+                    } else if (res.output.online == false) {
+                        online = '离线'
+                    } else {
+                        online = '未知状态'
+                    }
+                    $('#save_video').html(save_video);
+                    $('#stream_chn').html(stream_chn);
+                    $('#online').html(online);
+                    testble(res.output.save_video)
+                } else {
+                    $.alert(res.msg);
+                    $('#testCam').unbind().on('click', function () {
+                        $.alert(res.msg);
+                    })
+                }
+            }
+        });
+    }
+    $('#resetCam').on('click',function() {
+        saveVideo()
+        configCam()
+        getCamInfo()
+
+    })
+    function testble(flag) {
+        var dev_uid = getCookie("dev_uid");
+        if (!dev_uid) {
+            $.alert('获取不到uid');
+            return;
+        }
+        $('#testCam').unbind().on('click', function () {
+            if(flag===true) {
+                var _this = $(this);
+                //检测门状态
+                $.ajax({
+                    type: "POST",
+                    url: url + 'getDoorStatus',
+                    async: false,
+                    data: { devuid: dev_uid },
+                    dataType: 'json',
+                    success: function (res) {
+                        //请求成功dev_uid
+                        if (res.code == 0) {
+                            if(res.output.status==1||res.output.door_status==1) {
+                                $.alert('请关门后重新录像')
+                            } else {
+                                var url = "{:url('Testbox/openDoor')}";
+                                $.post(url, { devuid: dev_uid }, function (data) {
+                                    if (data.code == 0) {
+                                        //成功打开门
+                                        $.modal({
+                                            title: "提示",
+                                            text: "门锁已开,请打开门,打开门后请等待十秒钟后再关门",
+                                            buttons: [
+                                                { text: "取消", className: "default", onClick: function () { console.log(3) } },
+                                                {
+                                                    text: "<span id='count'>10</span>",
+                                                    onClick: function () {
+                                                        $.alert('请关闭门,确认门关闭后请点击"确定"按钮', function () {
+                                                            getVideo(data.output.transid,1);
+                                                        })
+                                                    }
+                                                },
+                                            ]
+                                        });
+                                        setInterval(function () {
+                                            var i = $('#count').html()
+                                            if (i == 0 || i == '下一步') {
+                                                $('#count').html('下一步')
+                                            } else {
+                                                i = parseInt(i) - 1;
+                                                $('#count').html(i)
+                                            }
+                                        }, 1000)
+                                    } else {
+                                        $.alert('开门失败')
+                                    }
+
+                                })  
+                            }
+                            
+                        } else {
+                            $.alert(res.msg);
+                        }
+                    }
+                });
+                
+            } else {
+                $.alert('请先启用录像功能');
+            }
+            
+
+        })
+    }
+    function saveVideo() {
+        var dev_uid = getCookie("dev_uid");
+        if (!dev_uid) {
+            $.alert('获取不到uid');
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: url + 'EnableSaveVideo',
+            async:false,
+            data: { devuid: dev_uid },
+            dataType: 'json',
+            success: function (res) {
+                //请求成功dev_uid
+                if (res.code == 0) {
+                    $.alert('摄像头已设置为可以录像')
+                } else {
+                    $.alert(res.msg);
+                }
+            }
+        });
+    }
+    function  configCam() {
+        var dev_uid = getCookie("dev_uid");
+        if (!dev_uid) {
+            $.alert('获取不到uid');
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: url + 'ConfigCam',
+            async: false,
+            data: { devuid: dev_uid },
+            dataType: 'json',
+            success: function (res) {
+                //请求成功dev_uid
+                if (res.code == 0) {
+                    $.alert('摄像头已设置从码流')
+                } else {
+                    $.alert(res.msg);
+                }
+            }
+        });
+    }
+    function getVideo(transid,times) {
+        var dev_uid = getCookie("dev_uid");
+        if (!dev_uid) {
+            $.alert('获取不到uid');
+            return;
+        }
+        
+        $.ajax({
+            type: "POST",
+            url: url + 'GetTransVideo',
+            data: { devuid: dev_uid , transid: transid},
+            dataType: 'json',
+            success: function (res) {
+                //请求成功dev_uid
+                if (res.code == 0) {
+                    $('#videodiv').show();
+                    if(res.output.process!=100) {
+                        $('#process').html(res.output.process)
+                        if(times<20) {
+                            times++
+                            getVideo(transid,times);
+                        } else {
+                            $.alert('视频请求超时,稍后再试')
+                        }
+                        
+                    } else if (res.output.process == 100){
+                        var urlArr = res.output.video_url.split('//')
+                        var newUrl = 'http://wechain:wechain123@'+ urlArr[1];
+                        $('.video').attr("src", newUrl);
+                        $('#process').html(res.output.process)
+                        $('.pro').hide()
+                    } else{
+                        $.alert('下载视频报错')
+                    }
+                } else {
+                    $.alert(res.msg);
+                }
+            }
+        });
+    }
+    $('.btn').on('click',function(){
+        var a = $(this).attr('class').split(' ');
+        var flag = '';
+        if(a== 'nopass') {
+            flag = 0
+        } else if(a=='pass') {
+            flag = 1
+        }
+
+        $.ajax({
+            type: "POST",
+            url: url2 + 'videoPass',
+            data: { devuid: dev_uid,flag:flag},
+            dataType: 'json',
+            success: function (res) {
+                //请求成功dev_uid
+                
+            }
+        });
+    })
+</script>
+
+</html>

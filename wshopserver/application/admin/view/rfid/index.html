@@ -1,0 +1,278 @@
+<!--包含头部文件-->
+{include file="public/header" /}
+<!-- jqGrid组件基础样式包-必要 -->
+<link rel="stylesheet" href="__STATIC__/admin/assets/javascripts/jqGrid_5/css/ui.jqgrid.css"/>
+
+<link rel="stylesheet" href="__STATIC__/admin/css/gridlist.css"/>
+<style>
+    small{
+        opacity: 1 !important;
+    }
+    .muted-background{
+        background:#CCCCCC !important;border-color:#f4f4f4;!important;
+    }
+</style>
+<div id='wrapper'>
+    <!--包含菜单文件-->
+    {include file="public/menu" /}
+    <section id='content'>
+        <div class='container-fluid'>
+            <div class='row-fluid' id='content-wrapper'>
+                <div class='span12'>
+                    <div class='page-header'>
+                        <h1 class='pull-left'>
+                            <i class='icon-tag'></i>
+                            <span>电子标签订单</span>
+                        </h1>
+                        <div class='pull-right'>
+                            <ul class='breadcrumb'>
+                                <li>
+                                    <a href="{:url('index/index')}"><i class='icon-home' style="font-size:17px;"></i>
+                                    </a>
+                                </li>
+                                <li class='separator'>
+                                    <i class='icon-angle-right'></i>
+                                </li>
+                                <li>
+                                    电子标签订单
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class='row-fluid'>
+                        <div class='span12 box'>
+                            <div class='box-header'>
+                                <div class='title'>
+                                    <div class='icon-flag'></div>
+                                    概况
+                                </div>
+                                <div class='actions'>
+                                    <a href="#" class="btn box-remove btn-mini btn-link"><i class='icon-remove'></i>
+                                    </a>
+                                    <a href="#" class="btn box-collapse btn-mini btn-link"><i></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class='row-fluid'>
+                                <div class='span3'>
+                                    <div class='box-content box-statistic red-background' onclick="todetailbystatus(6);">
+                                        <h3 class='title text-error'>{$precount}</h3>
+                                        <small>待处理订单</small>
+                                        <div class='text-error icon-inbox align-right'></div>
+                                    </div>
+                                </div>
+                                <div class='span3'>
+                                    <div class='box-content box-statistic green-background' onclick="todetailbystatus(4);">
+                                        <h3 class='title text-primary'>{$predelicount}</h3>
+                                        <small>待寄出订单</small>
+                                        <div class='text-primary icon-truck align-right'></div>
+                                    </div>
+                                </div>
+                                <div class='span3'>
+                                    <div class='box-content box-statistic' style="background: #f7f7f7;border-color:#f4f4f4;color:#49bf67 !important" onclick="todetailbystatus(5);">
+                                        <h3 class='title' style="color:#49bf67;">{$donecount}</h3>
+                                        <small>已完成订单</small>
+                                        <div class='icon-ok align-right'></div>
+                                    </div>
+                                </div>
+                                <div class='span3'>
+                                    <div class='box-content box-statistic muted-background' onclick="todetailbystatus(2);">
+                                        <h3 class='title text-primary'>{$rukucount}</h3>
+                                        <small>已入库标签</small>
+                                        <div class='text-primary icon-tags align-right'></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='row-fluid'>
+                        <div class='span12 box bordered-box orange-border' style='margin-bottom:0;'>
+                            <div class='box-header sea-blue-background'>
+                                <div class='title'>电子标签订单</div>
+                                <div class='actions'>
+                                    <a href="#" class="btn box-remove btn-mini btn-link"><i class='icon-remove'></i>
+                                    </a>
+                                    <a href="#" class="btn box-collapse btn-mini btn-link"><i></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class='box-content box-no-padding'>
+                                <div style="display: flex;align-items: center;align-content: center;">
+
+                                    <label style="margin-left: 15px;">搜索:</label><input id="s_name" type="text" style="margin-top: 5px;margin-left: 10px;" class="input-text " placeholder="姓名、联系方式、微信昵称">
+                                    <label style="margin-left: 15px;">订单状态:</label>
+                                    <select id="s_select" class="select" style="margin-top: 5px;margin-left: 10px;width: 120px;">
+                                        <option value="">全部</option>
+                                        <option value="1">待付款</option>
+                                        <option value="2">已付款</option>
+                                        <option value="3">已关闭</option>
+                                        <option value="4">已接收</option>
+                                        <option value="5">已发货</option>
+                                        <option value="6">转退款</option>
+                                </select>
+                                    <label style="margin-left: 15px;">时间段：
+                                        <div class="input-append" style="margin-bottom: 0px;">
+                                            <input id="s_time" class="input-medium daterange" placeholder="选择时间段" type="text">
+                                            <span class="add-on" id="daterange">
+                                              <i class="icon-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </label>
+                                    <label style="margin-left: 15px;">
+                                        <input class="btn btn-success" name="button"
+                                               type="button" onclick="queryData();"
+                                               value="搜索"
+                                               style="margin-left: 10px;">
+                                    </label>
+                                    <button class="btn btn-success" name="button"
+                                            style="position: absolute;;right:15px;" type="submit">导出订单
+                                    </button>
+                                </div>
+                                <div class='responsive-table'>
+                                    <div class='scrollable-area'>
+                                        <!-- jqgrid -->
+                                        <table id="gridTable" class="table-bordered table-striped "></table>
+                                        <!-- jqgrid end-->
+                                        <div id="pager2"></div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <hr class='hr-drouble'/>
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<!--包含底部js-->
+{include file="public/footer" /}
+<!-- jqGrid插件包-必要 -->
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/jqGrid_5/js/jquery.jqGrid.min.js"></script>
+<!-- jqGrid插件的多语言包-非必要 -->
+<!-- 在jqgrid/js/i18n下还有其他的多语言包 -->
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/jqGrid_5/js/i18n/grid.locale-cn.js"></script>
+<script>
+    $(function () {
+        //页面加载完成之后执行
+        pageInit();
+    });
+    function pageInit() {
+        //创建jqGrid组件
+        //订单状态：1 购物中，2待结账，3已取消，4待支付，5已付款，6已欠费，7转退款，8已完成
+        jQuery("#gridTable").jqGrid(
+            {
+                url: 'rfidlist',//组件创建完成之后请求数据的url
+                datatype: "json",//请求数据返回的类型。可选json,xml,txt
+                colNames: ['订单编号', '买家', '联系方式', '数量', '订单金额', '收货地区', '订单状态', '下单时间', '操作'],//jqGrid的列显示名字
+                colModel: [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
+                    {name: 'orderno', index: 'orderno', align: "center"},
+                    {name: 'receiver', index: 'receiver', align: "center"},
+                    {name: 'mobile', index: 'mobile', align: "center",sortable: false},
+                    {name: 'totalcount', index: 'totalcount', align: "center",sortable: false},
+                    {
+                        name: 'totalfee',
+                        index: 'totalfee',
+                        sortable: false,
+                        align: "center",
+                        formatter: function (cellvalue, options, rowObject) {
+                            return cellvalue/100;
+                        }
+                    },
+                    {name: 'dailaddress', index: 'dailaddress', align: "center",sortable: false},
+                    {
+                        name: 'orderstatus',
+                        index: 'orderstatus',
+                        sortable: false,
+                        align: "center",
+                        formatter: function (cellvalue, options, rowObject) {
+                            if(cellvalue == "1"){
+                                return "<span class='label label-success'>待付款</span>";
+                            }else if(cellvalue == "2"){
+                                return "<span class='label label-important'>已付款</span>";
+                            }else if(cellvalue == "3"){
+                                return "<span class='label label-default'>已关闭</span>";
+                            }else if(cellvalue == "4"){
+                                return "<span class='label label-default'>已接收</span>";
+                            }else if(cellvalue == "5"){
+                                return "<span class='label label-success'>已发货</span>";
+                            }else if(cellvalue == "6"){
+                                return "<span class='label label-important'>转退款</span>";
+                            }
+                        }
+                    },
+                    {name: 'createtime', index: 'createtime', align: "center",sortable: true},
+                    {
+                        align: "center",
+                        sortable: false,
+                        formatter: function (cellvalue, options, rowObject) {
+                            var ss = '<a class="btn btn-success btn-mini" href="detail?orderid=' + rowObject.orderid + '">查看</a>';
+                            // var ss2 = '<a class="btn btn-success btn-mini" style="margin-left:5px;" href="javascript:refreshrfid(\'' + rowObject.orderid + '\')">刷新</a>';
+                            return ss;
+                        }
+                    }
+                ],
+                rownumbers: true,
+                rowNum: 10,//一页显示多少条
+                rowList: [10, 20, 30],//可供用户选择一页显示多少条
+                pager: '#pager2',//表格页脚的占位符(一般是div)的id
+//				sortname : 'id',//初始化的时候排序的字段
+//				sortorder : "desc",//排序方式,可选desc,asc
+                mtype: "get",//向后台请求数据的ajax的类型。可选post,get
+//          		styleUI: '',//设置jqgrid的全局样式为bootstrap样式 Bootstrap
+                viewrecords: true,
+                autowidth: true,
+                pagerpos: "left",
+                recordpos: "right",
+                height: "auto",
+                loadComplete: function (xhr) {
+                    $("#gridTable").closest(".ui-jqgrid-bdiv").css({'overflow-y': 'auto'});//,'overflow-x':'hidden'
+                },
+            });
+    }
+    //条件查询
+    function queryData() {
+        var s_name = $("#s_name").val();
+        var s_select = $("#s_select").val();
+        var s_time = $("#s_time").val();
+        var page = $('#gridTable').getGridParam('page'); // current page
+        var rows = $('#gridTable').getGridParam('rows'); // rows
+        var sidx = $('#gridTable').getGridParam('sidx'); // sidx
+        var sord = $('#gridTable').getGridParam('sord'); // sord
+        jQuery("#gridTable").jqGrid('setGridParam', {
+            url: "rfidlist",
+            postData: {
+                s_name: s_name,
+                s_select: s_select,
+                s_time: s_time
+            },
+            page: page,
+            rows: rows,
+            sidx: sidx,
+            sord: sord
+        }).trigger("reloadGrid");
+    }
+    function todetailbystatus(status) {
+        location.href = 'detail?page=1&status='+status;
+    }
+    // function refreshrfid(orderid) {
+    //     var postData = {
+    //         'orderid':orderid
+    //     };
+    //     var url = 'refreshrfid';
+    //     $.post(url,postData,function (result) {
+    //         if(result.code == 200){
+    //             alert('订单状态：'+result.msg);
+    //             location.reload();
+    //         }else{
+    //             alert(result.msg);
+    //         }
+    //     },"json");
+    // }
+</script>
+</body>
+</html>

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>我的销售</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/weui/1.1.2/style/weui.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/jquery-weui/1.1.2/css/jquery-weui.min.css">
+    <link rel="stylesheet" href="__STATIC__/wechatservice/css/mui.min.css">
+    <script src="https://cdn.bootcss.com/vue/2.5.8/vue.min.js"></script>
+    <style>
+        body {
+            /*height: 100% !important;*/
+            background: #f7f7f7 !important;
+        }
+
+        html,
+        body {
+            background-color: #efeff4;
+        }
+
+        .mui-views,
+        .mui-view,
+        .mui-pages,
+        .mui-page,
+        .mui-page-content {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #efeff4;
+        }
+
+        .mui-pages {
+            height: auto;
+        }
+
+        .mui-scroll-wrapper,
+        .mui-scroll {
+            background-color: #efeff4;
+        }
+
+        .mui-page.mui-transitioning {
+            -webkit-transition: -webkit-transform 300ms ease;
+            transition: transform 300ms ease;
+        }
+
+        .mui-page-left {
+            -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
+        }
+
+        .mui-ios .mui-page-left {
+            -webkit-transform: translate3d(-20%, 0, 0);
+            transform: translate3d(-20%, 0, 0);
+        }
+
+        .mui-navbar .mui-bar {
+            position: absolute;
+            background: transparent;
+            text-align: center;
+        }
+
+        .mui-android .mui-navbar-inner.mui-navbar-left {
+            opacity: 0;
+        }
+
+        .mui-ios .mui-navbar-left .mui-left,
+        .mui-ios .mui-navbar-left .mui-center,
+        .mui-ios .mui-navbar-left .mui-right {
+            opacity: 0;
+        }
+
+        .mui-navbar .mui-btn-nav {
+            -webkit-transition: none;
+            transition: none;
+            -webkit-transition-duration: .0s;
+            transition-duration: .0s;
+        }
+
+        .mui-navbar .mui-bar .mui-title {
+            display: inline-block;
+            width: auto;
+        }
+
+        .mui-page-shadow {
+            position: absolute;
+            right: 100%;
+            top: 0;
+            width: 16px;
+            height: 100%;
+            z-index: -1;
+            content: '';
+        }
+
+        .mui-page-shadow {
+            background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
+            background: linear-gradient(to right, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
+        }
+
+        .mui-navbar-inner.mui-transitioning,
+        .mui-navbar-inner .mui-transitioning {
+            -webkit-transition: opacity 300ms ease, -webkit-transform 300ms ease;
+            transition: opacity 300ms ease, transform 300ms ease;
+        }
+
+        .mui-page {
+            display: none;
+        }
+
+        .mui-pages .mui-page {
+            display: block;
+        }
+
+        .mui-page .mui-table-view:first-child {
+            margin-top: 15px;
+        }
+
+        .mui-page .mui-table-view:last-child {
+            margin-bottom: 30px;
+        }
+
+        .mui-table-view {
+            margin-top: 20px;
+        }
+
+        .mui-table-view span.mui-pull-right {
+            color: #999;
+        }
+
+        .mui-fullscreen {
+            position: fixed;
+            z-index: 20;
+            background-color: #000;
+        }
+
+        .mui-ios .mui-navbar .mui-bar .mui-title {
+            position: static;
+        }
+
+        .mui-plus.mui-plus-stream .mui-stream-hidden {
+            display: none !important;
+        }
+
+        .add_goods {
+            width: 45px;
+            height: 45px;
+            position: fixed;
+            right: 10%;
+            bottom: 5%;
+            z-index: 44;
+        }
+
+        .goodsitem {
+            margin: 5px;
+            background: #FFFFFF;
+            border-radius: 5px;
+            color: #808080;
+            font-size: 14px;
+        }
+
+        .goodsitem label {
+            padding: 10px 10px;
+            padding-right: 0px;
+        }
+
+        .goodsitem .info {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+
+        .goodsitem .info .infoitem {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mui-scroll p {
+            margin-bottom: 5px !important;
+        }
+
+        .top_item {
+            border-top: 1px solid #d7d7d7;
+            border-right: 1px solid #d7d7d7;
+            padding: 10px 5px;
+            font-size: 14px;
+        }
+
+        .top_item_left {
+            border-left: 1px solid #d7d7d7;
+        }
+
+        .weui-tabbar {
+            line-height: 0px;
+        }
+
+        .weui-tabbar p {
+            margin-bottom: 0px;
+        }
+        .weui-btn_plain-default{
+            border:0px !important;
+            color: #333333;
+            background: #ffffff !important;
+        }
+        .sel{
+            color: #ffffff;
+            background: #d9d9d9 !important;
+        }
+    </style>
+</head>
+
+<body class="">
+
+
+<div class="page" style="margin-bottom:50px;">
+    <div class="page__bd ">
+        <div>
+            <p style="font-size:14px;margin-left:10px;padding-top:10px;">选择时间范围：</p>
+        </div>
+        <div class="weui-flex" style="padding-left:10px;padding-right:10px;">
+            <div class="weui-flex__item" style=""><a id="day0" href="javascript:searchbytime(0);"
+                                                     class="weui-btn  weui-btn_plain-default "
+                                                     style="font-size:14px;margin-right:5px;line-height:1;padding:5px;">今天</a>
+            </div>
+            <div class="weui-flex__item" style=""><a id="day-1" href="javascript:searchbytime(-1);"
+                                                     class="weui-btn  weui-btn_plain-default"
+                                                     style="font-size:14px;margin-right:5px;line-height:1;padding:5px;">昨天</a>
+            </div>
+            <div class="weui-flex__item" style=""><a id="day7" href="javascript:searchbytime(7);"
+                                                     class="weui-btn weui-btn_plain-default"
+                                                     style="font-size:14px;margin-right:5px;line-height:1;padding:5px;">近7天</a>
+            </div>
+            <div class="weui-flex__item" style=""><a id="day30" href="javascript:searchbytime(30);"
+                                                     class="weui-btn weui-btn_plain-default"
+                                                     style="font-size:14px;margin-right:5px;line-height:1;padding:5px;">近30天</a>
+            </div>
+        </div>
+        <div>
+            <div id="main" style="width: 100%;height:300px;"></div>
+        </div>
+        <div style="margin:5px;background: #ffffff;">
+            <div class="weui-flex" style="background:#d9d9d9;">
+                <div class="weui-flex__item top_item top_item_left" style="font-size:16px;background:white;">
+                    流水总额：<span style="color:red;">{$liushuifee/100}元</span>
+                </div>
+            </div>
+            <div class="weui-flex" style="border-bottom: 1px solid #d7d7d7;">
+                <div class="weui-flex__item top_item top_item_left">交易笔数：{$tradenum}</div>
+                <div class="weui-flex__item top_item">用户数：{$usercount}人</div>
+            </div>
+            <div class="weui-flex" style="border-bottom: 1px solid #d7d7d7;">
+                <div class="weui-flex__item top_item top_item_left">微信免密：{$papayfee/100}元</div>
+                <div class="weui-flex__item top_item">微信支付：{$wepaycount}</div>
+            </div>
+            <div class="weui-flex" style="border-bottom: 1px solid #d7d7d7;">
+                <div class="weui-flex__item top_item top_item_left">未收款金额：{$unpayfee/100}元</div>
+                <div class="weui-flex__item top_item">未收款笔数：{$unpaycount}</div>
+            </div>
+        </div>
+        <div style="background: #FFFFFF;margin:5px 5px;border-radius: 5px;padding: 5px;color: #808080;font-size: 14px;">
+            <div class="weui-flex">
+                <div class="weui-flex__item" style="font-size:16px;">机柜流水总额分布</div>
+                <!--<div class="weui-flex__item" style="text-align: right">筛选 ></div>-->
+            </div>
+            {volist name="machinelist" id="vo" key="k"}
+            <div id="m{$k}" class="flex-row"
+                 style="display: flex;flex-direction:row;justify-content:flex-start;align-items:flex-start;margin-top:10px;border-radius: 5px;color:#333;background: #f4f4f4;">
+                <div class="flex-view-item" style="width: 100%;padding-left: 10px;">
+                    <div class="flex-row"
+                         style="display: flex;flex-direction:row;justify-content:space-between;align-items:center;">
+                        <p style="color: #333333;margin-bottom: 3px;margin-top:10px;">机柜：{$vo.machinename}</p>
+                    </div>
+
+                    <div class="flex-row"
+                         style="display: flex;flex-direction:row;justify-content:flex-end;align-items:center;">
+                        <p style="color: #333333;margin-right:10px;">流水额：{$vo.flowfee/100}元</p>
+                    </div>
+                </div>
+            </div>
+            {/volist}
+
+        </div>
+    </div>
+</div>
+<!--单页面结束-->
+
+<div class="weui-tabbar" style="position:fixed">
+    <a href="{:url('wechatservice/sales/statis')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon">
+            <img src="__STATIC__/wechatservice/img/label.png" alt="">
+        </div>
+        <p class="weui-tabbar__label">交易概况</p>
+    </a>
+    <a href="{:url('wechatservice/sales/mysales')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon">
+            <img src="__STATIC__/wechatservice/img/weight_default.png" alt="">
+        </div>
+        <p class="weui-tabbar__label">交易明细</p>
+    </a>
+</div>
+
+
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-weui/1.1.2/js/jquery-weui.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-weui/1.1.2/js/swiper.min.js"></script>
+<script src="__STATIC__/wechatservice/js/mui.min.js "></script>
+<script src="__STATIC__/wechatservice/js/mui.view.js "></script>
+<script src="https://cdn.bootcss.com/echarts/4.0.4/echarts.min.js"></script>
+
+
+
+<script type="text/javascript">
+    /*
+     // startColor：开始颜色hex
+     // endColor：结束颜色hex
+     // step:几个阶级（几步）
+     */
+    function gradientColor(startColor,endColor,step){
+        startRGB = this.colorRgb(startColor);//转换为rgb数组模式
+        startR = startRGB[0];
+        startG = startRGB[1];
+        startB = startRGB[2];
+
+        endRGB = this.colorRgb(endColor);
+        endR = endRGB[0];
+        endG = endRGB[1];
+        endB = endRGB[2];
+
+        sR = (endR-startR)/step;//总差值
+        sG = (endG-startG)/step;
+        sB = (endB-startB)/step;
+
+        var colorArr = [];
+        for(var i=0;i<step;i++){
+            //计算每一步的hex值
+            var hex = this.colorHex('rgb('+parseInt((sR*i+startR))+','+parseInt((sG*i+startG))+','+parseInt((sB*i+startB))+')');
+            colorArr.push(hex);
+        }
+        return colorArr;
+    }
+
+    // 将hex表示方式转换为rgb表示方式(这里返回rgb数组模式)
+    gradientColor.prototype.colorRgb = function(sColor){
+        var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+        var sColor = sColor.toLowerCase();
+        if(sColor && reg.test(sColor)){
+            if(sColor.length === 4){
+                var sColorNew = "#";
+                for(var i=1; i<4; i+=1){
+                    sColorNew += sColor.slice(i,i+1).concat(sColor.slice(i,i+1));
+                }
+                sColor = sColorNew;
+            }
+            //处理六位的颜色值
+            var sColorChange = [];
+            for(var i=1; i<7; i+=2){
+                sColorChange.push(parseInt("0x"+sColor.slice(i,i+2)));
+            }
+            return sColorChange;
+        }else{
+            return sColor;
+        }
+    };
+
+    // 将rgb表示方式转换为hex表示方式
+    gradientColor.prototype.colorHex = function(rgb){
+        var _this = rgb;
+        var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+        if(/^(rgb|RGB)/.test(_this)){
+            var aColor = _this.replace(/(?:(|)|rgb|RGB)*/g,"").split(",");
+            var strHex = "#";
+            for(var i=0; i<aColor.length; i++){
+                var hex = Number(aColor[i]).toString(16);
+                hex = hex<10 ? 0+''+hex :hex;// 保证每个rgb的值为2位
+                if(hex === "0"){
+                    hex += hex;
+                }
+                strHex += hex;
+            }
+            if(strHex.length !== 7){
+                strHex = _this;
+            }
+            return strHex;
+        }else if(reg.test(_this)){
+            var aNum = _this.replace(/#/,"").split("");
+            if(aNum.length === 6){
+                return _this;
+            }else if(aNum.length === 3){
+                var numHex = "#";
+                for(var i=0; i<aNum.length; i+=1){
+                    numHex += (aNum[i]+aNum[i]);
+                }
+                return numHex;
+            }
+        }else{
+            return _this;
+        }
+    }
+    var machines = '{$machinelist2}';
+    // var mo = JSON.parse(machines);
+    // var gradient = new gradientColor('#e82400','#8ae800',mo.length);
+    // for(var i=1;i <= mo.length; i++){
+    //     $('#m'+i).css('background',gradient[i-1]);
+    // }
+
+</script>
+<script>
+    //最近七天和最近三十天时间
+    function timeForMat (count) {
+// 拼接时间
+        var time1 = new Date()
+        time1.setTime(time1.getTime() - (24 * 60 * 60 * 1000))
+        var Y1 = time1.getFullYear()
+        var M1 = ((time1.getMonth() + 1) > 10 ? (time1.getMonth() + 1) : '0' + (time1.getMonth() + 1))
+        var D1 = (time1.getDate() > 10 ? time1.getDate() : '0' + time1.getDate())
+        var timer1 = Y1 + '-' + M1 + '-' + D1 // 当前时间
+        var time2 = new Date()
+        time2.setTime(time2.getTime() - (24 * 60 * 60 * 1000 * count))
+        var Y2 = time2.getFullYear()
+        var M2 = ((time2.getMonth() + 1) > 9 ? (time2.getMonth() + 1) : '0' + (time2.getMonth() + 1))
+        var D2 = (time2.getDate() > 9 ? time2.getDate() : '0' + time2.getDate())
+        // let timer2 = Y2 + '-' + M2 + '-' + D2 // 之前的7天或者30天
+        // return {
+        // // t1: timer1,
+        // // t2: timer2
+        // }
+        return Y2 + '-' + M2 + '-' + D2 + ' 00:00:00';
+    }
+</script>
+<script>
+    var myChart = echarts.init(document.getElementById('main'));
+    var xs = '{$xs}';
+    var ys = '{$ys}';
+    xs = $.parseJSON('{$xs}');
+    ys = $.parseJSON('{$ys}');
+    console.log(xs);
+    console.log(ys);
+    option = {
+        color: ['#3398DB'],
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            top: '6%',
+            containLabel: true
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: xs,
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value'
+            }
+        ],
+        series: [
+            {
+                name: '流水',
+                type: 'bar',
+                barWidth: '60%',
+                data: ys
+            }
+        ]
+    };
+    myChart.setOption(option);
+    //
+    function searchbytime(day) {
+        var day2 = new Date();
+        day2.setTime(day2.getTime());
+        var s2 = day2.getFullYear()+"-" + (day2.getMonth()+1) + "-" + day2.getDate();
+        //today
+        if(day == 0){
+            var starttime = s2+' 00:00:00';
+            var endtime = s2+' 23:59:59';
+            location.href = "/wechatservice/sales/salesdashboard?starttime="+starttime+"&endtime="+endtime+"&type=0";
+        }else if(day == -1){
+            var day1 = new Date();
+            day1.setTime(day1.getTime()-24*60*60*1000);
+            var s1 = day1.getFullYear()+"-" + (day1.getMonth()+1) + "-" + day1.getDate();
+            var starttime = s1+' 00:00:00';
+            var endtime = s1+' 23:59:59';
+            location.href = "/wechatservice/sales/salesdashboard?starttime="+starttime+"&endtime="+endtime+"&type=-1";
+        }else if(day == 7){
+            var s1 = timeForMat(7);
+            var starttime = s1+' 00:00:00';
+            var endtime = s2+' 23:59:59';
+            location.href = "/wechatservice/sales/salesdashboard?starttime="+starttime+"&endtime="+endtime+"&type=7";
+        }else if(day == 30){
+            var s1 = timeForMat(30);
+            var starttime = s1+' 00:00:00';
+            var endtime = s2+' 23:59:59';
+            location.href = "/wechatservice/sales/salesdashboard?starttime="+starttime+"&endtime="+endtime+"&type=30";
+        }
+    }
+    var type = '{$type}';
+    $( function() {
+        $('#day'+type).addClass('sel');
+    });
+
+</script>
+</html>

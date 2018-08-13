@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>交易详情</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/weui/1.1.2/style/weui.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/jquery-weui/1.1.2/css/jquery-weui.min.css">
+    <link rel="stylesheet" href="__STATIC__/wechatservice/css/mui.min.css">
+    <style>
+        body {
+            height: 100% !important;
+            background: #e7e7e7 !important;
+        }
+
+        .title-left {
+            color: black;
+            font-size: 18px;
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+        }
+
+        .title-right {
+            padding-right: 13px;
+            position: relative;
+            text-align: right;
+            display: inline-block;
+        }
+
+        .order-info {
+            padding: 10px 15px;
+            color: #999999;
+        }
+
+        .weui-cell {
+            color: #999999;
+        }
+    </style>
+</head>
+
+<body>
+<div class="page">
+    <div class="page__bd page__bd_spacing">
+        <div class="weui-msg" style="background:white;margin:5px;border-radius: 5px;padding-top:20px;">
+
+            <div class="weui-msg__icon-area" style="margin-bottom:20px;"><i class="weui-icon-success weui-icon_msg" style="font-size:74px;"></i>
+            </div>
+            <div class="weui-msg__text-area" style="padding:0px;margin-bottom:0px;">
+                <h2 class="weui-msg__title">
+                    {if condition="$order.orderstatus eq 1"} 购物中
+                    {elseif condition="$order.orderstatus eq 2"/}待结账
+                    {elseif condition="$order.orderstatus eq 3"/}已取消
+                    {elseif condition="$order.orderstatus eq 4"/}待支付
+                    {elseif condition="$order.orderstatus eq 5"/}已付款
+                    {elseif condition="$order.orderstatus eq 6"/}已欠费
+                    {elseif condition="$order.orderstatus eq 7"/}转退款
+                    {elseif condition="$order.orderstatus eq 8"/}已完成
+                    {/if}
+                </h2>
+                <div style="height:1px;background:#f7f7f7;width:100%;"></div>
+                <p class="weui-msg__desc" style="margin-bottom:0px;padding-top:5px;margin-bottom:0px;">
+                    机柜：{$order.machinename}</p>
+                <p class="weui-msg__desc">地址：{$order.location}</p>
+            </div>
+        </div>
+        <div class="weui-cells" style="margin:5px;border-radius:5px;">
+            <div class="weui-panel__hd weui-cell ">
+                <div class="title-left">所选商品</div>
+                <span class="title-right">合计：{$order.totalfee/100}元</span>
+            </div>
+            {volist name="order.goods" id="vo"}
+            <div class="weui-cell" style="justify-content:space-between;">
+                <img src="{$vo.picurl}" style="width: 60px;height: 60px;"/>
+                <div>
+                    <p>价格：{$vo.unitfee/100}元</p>
+                    <p>规格：{$vo.spec}</p>
+                </div>
+                <p>数量：{$vo.amount}</p>
+                <p>{$vo.totalfee/100}元</p>
+            </div>
+            {/volist}
+        </div>
+        <div class="weui-cells" style="margin:5px;border-radius:5px;">
+            <div class="weui-panel__hd weui-cell ">
+                <div class="title-left">订单信息</div>
+            </div>
+            <div class="order-info">
+                {volist name="order.paytypes" id="vo"}
+                <p>{$vo.paytype}：{$vo.payfee/100}元</p>
+                {/volist}
+                <p>订单编号：{$order.orderno}</p>
+                <p>交易流水：{$order.serialno}</p>
+                <p>交易时间：{$order.createtime}</p>
+            </div>
+
+        </div>
+    </div>
+    <div class="weui-btn-area">
+        <a class="weui-btn weui-btn_default" href="javascript:backtolast()" id="goback">返回</a>
+    </div>
+</div>
+</body>
+<script>
+    function backtolast() {
+        history.go(-1);
+    }
+</script>
+</html>

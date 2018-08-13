@@ -1,0 +1,484 @@
+
+<!--包含头部文件-->
+{include file="public/header" /}
+<!-- jqGrid组件基础样式包-必要 -->
+<link rel="stylesheet" href="__STATIC__/admin/assets/javascripts/jqGrid_5/css/ui.jqgrid.css"/>
+
+<!-- jqGrid主题包-非必要 -->
+<!-- 在jqgrid/css/css这个目录下还有其他的主题包，可以尝试更换看效果 -->
+<!--<link rel="stylesheet" href="__STATIC__/admin/assets/javascripts/jqGrid_5/css/ui.jqgrid-bootstrap-ui.css" />-->
+
+<link rel="stylesheet" href="__STATIC__/admin/css/gridlist.css"/>
+<style>
+    .lead {
+        font-size: 16px;
+        font-weight: normal;
+        margin-bottom: 0px;
+        line-height: 20px;
+    }
+    .ui-jqgrid-hdiv{
+        display:none;
+    }
+    .pull-left {
+        float: left;
+        padding-left: 10px;
+        padding-top: 5px;
+    }
+    .pull-right {
+        padding-right: 10px;
+    }
+    .ui-paging-pager{
+        font-size:14px;
+    }
+    .jqgrow td{
+        border-left:1px solid #DDDDDD;
+    }
+    #pager2{
+        padding:0px !important;
+    }
+    #pg_pager2{
+        padding:5px !important;
+        border-left:1px solid #DDDDDD !important;
+        border-right:1px solid #DDDDDD !important;
+    }
+</style>
+<div id='wrapper'>
+
+    <!--包含菜单文件-->
+    {include file="public/menu" /}
+    <section id='content'>
+        <div class='container-fluid'>
+            <div class='row-fluid' id='content-wrapper'>
+                <div class='span12'>
+                    <div class='page-header'>
+                        <h1 class='pull-left'>
+                            <i class='icon-bar-chart'></i>
+                            <span>交易查询</span>
+                        </h1>
+                        <div class='pull-right'>
+                            <ul class='breadcrumb'>
+                                <li>
+                                    <a href="{:url('index/index')}"><i class='icon-home' style="font-size:17px;"></i>
+                                    </a>
+                                </li>
+                                <li class='separator'>
+                                    <i class='icon-angle-right'></i>
+                                </li>
+                                <li>
+                                    <a href="{:url('trade/index')}">交易查询</a>
+                                </li>
+                                <li class='separator'>
+                                    <i class='icon-angle-right'></i>
+                                </li>
+                                <li class='active'>订单详情</li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                    <div id='orders'>
+                        <div class='row-fluid'>
+                            <div class='span4'>
+                                <div class='responsive-table'>
+                                    <div class='scrollable-area'>
+                                        <!-- jqgrid -->
+                                        <table id="gridTable" class=""></table>
+                                        <!-- jqgrid end-->
+                                        <div id="pager2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='span8'>
+                                <div class='row-fluid' id='detail'>
+                                    <div class='span12 box'>
+                                        <div class='box-content'>
+                                            <div class='pull-left'>
+                                                <a class='btn btn-danger' style="display:none;" id="r_agreerefund" href='javascript:apply();'>同意退款</a>
+
+                                            </div>
+                                            <div class='clearfix'></div>
+                                            <hr class='hr-normal'/>
+                                            <div class='pull-left lead'>
+                                                交易编号：<span id="r_on"></span>
+                                                <a id="r_b_1" style="display:none;" class='btn btn-danger btn-mini' href='#'>购物中</a>
+                                                <a id="r_b_2" style="display:none;" class='btn btn-danger btn-mini' href='#'>待结账</a>
+                                                <a id="r_b_3" style="display:none;" class='btn btn-default btn-mini' href='#'>已取消</a>
+                                                <a id="r_b_4" style="display:none;" class='btn btn-danger btn-mini' href='#'>待支付</a>
+                                                <a id="r_b_5" style="display:none;" class='btn btn-success btn-mini' href='#'>已付款</a>
+                                                <a id="r_b_6" style="display:none;" class='btn btn-danger btn-mini' href='#'>已欠费</a>
+                                                <a id="r_b_7" style="display:none;" class='btn btn-danger btn-mini' href='#'>转退款</a>
+                                                <a id="r_b_8" style="display:none;" class='btn btn-success btn-mini' href='#'>已完成</a>
+
+                                            </div>
+                                            <div class='pull-right'>
+                                                <p class='contrast price' id="r_totalfee1"></p>
+                                            </div>
+                                            <div class='clearfix'></div>
+                                            <small style="color: #808080;padding-left:10px;" id="r_createtime"></small>
+                                            <div class='clearfix'></div>
+                                            <table class='table table-hover' style="font-size:14px;">
+                                                <thead>
+                                                <tr>
+                                                    <th style="text-align: center;">商品名称</th>
+                                                    <th>
+                                                        <div class='text-center'>规格</div>
+                                                    </th>
+                                                    <th>
+                                                        <div class='text-right'>单价</div>
+                                                    </th>
+                                                    <th>
+                                                        <div class='text-right'>数量</div>
+                                                    </th>
+                                                    <th>
+                                                        <div class='text-right'>价格</div>
+                                                    </th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="r_goods">
+                                                </tbody>
+                                            </table>
+                                            <div class='text-right'>
+                                                <p class='subtotal contrast' id="r_totalfee"></p>
+                                            </div>
+                                            <hr class='hr-normal'/>
+                                            <div class='row-fluid'>
+                                                <div class='span3'>
+                                                    <div class='lead'>
+                                                        <i class='icon-user contrast'></i>
+                                                        买家信息
+                                                    </div>
+                                                </div>
+                                                <div class='span8 offset1'>
+                                                    <address>
+                                                        <p id="r_nickname"></p>
+                                                        <p id="r_mobile"></p>
+                                                        <p id="r_unionid"></p>
+                                                        <p id="r_paytype"></p>
+                                                        <p id="r_paybatchno"></p>
+                                                    </address>
+                                                </div>
+                                            </div>
+                                            <div class='row-fluid'>
+                                                <div class='span3'>
+                                                    <div class='lead'>
+                                                        <i class='icon-hdd contrast'></i>
+                                                        机柜信息
+                                                    </div>
+                                                </div>
+                                                <div class='span8 offset1'>
+                                                    <address>
+                                                        <p id="r_merchantname"></p>
+                                                        <p id="r_machinename"></p>
+                                                    </address>
+                                                </div>
+                                            </div>
+                                            <div class='row-fluid'>
+                                                <div class='span3'>
+                                                    <div class='lead'>
+                                                        <i class='icon-hdd contrast'></i>
+                                                        退款记录
+                                                    </div>
+                                                </div>
+                                                <div class='span8 offset1'>
+                                                    <form method="post" id="refundform" action="applyrefund">
+
+
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class='form-actions'>
+                                                <ul class='pager'>
+                                                    <li class='previous'>
+                                                        <a href='#' id="last">上一单</a>
+                                                    </li>
+                                                    <li class='next'>
+                                                        <a href='#' id="next">下一单</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<!--包含底部js文件-->
+{include file="public/footer" /}
+<!-- jqGrid插件包-必要 -->
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/jqGrid_5/js/jquery.jqGrid.min.js"></script>
+<!-- jqGrid插件的多语言包-非必要 -->
+<!-- 在jqgrid/js/i18n下还有其他的多语言包 -->
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/jqGrid_5/js/i18n/grid.locale-cn.js"></script>
+<script>
+    var orderid = "{$orderid}";
+    var status = "{$status}";
+    var userid = "{$userid}";
+    var rows;
+    $(function () {
+        //页面加载完成之后执行
+        pageInit();
+    });
+
+    function pageInit() {
+        //创建jqGrid组件
+        //订单状态：1 购物中，2待结账，3已取消，4待支付，5已付款，6已欠费，7转退款，8已完成
+        jQuery("#gridTable").jqGrid(
+            {
+                url: 'tradelist',//组件创建完成之后请求数据的url
+                postData:{
+                    status: status,
+                    userid: userid
+                },
+                datatype: "json",//请求数据返回的类型。可选json,xml,txt
+                colModel: [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
+                    {
+                        name: 'orderid',
+                        index: 'orderid',
+                        hidden: true
+                    },
+                    {
+                        name: '',
+                        index: 'orderstatus',
+                        sortable: false,
+                        align: "left",
+                        formatter: function (cellvalue, options, rowObject) {
+                            var status = '';
+                            var labelclass = '';
+                            if (rowObject.orderstatus == "1") {
+                                status = "<span class='label label-success'>购物中</span>";
+                            } else if (rowObject.orderstatus == "2") {
+                                status = "<span class='label label-important'>待结账</span>";
+                            } else if (rowObject.orderstatus == "3") {
+                                status = "<span class='label label-default'>已取消</span>";
+                            } else if (rowObject.orderstatus == "4") {
+                                status = "<span class='label label-default'>待支付</span>";
+                            } else if (rowObject.orderstatus == "5") {
+                                status = "<span class='label label-success'>已付款</span>";
+                            } else if (rowObject.orderstatus == "6") {
+                                status = "<span class='label label-important'>已欠费</span>";
+                            } else if (rowObject.orderstatus == "7") {
+                                status = "<span class='label label-danger'>转退款</span>";
+                            } else if (rowObject.orderstatus == "8") {
+                                status = "<span class='label label-success'>已完成</span>";
+                            }
+                            var html = "<div class='pull-left'><p><strong>" + rowObject.orderno + "</strong></p><p>" + status + "</p></div><div class='text-right pull-right'><h4 class='contrast price'>" + rowObject.totalfee / 100 + "元</h4><p><i class='icon-time'></i><span class='has-tooltip' style='margin-left:5px;' data-title=''>" + rowObject.createtime + "</span></p></div>";
+                            return html;
+                        }
+                    }
+                ],
+                page:{$page},
+                rownumbers: false,
+                rowNum: 10,//一页显示多少条
+                rowList: [10, 20, 30],//可供用户选择一页显示多少条
+                pager: '#pager2',//表格页脚的占位符(一般是div)的id
+//				sortname : 'id',//初始化的时候排序的字段
+//				sortorder : "desc",//排序方式,可选desc,asc
+                mtype: "get",//向后台请求数据的ajax的类型。可选post,get
+//          		styleUI: '',//设置jqgrid的全局样式为bootstrap样式 Bootstrap
+                viewrecords: false,
+                autowidth: true,
+                pagerpos: "left",
+                recordpos: "left",
+                height: "auto",
+                loadComplete: function (xhr) {
+                    $("#gridTable").closest(".ui-jqgrid-bdiv").css({'overflow-y': 'auto'});//,'overflow-x':'hidden'
+                    rows = xhr.rows;
+                    if(orderid!=''&&orderid!=null){
+                        loaddetail(orderid);
+                    }else{
+                        if(rows.length>0){
+                            loaddetail(rows[0].orderid);
+                        }
+                    }
+                    $('#first_pager2').hide();
+                    $('#last_pager2').hide();
+                },
+                onSelectRow: function (rowid) {
+                    $('#gridTable tr').removeClass("ui-state-highlight");
+                    var rowData = jQuery("#gridTable").getRowData(rowid);
+                    var orderid = rowData['orderid'];
+                    loaddetail(orderid);
+//                    var page = $('#gridTable').getGridParam('page');
+//                    location.href = 'detail?orderid='+orderid+'&page='+page;
+                }
+            });
+    }
+    function loaddetail(rorderid) {
+        orderid = rorderid;
+        var index = layer.load(1, {
+            shade: [0.1,'#fff'] //0.1透明度的白色背景
+        });
+        for(var i = 0;i<rows.length;i++){
+            if(rows[i].orderid == orderid){
+                if(rows.length == 1){
+                    $("#last").hide();
+                    $("#next").hide();
+                }else{
+                    if(i == 0){
+                        $("#last").hide();
+                        $("#next").show();
+                        $("#next").attr("href","javascript:loaddetail('"+rows[i+1].orderid+"');");
+                    }else if(i == rows.length-1){
+                        $("#last").show();
+                        $("#next").hide();
+                        $("#last").attr("href","javascript:loaddetail('"+rows[i-1].orderid+"');");
+                    }else{
+                        $("#last").show();
+                        $("#next").show();
+                        $("#last").attr("href","javascript:loaddetail('"+rows[i-1].orderid+"');");
+                        $("#next").attr("href","javascript:loaddetail('"+rows[i+1].orderid+"');");
+                    }
+                }
+
+            }
+        }
+        //
+
+        var postData = {
+            'orderid':orderid
+        };
+        var url = 'detaildata';
+        $.post(url,postData,function (result) {
+            if(result.code == 200){
+                layer.close(index);
+                var orderstatus = result.data.goodsorder.orderstatus;
+                $('#r_b_1').hide();$('#r_b_2').hide();$('#r_b_3').hide();$('#r_b_4').hide();$('#r_b_5').hide();$('#r_b_6').hide();$('#r_b_7').hide();$('#r_b_8').hide();
+                if(orderstatus == 1){
+                    $('#r_b_1').show();
+                }else if(orderstatus == 2){
+                    $('#r_b_2').show();
+                }else if(orderstatus == 3){
+                    $('#r_b_3').show();
+                }else if(orderstatus == 4){
+                    $('#r_b_4').show();
+                }else if(orderstatus == 5){
+                    $('#r_b_5').show();
+                }else if(orderstatus == 6){
+                    $('#r_b_6').show();
+                }else if(orderstatus == 7){
+                    $('#r_b_7').show();
+                }else if(orderstatus == 8){
+                    $('#r_b_8').show();
+                }
+
+                $('#r_on').html(result.data.goodsorder.orderno);
+                $('#r_totalfee').html('合计：'+result.data.goodsorder.totalfee/100+'元');
+                $('#r_totalfee1').html('总额：'+result.data.goodsorder.totalfee/100+'元');
+                $('#r_nickname').html('买家昵称：'+result.data.user.nickname);
+                $('#r_createtime').html(result.data.goodsorder.createtime);
+                $('#r_mobile').html('联系电话：'+result.data.user.mobile);
+                $('#r_unionid').html('微信unionid：'+result.data.user.unionid);
+                $('#r_paytype').html('支付方式：'+result.data.goodsorder.paytype);
+                $('#r_paybatchno').html('第三方支付单号：'+result.data.goodsorder.batchno);
+                if(result.data.merchant){
+                    $('#r_merchantname').html('运营人：'+result.data.merchant.merchantname);
+                }else{
+                    $('#r_merchantname').html('运营人：无');
+                }
+
+                $('#r_machinename').html('机柜名称：'+result.data.machine.machinename);
+
+                $('#r_agreerefund').hide();
+
+                //goods
+                $('#r_goods').html('');
+                for(var i=0;i<result.data.goods.length;i++){
+                    var td = '<tr style="color:#808080;" ><td style="text-align: center;">'+result.data.goods[i].goodsname+'</td><td><div class="text-center">'+result.data.goods[i].spec+'</div></td><td><div class="text-right">'+result.data.goods[i].unitfee/100+'元</div></td><td><div class="text-right">'+result.data.goods[i].amount+'</div></td><td><div class="text-right">'+result.data.goods[i].totalfee/100+'元</div></td></tr>';
+                    $('#r_goods').append(td);
+                }
+                //refunds
+                $('#refundform').html('');
+                $('#refundform').append('<input type="hidden" id="rorderid" name="orderid" value="'+result.data.goodsorder.orderid+'"/>');
+                var haverefund = false;
+                for(var i=0;i<result.data.refunds.length;i++){
+                    var vo = result.data.refunds[i];
+                    var refundstatus = '';
+                    if(vo.refundstatus == 0){
+                        refundstatus = '退款申请中';
+                        haverefund = true;
+                    }else if(vo.refundstatus == 1){
+                        refundstatus = '审核通过';
+                    }else if(vo.refundstatus == 2){
+                        refundstatus = '审核未通过';
+                    }else if(vo.refundstatus == 3){
+                        refundstatus = '已退款';
+                    }else if(vo.refundstatus == 4){
+                        refundstatus = '退款失败';
+                    }
+                    var content = '<input type="hidden" name="refundid[]" value="'+vo.refundid+'"/><div><h5>退款单——'+vo.orderno+'('+refundstatus+'）</h5><p>退款商品：';
+                    for(var k=0;k<vo.refundgoods.length;k++){
+                        content = content+ vo.refundgoods[k].goodsname+'(数量:'+vo.refundgoods[k].amount+')；';
+                    }
+                    content = content+'</p><p>服务类型：'+vo.labels+'</p><p>退款照片：';
+                    for(var q=0;q<vo.refundpics.length;q++){
+                        content = content+ '<img src="'+vo.refundpics[q].url+'" style="width:80px;height: 80px;"/>';
+                    }
+                    content = content+'</p><p>备注信息：'+vo.refundremark+'</p>';
+                    if(vo.refundstatus == 0){
+                        var content2 = '<p>退款金额：<input class="refundfee" name="refundfee[]" type="text" placeholder="请输入金额(剩余可退款金额为'+vo.refundfee/100+'元)" style="min-width:250px;min-height:30px;"/>&nbsp;元</p><p>退款备注：<input class="refundremark" name="remark[]" type="text" value="'+vo.remarks+'" placeholder="请输入备注信息" style="min-width:250px;min-height:30px;"/></p>';
+                    }else{
+                        var content2 = '<p>退款金额：<input class="refundfee2" name="refundfee2[]" type="text" value="'+vo.realfee/100+'" style="min-width:250px;min-height:30px;" disabled/>&nbsp;元</p><p>退款备注：<input class="refundremark2" name="remark2[]" type="text" value="'+vo.remarks+'" placeholder="请输入备注信息" style="min-width:250px;min-height:30px;" disabled/></p>';
+                        content2 = content2+'<p>操作人：'+vo.username+'</p><p>操作时间：'+vo.fefundtime+'</p>';
+                    }
+                    content = content+content2+'</div>';
+                    $('#refundform').append(content);
+                }
+                //
+                if(haverefund){
+                    $('#r_agreerefund').show();
+                }
+            }else{
+                layer.close(index);
+                alert(result.msg);
+            }
+        },"json");
+    }
+    function apply() {
+        var cansub = true;
+        $(".refundfee").each(function () {
+            if ($(this).val() == "") {
+                alert("请填写退款金额");
+                cansub = false;
+                return;
+            }
+        });
+        $(".refundremark").each(function () {
+            if ($(this).val() == "") {
+                alert("请填写退款备注信息");
+                cansub = false;
+                return;
+            }
+        });
+        if (cansub) {
+            $.ajax({
+                cache: true,
+                type: "POST",
+                url: '/admin/trade/applyrefund',
+                data: $('#refundform').serialize(),
+                async: false,
+                error: function (request) {
+                    alert("Connection error");
+                },
+                success: function (data) {
+                    if (data.code == 200) {
+                        location.reload();
+                    } else {
+                        alert(data.msg);
+                    }
+
+                }
+            });
+        }
+
+    }
+
+</script>
+</body>
+</html>

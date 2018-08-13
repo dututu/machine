@@ -1,0 +1,322 @@
+<!--包含头部文件-->
+{include file="public/header" /}
+<link rel="stylesheet" href="__STATIC__/admin/assets/javascripts/jqGrid_5/css/ui.jqgrid.css" />
+
+<!-- jqGrid主题包-非必要 -->
+<!-- 在jqgrid/css/css这个目录下还有其他的主题包，可以尝试更换看效果 -->
+<!--<link rel="stylesheet" href="assets/javascripts/jqGrid_5/css/ui.jqgrid-bootstrap-ui.css" />-->
+
+<link rel="stylesheet" href="__STATIC__/admin/css/gridlist.css" />
+<style>
+    small{
+        opacity: 1 !important;
+    }
+    .muted-background{
+        background:#CCCCCC !important;border-color:#f4f4f4;!important;
+    }
+</style>
+<div id='wrapper'>
+    <!--包含菜单文件-->
+    {include file="public/menu" /}
+    <section id='content'>
+        <div class='container-fluid'>
+            <div class='row-fluid' id='content-wrapper'>
+                <div class='span12'>
+                    <div class='page-header'>
+                        <h1 class='pull-left'>
+                            <i class='icon-credit-card'></i>
+                            <span>商户对账</span>
+                        </h1>
+                        <div class='pull-right'>
+                            <ul class='breadcrumb'>
+                                <li>
+                                    <a href="{:url('index/index')}"><i class='icon-home' style="font-size:17px;"></i>
+                                    </a>
+                                </li>
+                                <li class='separator'>
+                                    <i class='icon-angle-right'></i>
+                                </li>
+                                <li>
+                                    商户对账
+                                </li>
+                                <li class='separator'>
+                                    <i class='icon-angle-right'></i>
+                                </li>
+                                <li class='active'>平台对账</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class='row-fluid'>
+                        <div class='span12 box'>
+                            <div class='box-header'>
+                                <div class='title'>
+                                    <div class='icon-flag'></div>
+                                    概况
+                                </div>
+                                <div class='actions'>
+                                    <a href="#" class="btn box-remove btn-mini btn-link"><i class='icon-remove'></i>
+                                    </a>
+                                    <a href="#" class="btn box-collapse btn-mini btn-link"><i></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class='row-fluid'>
+                                <div class='span3'>
+                                    <div class='box-content box-statistic green-background'>
+                                        <h3 class='title text-primary count'>{$count}</h3>
+                                        <small>商户总数量</small>
+                                        <div class='text-primary icon-ok align-right'></div>
+                                    </div>
+                                </div>
+                                <div class='span3'>
+                                    <div class='box-content box-statistic green-background'>
+                                        <h3 class='title text-primary income'>{$income}元</h3>
+                                        <small>收入总金额</small>
+                                        <div class='text-primary icon-ok align-right'></div>
+                                    </div>
+                                </div>
+                                <div class='span3'>
+                                    <div class='box-content box-statistic green-background'>
+                                        <h3 class='title text-primary outcome'>{$outcome}元</h3>
+                                        <small>退款总金额</small>
+                                        <div class='text-primary icon-ok align-right'></div>
+                                    </div>
+                                </div>
+                                <div class='span3'>
+                                    <div class='box-content box-statistic green-background'>
+                                        <h3 class='title text-primary pens'>{$pens}笔</h3>
+                                        <small>交易笔数</small>
+                                        <div class='text-primary icon-ok align-right'></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='row-fluid'>
+                        <div class='span12 box bordered-box orange-border' style='margin-bottom:0;'>
+                            <div class='box-header sea-blue-background'>
+                                <div class='title' >商户对账列表</div>
+                                <div class='actions'>
+                                    <a href="#" class="btn box-remove btn-mini btn-link"><i class='icon-remove'></i>
+                                    </a>
+                                    <a href="#" class="btn box-collapse btn-mini btn-link"><i></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class='box-content box-no-padding' id="s">
+                                <div style="display: flex;align-items: center;align-content: center;">
+                                    <!-- <label style="margin-left: 15px;">显示条数:</label> <select class="select"
+                                                                                            style="margin-top: 5px;margin-left: 10px;width: 50px;">
+                                    <option value="10">10</option><input type="text" style="margin-top: 5px;margin-left: 10px;" id="s_name" class="input-text " placeholder="面值">
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select> -->
+                                    <label style="margin-left: 15px;">搜索:</label>
+                                    <input id="s_name" type="text" style="margin-top: 5px;margin-left: 10px;" class="input-text" placeholder="商户名称">
+                                    <label style="margin-left: 15px;">时间段：
+                                        <div class="input-append" style="margin-bottom: 0px;">
+                                            <input id="s_time" name="datetime" class="input-medium daterange" placeholder="选择时间段"
+                                                   type="text" value="{$date}">
+                                            <span class="add-on" id="daterange">
+			              <i class="icon-calendar"></i>
+			            </span>
+                                        </div>
+                                    </label>
+                                    <label style="margin-left: 15px;">
+                                        <input class="btn btn-success" name="button" type="button" onclick="queryData();" value="搜索" style="margin-left: 10px;">
+                                    </label>
+                                    <!-- <button class="btn btn-success" name="button"
+                                            style="position: absolute;;right:15px;" type="submit" >数据导出
+                                    </button> -->
+                                </div>
+                                <div class='responsive-table'>
+                                    <div class='scrollable-area'>
+                                        <!-- 表格 -->
+                                        <table id="gridTable" class="table-bordered table-striped "></table>
+                                        <!-- 页码 -->
+                                        <div id="pager2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">×</span>
+                                <span class="sr-only">Close</span>
+                            </button>
+                            <h6 class="modal-title">视频播放</h6>
+                        </div>
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                
+                            </div>
+                        </div>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
+    </section>
+                                                            <p data-toggle="modal" data-target=".bs-example-modal-lg" class="playvedio contrast" style="">播放视频</p>
+
+    <div id="aaa">啊啊啊啊啊啊啊啊啊啊</div>
+</div>
+<!--包含底部js-->
+{include file="public/footer" /}
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/jqGrid_5/js/jquery.jqGrid.min.js"></script>
+<!-- jqGrid插件的多语言包-非必要 -->
+<!-- 在jqgrid/js/i18n下还有其他的多语言包 -->
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/jqGrid_5/js/i18n/grid.locale-cn.js"></script>
+<script>
+    $(function () { 
+        //页面加载完成之后执行
+        $('.bs-example-modal-lg').on('show.bs.modal', function () {
+          // 执行一些动作...
+          alert(1111);
+        })
+        pageInit();
+    });
+
+    function pageInit() {
+        //创建jqGrid组件
+        jQuery("#gridTable").jqGrid(
+            {
+                url: 'getmBillList',//组件创建完成之后请求数据的url
+                datatype: "json",//请求数据返回的类型。可选json,xml,txt
+                colNames: ['商户名称', '交易笔数', '收入总金额','退款总金额', '实收金额', '状态', '操作'],//jqGrid的列显示名字
+                colModel: [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
+                    { name: 'merchantname', index: 'merchantname', align: "center" },
+                    { 
+                        name: 'orderspens',
+                        index: 'orderspens', 
+                        align: "center" ,
+                    },
+                    { 
+                        name: 'incomeamount', 
+                        index: 'incomeamount', 
+                        align: "center", 
+                        sortable: false,
+                        formatter: function (incomeamount, options, rowObject) {
+                            return incomeamount / 100;
+                        }
+                    },
+                    {
+                        name: 'refundamount',
+                        index: 'refundamount',
+                        sortable: false,
+                        align: "center",
+                        formatter: function (refundamount, options, rowObject) {
+                            return refundamount / 100;
+                        }
+                    },
+                    {
+                        name: 'incomeamount',
+                        index: 'incomeamount',
+                        align: "center",
+                        sortable: false,
+                        formatter: function (incomeamount, options, rowObject) {
+                            return (incomeamount- rowObject.refundamount) / 100;
+                        }
+                    },
+                    {
+                        align: "center",
+                        sortable: false,
+                        formatter: function (billstatus, options, rowObject) {
+                            //1未出账2未结算3部分结算4已结算
+                            if (rowObject.merbillstatus == "1") {
+                                return "<span class='label label-important'>未出账</span>";
+                            } else if (rowObject.merbillstatus == "2") {
+                                return "<span class='label label-important'>未结算</span>";
+                            } else if (rowObject.merbillstatus == "3") {
+                                return "<span class='label label-important'>部分结算</span>";
+                            } else if (rowObject.merbillstatus == "4") {
+                                return "<span class='label label-success'>已结算</span>";
+                            }
+                        }
+                    },
+                    {
+                        align: "center",
+                        sortable: false,
+                        formatter: function (cellvalue, options, rowObject) {
+                            var page = $('#gridTable').getGridParam('page');
+                            var ss = '';
+                            ss = '<a class="btn btn-success btn-mini" href="javascript:gotoDetail(\'' + page + '\',\'' + rowObject.merchantid + '\');">详情</a>';
+                            return ss;
+                        }
+                    }
+                ],
+                rownumbers: true,
+                rowNum: 10,//一页显示多少条
+                rowList: [10,20,30],//可供用户选择一页显示多少条 , 20, 30
+                pager: '#pager2',//表格页脚的占位符(一般是div)的id
+                //				sortname : 'id',//初始化的时候排序的字段
+                //				sortorder : "desc",//排序方式,可选desc,asc
+                mtype: "get",//向后台请求数据的ajax的类型。可选post,get
+                //          		styleUI: '',//设置jqgrid的全局样式为bootstrap样式 Bootstrap
+                viewrecords: true,
+                autowidth: true,
+                pagerpos: "left",
+                recordpos: "right",
+                height: "auto",
+                loadComplete: function (xhr) {
+                    $("#gridTable").closest(".ui-jqgrid-bdiv").css({ 'overflow-y': 'auto' });//,'overflow-x':'hidden'
+                },
+            });
+    }
+    //表头查询
+    function getTotal() {
+        console.log($("#s_time").val());
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: '{:url(\'checkaccount/totalMoney\')}',
+            data: {
+                s_name: $("#s_name").val(),
+                s_time: $("#s_time").val(),
+            },
+            success: function (result) {
+                $('.count').html(result.count)
+                $('.income').html(result.income)
+                $('.outcome').html(result.outcome)
+                $('.pens').html(result.pens)
+            },
+            error: function (data) {
+                alert("error:" + data.responseText);
+            }
+        });
+    }
+     //条件查询
+    function queryData() {
+        getTotal()
+        var s_name = $("#s_name").val();
+        var s_time = $("#s_time").val();
+        var page = 1    //$('#gridTable').getGridParam('page'); // current page
+        var rows = $('#gridTable').getGridParam('rows'); // rows
+        var sidx = $('#gridTable').getGridParam('sidx'); // sidx
+        var sord = $('#gridTable').getGridParam('sord'); // sord
+        jQuery("#gridTable").jqGrid('setGridParam', {
+            url: "getmBillList",
+            postData: {
+                s_time: s_time,
+                s_name: s_name
+            },
+            page: page,
+            rows: rows,
+            sidx: sidx,
+            sord: sord
+        }).trigger("reloadGrid");
+    }
+    function todetailbystatus(status) {
+        location.href = 'detail?page=1&status=' + status;
+    }
+    function gotoDetail(page, maccountid) {
+        location.href = 'merchantdetail?page=' + page + '&maccountid=' + maccountid + '&time=' + $("#s_time").val()
+    }
+</script>
+</body>
+</html>

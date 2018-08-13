@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+{include file="public/layerheader" /}
+<link rel="stylesheet" href="__STATIC__/admin/uploadify/uploadifive.css"/>
+<style>
+    .box {
+        margin-bottom: 0px;
+    }
+
+    .box .box-content {
+        padding: 0px;
+        padding-top: 10px;
+        border: 0px;
+    }
+
+    .form-actions {
+        margin-bottom: 0px;
+        text-align: right;
+    }
+
+    .error {
+        color: red;
+    }
+    .uploadifive-button {
+        float: left;
+        margin-right: 10px;
+    }
+    .uploadifive-queue {
+        display:none;
+    }
+</style>
+<body class=''>
+
+<div class='container-fluid'>
+    <div class="row-fluid">
+        <div class="span12 box">
+            <div class="box-content" style="height: 390px;overflow-y: auto;">
+                <form id="form-category-add" action="{:url('goods/categorysave')}" class="form form-horizontal "
+                      method="post" style="margin-bottom: 0;">
+                    <div style="margin:0;padding:0;display:inline"></div>
+                    <div class="control-group">
+                        <label class="control-label" for="categoryname">分类名称：</label>
+                        <div class="controls">
+                            <input id="categoryname" name="categoryname" placeholder="分类名称" type="text">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="code">分类编号：</label>
+                        <div class="controls">
+                            <input id="code" name="code" placeholder="分类编号" type="text">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="file_upload_image2">logo：</label>
+                        <div class="controls">
+                            <div class="row-fluid">
+                                <input id="file_upload" name="file_upload" type="file" multiple="false">
+                                <p style="margin-top:5px;">(图片大小50px*50px，不大于500k)</p>
+                            </div>
+                            <img id="upload_org_code_img2" width="50" height="50">
+                            <input id="file_upload_image2" name="iconurl" type="hidden">
+
+                        </div>
+                    </div>
+                    <!--<div class="control-group">-->
+                    <!--<label class="control-label" for="inputSelect">储藏条件：</label>-->
+                    <!--<div class="controls">-->
+                    <!--<select id="inputSelect" name="conditionselect">-->
+                    <!--<option>1-->
+                    <!--</option><option>2-->
+                    <!--</option><option>3-->
+                    <!--</option><option>4-->
+                    <!--</option><option>5-->
+                    <!--</option></select>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <div class="control-group">
+                        <label class="control-label" for="status">状态：</label>
+                        <div class="controls">
+                            <select id="status" name="status">
+                                <option value="0">启动</option>
+                                <option value="1">停用</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="remark">备注：</label>
+                        <div class="controls">
+                            <textarea id="remark" name="remark" placeholder="备注" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="form-actions" style="margin-top: 0px;">
+                <button class="btn btn-primary" type="button" onclick="apply();">
+                    创建
+                </button>
+                <button class="btn" type="button" onclick="javascript:close_layer();">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="public/footer" /}
+<script>
+    function close_layer() {
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.$('.btn-refresh').click();
+        parent.layer.close(index);
+    }
+
+    //
+    $(function () {
+
+    });
+    function apply() {
+        var cansub = true;
+        if ($('#categoryname').val() == "") {
+            alert("请填写分类名称");
+            cansub = false;
+            return;
+        }
+        if ($('#code').val() == "") {
+            alert("请填写分类编号");
+            cansub = false;
+            return;
+        }
+        if ($('#file_upload_image2').val() == "") {
+            alert("请上传logo");
+            cansub = false;
+            return;
+        }
+        if (cansub) {
+            var url = $('#file_upload_image2').val();
+            if (url == '' || url == null) {
+                alert('请上传一张图片');
+            } else {
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: '{:url(\'goods/categorysave\')}',
+                    data: $('#form-category-add').serialize(),
+                    success: function (result) {
+                        if (result.code == 1) {
+                            parent.location.reload();
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        } else {
+                            alert(result.msg);
+                        }
+                    },
+                    error: function (data) {
+                        alert("error:" + data.responseText);
+                    }
+                });
+            }
+        }
+
+    }
+</script>
+
+<script type="text/javascript">
+    $(function() {
+        $('#file_upload').uploadifive({
+            'auto'             : true,
+            'fileType'     : ["image\/gif","image\/jpeg","image\/jpg","image\/png"],
+            'fileSizeLimit' : 500,
+            'buttonClass'  : 'someClass',
+            'height'       : 25,
+            'width'        : 80,
+            'buttonText'   : '选择图片',
+            'removeCompleted' : true,
+            'uploadScript'     : SCOPE.image_upload,
+            'onUploadComplete' : function(file, data) {
+                console.log(data);
+                var obj = eval('(' + data + ')');
+                if(obj.code == 1){
+                    // var obj = JSON.parse(obj2);
+                    $("#upload_org_code_img2").attr("src", obj.data);
+                    $("#file_upload_image2").attr("value", obj.data);
+                    $("#upload_org_code_img2").show();
+                }else{
+                    alert(obj.msg);
+                }
+
+
+            },
+            'onError'      : function(errorType) {
+                if(errorType == 'FILE_SIZE_LIMIT_EXCEEDED'){
+                    alert('图片大小超出限制');
+                }
+                alert('The error was: ' + errorType);
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

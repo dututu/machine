@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>温湿度、音量检测</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {include file="common/header" /}
+    <style>
+        .left div{
+            margin-left: 20px;
+        }
+        .button-check{
+            margin-top: 20px;
+        }
+        .button-center{
+            margin-left: 25%;
+        }
+        .pass{
+            color: red;
+        }
+        .button-center .weui-btn_mini{
+            border:1px solid #f6f6f6;
+        }
+    </style>
+</head>
+<body>
+<div class="contianor">
+    <div class="tit">温湿度、音量检测</div>
+    <div class="dev_detail" id="dev">
+        <div class="dev_detail_info">
+            <div class="dev_detail_tit">基础信息</div>
+            <div class="vol">音量:
+                <span class=""></span>
+            </div>
+            <div class="left hum">
+
+            </div>
+            <div class="left wifi">测试结果:
+                <div class="result-hum">温湿度：<span>未测试</span></div>
+                <div class="result-vol">音量：<span>未测试</span></div>
+            </div>
+
+        </div>
+    </div>
+    <div class="left hum-check">温湿度检测: <br>
+        <div class="button-center ">
+            <div class=" weui-btn weui-btn_mini weui-btn_plain-primary pass" data-n="0">测试失败</div>
+            <div class=" weui-btn weui-btn_mini weui-btn_plain-primary fail" data-n=1>测试通过</div>
+        </div>
+    </div>
+    <div class="left vol-check">音量检测: <br>
+        <div class="button-center ">
+            <div class=" weui-btn weui-btn_mini weui-btn_plain-primary pass" data-n="0">测试失败</div>
+            <div class=" weui-btn weui-btn_mini weui-btn_plain-primary fail" data-n=1>测试通过</div>
+        </div>
+    </div>
+
+    <div class="button-check">
+        <div class="weui-btn weui-btn_mini weui-btn_plain-primary flush">刷新数据</div>
+        <!--<div class="weui-btn weui-btn_mini weui-btn_plain-primary welcome">欢迎语初始化</div>-->
+        <div class="weui-btn weui-btn_mini weui-btn_plain-primary voice">调整音量</div>
+    </div>
+
+
+
+
+</div>
+{include file="common/footer" /}
+</body>
+<script>
+    $(document).ready(function () {
+
+        var devuid = $.cookie('dev_uid');
+        init();
+
+        $('.flush').click(function(){
+            init();
+
+        })
+
+        $('.hum-check .weui-btn').on('click',function(){
+            var n = $(this).data('n');
+            var post_url = "{:url('index/checkHumiture')}";
+            $.post(post_url,{devuid:devuid,tempcheck:n},function(d){
+                if(d.code == 0){
+                    $.alert('提交成功');
+                    if( n == 1)
+                        $('.result-hum span').text('已通过');
+                    else
+                        $('.result-hum span').text('未通过');
+                }else{
+                    $.alert('提交失败');
+                }
+            })
+        })
+
+        $('.vol-check .weui-btn').on('click',function(){
+            var n = $(this).data('n');
+            var post_url = "{:url('index/checkHumiture')}";
+            $.post(post_url,{devuid:devuid,volcheck:n},function(d){
+                if(d.code == 0){
+                    $.alert('提交成功');
+                    if( n == 1)
+                        $('.result-vol span').text('已通过');
+                    else
+                        $('.result-vol span').text('未通过');
+                }else{
+                    $.alert('提交失败');
+                }
+            })
+        })
+
+        $('.welcome').click(function(){
+            var url = "{:url('testbox/updateBoxVoice')}";
+            $.post(url,{devuid:devuid},function(d){
+                if(d.code == 0 ){
+                    $.alert('欢迎语初始化成功');
+                }else{
+                    $.alert(d.msg);
+                }
+            })
+        })
+
+        $('.voice').click(function(){
+            //查询语音音量
+            var url = "{:url('testbox/QueryVolume')}";
+            var vol = 0;
+            $.post(url,{devuid:devuid},function(d){
+                if(d.code == 0 ){
+                    vol = d.output.vol;
+                    $.confirm({
+                        title: '调整音量',
+                        text: ' <div class="weui-slider-box" id="slider2">\
+                <div class="weui-slider">\
+                <div id="sliderInner" class="weui-slider__inner">\
+                <div id="sliderTrack" style="width: 66%;" class="weui-slider__track"></div>\
+                <div id="sliderHandler" style="left: 66%;" class="weui-slider__handler"></div>\
+                </div>\
+                </div>\
+                <div id="sliderValue" class="weui-slider-box__value">'+vol+'</div><span>%</span>\
+                </div>',
+                        onOK: function () {
+                            var vol = $.trim($('#sliderValue').text());
+                            var url = "{:url('testbox/SetVolume')}";
+                            $.post(url,{devuid:devuid,vol:vol},function(d){
+                                if(d.code == 0 ){
+                                    $('.vol span').text(vol+'%');
+                                    $.alert('更新音量成功');
+                                }else{
+                                    $.alert(d.msg);
+                                }
+                            })
+                        },
+                        onCancel: function () {
+                        }
+                    });
+                    $('#slider2').slider();
+                }else{
+                    $.alert(d.msg);
+                }
+            })
+
+        })
+
+
+        function init(){
+            get_recode();
+            get_humiture();
+            get_vlolice();
+        }
+
+        //获取结果
+        function get_recode(){
+            var recode_url = "{:url('index/getRecode')}";
+            $.post(recode_url,{devuid:devuid},function(data){
+                if( data.code != 0 ){
+                    $.alert('获取信息失败')
+                }else{
+                    var text = data.data.tempcheck == 1 ? '已通过' : '未通过';
+                    $('.result-hum span').text(text);
+                    var text = data.data.volcheck == 1 ? '已通过' : '未通过';
+                    $('.result-vol span').text(text);
+                }
+            })
+        }
+
+        function get_humiture(){
+            var url = "{:url('testbox/queryHumiture')}";
+            $.post(url,{devuid:devuid},function(d){
+                if(d.code == 0 ){
+                    var data = d.output.humiture_list;
+                    var html ='温湿度:';
+                    $.each(data,function(i,v){
+                        html += '<div class="">传感器'+ v.index+'：<span>'+ v.temp+'℃ / '+ v.rh+'</span></div>';
+                    })
+                    $('.hum').html(html);
+                }else{
+                    $.alert(d.msg);
+                }
+            })
+        }
+
+
+        function get_vlolice(){
+            var url = "{:url('testbox/queryVolume')}";
+            $.post(url,{devuid:devuid},function(d){
+                if(d.code == 0 ){
+                    var data = d.output.vol;
+                    $('.vol span').text(data+'%');
+
+                }else{
+                    $.alert(d.msg);
+                }
+            })
+        }
+    })
+
+</script>
+</html>

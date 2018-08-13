@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>库存管理</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/weui/1.1.2/style/weui.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/jquery-weui/1.1.2/css/jquery-weui.min.css">
+    <link rel="stylesheet" href="__STATIC__/wechatservice/css/mui.min.css">
+    <script src="https://cdn.bootcss.com/vue/2.5.8/vue.min.js"></script>
+    <style>
+        body {
+            height: 100% !important;
+            background: #E7E7E7 !important;
+        }
+
+        .weui-panel__bd {
+            display: none;
+        }
+
+        .expand_item .turn_up:after {
+            transform: matrix(0.71, -0.71, 0.71, 0.71, 0, 0);
+        }
+
+        .expand_item .turn_down:after {
+            transform: matrix(.71, .71, .71, -.71, 0, 0)
+        }
+
+        .g_item {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            margin-top: 5px;
+        }
+
+        .g_item .item1 p {
+            margin-top: 5px;
+        }
+
+        .g_item .item2 {
+            margin-left: 5px;
+        }
+
+        .g_item .item2 p {
+            margin-top: 5px;
+        }
+
+        .box {
+            margin: 5px;
+            border-radius: 5px;
+        }
+
+        .weui-navbar + .weui-tab__bd {
+            padding-top: 50px;
+        }
+
+        .weui-panel:before {
+            border: 0px;
+        }
+
+        .weui-panel:after {
+            border: 0px;
+        }
+
+        /*.mui-scroll-wrapper {*/
+            /*top: 50px;*/
+        /*}*/
+        .weui-tabbar{
+            line-height: 0px;
+        }
+        .weui-tabbar p{
+            margin-bottom: 0px;
+        }
+    </style>
+</head>
+
+<body class="mui-fullscreen">
+<div class="page">
+    <div class="page__bd page__bd_spacing">
+        <!-- 容器 -->
+        <div id="tab1" class="weui-tab__bd-item weui-tab__bd-item--active">
+            <div class="mui-scroll-wrapper " id="refreshContainer">
+                <div class="mui-scroll">
+                    <div id="app">
+                        <div v-for="machine in machineList" class="weui-panel weui-panel_access box">
+                            <div class="weui-panel__hd ">
+                                <p>{{machine.location}} {{machine.dailaddress}}</p>
+                            </div>
+                            <div class="weui-panel__bd2">
+                                <div v-for="goods in machine.goods" class="flex-row" style="display: flex;flex-direction:row;justify-content:flex-start;align-items:flex-start;padding: 15px;padding-bottom: 0px;color: #999;font-size: 14px;">
+                                    <div class="flex-view-item">
+                                        <img :src="goods.picurl" style="height: 40px;width:40px;" />
+                                    </div>
+                                    <div class="flex-view-item" style="width: 100%;padding-left: 10px;">
+                                        <div class="flex-row"
+                                             style="display: flex;flex-direction:row;justify-content:space-between;align-items:center;">
+                                            <p>{{goods.goodsname}}</p>
+                                            <p>库存:{{goods.amount}}</p>
+                                        </div>
+
+                                        <div class="flex-row"
+                                             style="display: flex;flex-direction:row;justify-content:flex-start;align-items:center;font-size: 13px;">
+                                            <p>规格：{{goods.spec}}</p>
+                                            <p style="padding-left: 15px;">价格：{{goods.salefee/100}}元</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="weui-panel__bd">
+                                <div v-for="goods in machine.subgoods" class="flex-row"
+                                     style="display: flex;flex-direction:row;justify-content:flex-start;align-items:flex-start;padding: 15px;padding-bottom: 0px;color: #999;font-size: 14px;">
+                                    <div class="flex-view-item">
+                                        <img :src="goods.picurl"
+                                             style="height: 40px;width:40px;"/>
+                                    </div>
+                                    <div class="flex-view-item" style="width: 100%;padding-left: 10px;">
+                                        <div class="flex-row"
+                                             style="display: flex;flex-direction:row;justify-content:space-between;align-items:center;">
+                                            <p>{{goods.goodsname}}</p>
+                                            <p>库存:{{goods.amount}}</p>
+                                        </div>
+
+                                        <div class="flex-row"
+                                             style="display: flex;flex-direction:row;justify-content:flex-start;align-items:center;font-size: 13px;">
+                                            <p>规格：{{goods.spec}}</p>
+                                            <p style="padding-left: 15px;">价格：{{goods.salefee/100}}元</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="weui-panel__ft">
+                                <a href="javascript:void(0);"
+                                   class="weui-cell weui-cell_access weui-cell_link expand_item">
+                                    <div class="weui-cell__bd"></div>
+                                    <span class="weui-cell__ft turn_down">展开</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="weui-tabbar">
+    <a href="/wechatservice/stock/index" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon">
+            <img src="__STATIC__/wechatservice/img/label.png" alt="">
+        </div>
+        <p class="weui-tabbar__label">当前库存</p>
+    </a>
+    <a href="/wechatservice/stock/onsale" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon">
+            <img src="__STATIC__/wechatservice/img/weight_default.png" alt="">
+        </div>
+        <p class="weui-tabbar__label">上架记录</p>
+    </a>
+</div>
+</body>
+<!-- body 最后 -->
+<script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-weui/1.1.2/js/jquery-weui.min.js"></script>
+
+
+<script src="__STATIC__/wechatservice/js/mui.min.js "></script>
+<script>
+
+    var page = 1;
+    var rows = 5;
+    var hasnext1 = false;
+    mui.init({
+        pullRefresh : {
+            container:'#refreshContainer',//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+            down : {
+//                range:'40px', //可选 默认100px,控件可下拉拖拽的范围
+//                offset:'40px', //可选 默认0px,下拉刷新控件的起始位置
+                auto: true,//可选,默认false.首次加载自动上拉刷新一次
+                callback :pulldownrefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+            },
+            up : {
+                height:50,//可选.默认50.触发上拉加载拖动距离
+                auto:false,//可选,默认false.自动上拉加载一次
+                contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+                contentnomore:'没有更多数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+                offset:'40px', //可选 默认0px,下拉刷新控件的起始位置
+                callback :pullfresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+            }
+        }
+    });
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            machineList: []
+        },
+        created: function () { //created方法，页面初始调用
+//            var _self = this;
+//
+//            mui.ajax('/wechatservice/stock/stocklist', {
+//                data: {
+//                    page: page,
+//                    rows: rows
+//                },
+//                dataType: 'json',//服务器返回json格式数据
+//                type: 'get',//HTTP请求类型
+//                timeout: 10000,//超时时间设置为10秒；
+//                success: function (data) {
+//                    //服务器返回响应，根据响应结果，分析是否登录成功
+//                    _self.machineList = data.data.data;
+////                        var hasnext = data.data.hasnext;
+////                        _self.endPullupToRefresh(!hasnext);//true表示没有更多数据了：
+//                },
+//                error: function (xhr, type, errorThrown) {
+//                    //异常处理；
+//                    console.log(type);
+//                }
+//            });
+        }
+    });
+    function pulldownrefresh() {
+        page = 1;
+        app.machineList = [];
+        var _self = this;
+        mui.ajax('/wechatservice/stock/stocklist',{
+            data:{
+                page:page,
+                rows:rows
+            },
+            dataType:'json',//服务器返回json格式数据
+            type:'get',//HTTP请求类型
+            timeout:10000,//超时时间设置为10秒；
+            success:function(data){
+                //服务器返回响应，根据响应结果，分析是否登录成功
+//                    _self.goodsList = data.data.data;
+                console.log(data)
+                app.machineList = app.machineList.concat(data.data.data);
+                _self.endPulldownToRefresh(true);
+                hasnext1 = data.data.hasnext;
+                _self.enablePullupToRefresh();
+                if(hasnext1){
+                    _self.endPullupToRefresh(false);//true表示没有更多数据了：
+                }else{
+                    _self.endPullupToRefresh(true);//true表示没有更多数据了：
+                }
+                if(app.machineList.length == 0){
+                    $('#app').hide();
+                }else{
+                    $('#app').show();
+                }
+            },
+            error:function(xhr,type,errorThrown){
+                //异常处理；
+                console.log(type);
+            }
+        });
+    }
+    function pullfresh() {
+
+        page++;
+        var _self = this;
+        mui.ajax('/wechatservice/stock/stocklist',{
+            data:{
+                page:page,
+                rows:rows
+            },
+            dataType:'json',//服务器返回json格式数据
+            type:'get',//HTTP请求类型
+            timeout:10000,//超时时间设置为10秒；
+            success:function(data){
+                //服务器返回响应，根据响应结果，分析是否登录成功
+//                    _self.goodsList = data.data.data;
+                app.machineList = app.machineList.concat(data.data.data);
+                hasnext1 = data.data.hasnext;
+                if(hasnext1){
+                    _self.endPullupToRefresh(false);//true表示没有更多数据了：
+                }else{
+                    _self.endPullupToRefresh(true);//true表示没有更多数据了：
+                }
+
+            },
+            error:function(xhr,type,errorThrown){
+                //异常处理；
+                console.log(type);
+            }
+        });
+    }
+</script>
+<script>
+    $(function () {
+
+        //			$(".box .weui-panel__bd").toggle(function() {
+        //				$(this).next(".weui-panel__bd").animate({
+        //					height: 'toggle',
+        //					opacity: 'toggle'
+        //				}, "slow");
+        //			});
+    });
+    mui("#app").on("tap",".expand_item",expand);
+    function expand() {
+        var sty = $(this).parent().prev(".weui-panel__bd").attr("style");
+        if (sty == 'display: block;') { //已经显示
+            $(this).find(".weui-cell__ft").attr("class", "weui-cell__ft turn_down");
+            $(this).find(".weui-cell__ft").html("展开");
+        } else {
+            $(this).find(".weui-cell__ft").attr("class", "weui-cell__ft turn_up");
+            $(this).find(".weui-cell__ft").html("收缩");
+        }
+
+        $(this).parent().prev(".weui-panel__bd").toggle(function () {
+            $(this).parent().prev(".weui-panel__bd").animate({
+                height: 'toggle',
+                opacity: 'toggle'
+            }, "slow");
+        });
+    };
+</script>
+
+</html>

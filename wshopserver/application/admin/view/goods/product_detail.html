@@ -1,0 +1,381 @@
+
+<!--包含头部文件-->
+{include file="public/header" /}
+<!-- jqGrid组件基础样式包-必要 -->
+<link rel="stylesheet" href="__STATIC__/admin/assets/javascripts/jqGrid_5/css/ui.jqgrid.css"/>
+
+<!-- jqGrid主题包-非必要 -->
+<!-- 在jqgrid/css/css这个目录下还有其他的主题包，可以尝试更换看效果 -->
+<!--<link rel="stylesheet" href="__STATIC__/admin/assets/javascripts/jqGrid_5/css/ui.jqgrid-bootstrap-ui.css" />-->
+
+<link rel="stylesheet" href="__STATIC__/admin/css/gridlist.css"/>
+<style>
+    .lead {
+        font-size: 16px;
+        font-weight: normal;
+        margin-bottom: 0px;
+        line-height: 20px;
+    }
+    .ui-jqgrid-hdiv{
+        display:none;
+    }
+    .pull-left {
+        float: left;
+        padding-left: 10px;
+        padding-top: 5px;
+    }
+    .pull-right {
+        padding-right: 10px;
+    }
+    .ui-paging-pager{
+        font-size:14px;
+    }
+    .jqgrow td{
+        border-left:1px solid #DDDDDD;
+    }
+    #pager2{
+        padding:0px !important;
+    }
+    #pg_pager2{
+        padding:5px !important;
+        border-left:1px solid #DDDDDD !important;
+        border-right:1px solid #DDDDDD !important;
+    }
+</style>
+<div id='wrapper'>
+    <!--包含菜单文件-->
+    {include file="public/menu" /}
+    <section id='content'>
+        <div class='container-fluid'>
+            <div class='row-fluid' id='content-wrapper'>
+                <div class='span12'>
+                    <div class='page-header'>
+                        <h1 class='pull-left'>
+                            <i class='icon-cog'></i>
+                            <span>商品管理</span>
+                        </h1>
+                        <div class='pull-right'>
+                            <ul class='breadcrumb'>
+                                <li>
+                                    <a href="{:url('index/index')}"><i class='icon-home' style="font-size:17px;"></i>
+                                    </a>
+                                </li>
+                                <li class='separator'>
+                                    <i class='icon-angle-right'></i>
+                                </li>
+                                <li>
+                                    <a href="{:url('goods/index')}">商品管理</a>
+                                </li>
+                                <li class='separator'>
+                                    <i class='icon-angle-right'></i>
+                                </li>
+                                <li class='active'>商品详情</li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                    <div id='orders'>
+                        <div class='row-fluid'>
+                            <div class='span4'>
+                                <div class='responsive-table'>
+                                    <div class='scrollable-area'>
+                                                <!-- jqgrid -->
+                                                <table id="gridTable" class=""></table>
+                                                <!-- jqgrid end-->
+                                                <div id="pager2"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class='span8'>
+                                <div class='row-fluid' id='detail'>
+                                    <div class='span12 box'>
+                                        <div class='box-content'>
+                                            <div class='pull-left'>
+                                                <a id="applybtn" class='btn btn-success' href='javascript:apply();'>通过审批</a>
+                                            </div>
+                                            <div class='clearfix'></div>
+                                            <hr class='hr-normal'/>
+                                            <div class='pull-left lead'>
+                                                商品编号：<span id="stucode2"></span>
+                                                <a id="applystatus" class='btn btn-danger btn-mini' href='#'></a>
+                                            </div>
+                                            <div class='pull-right' style="color: #808080;">
+                                                <span id="createtime"></span>
+                                            </div>
+                                            <div class='clearfix'></div>
+                                            <hr class='hr-normal'/>
+                                            <div class='row-fluid'>
+                                                <div class='span3'>
+                                                    <div class='lead'>
+                                                        <i class='icon-user '></i>
+                                                        商家信息
+                                                    </div>
+                                                </div>
+                                                <div class='span8 offset1'>
+                                                    <p>商家姓名：<span id="merchantname"></span></p>
+                                                    <p>联系电话：<span id="merchantmobile"></span></p>
+                                                </div>
+                                            </div>
+                                            <hr class='hr-normal'/>
+                                            <div class='row-fluid'>
+                                                <div class='span3'>
+                                                    <div class='lead'>
+                                                        <i class='icon-list-alt '></i>
+                                                        详细信息
+                                                    </div>
+                                                </div>
+                                                <div class='span8 offset1'>
+                                                    <p style="display: flex;align-content: flex-start;">商品头图：<img
+                                                            id="picurl" src="assets/images/avatar.jpg"
+                                                            style="width:80px;height: 80px;"/></p>
+                                                    <p>商品名称：<span id="goodsname"></span></p>
+                                                    <p>条形码：<span id="stucode"></span></p>
+                                                    <p>商品规格：<span id="spec"></span></p>
+                                                    <p>商品原价：<span id="originalfee"></span></p>
+                                                    <p>商品销售价：<span id="salefee"></span></p>
+                                                </div>
+                                            </div>
+                                            <hr class='hr-normal'/>
+                                            <div class='row-fluid'>
+                                                <div class='span3'>
+                                                    <div class='lead'>
+                                                        <i class='icon-tag '></i>
+                                                        rfid类型
+                                                    </div>
+                                                </div>
+                                                <div class='span8 offset1'>
+                                                    rfid标签类型：
+                                                    <select id="rfidvalue" class="span2" style="width:25%;">
+                                                        <option value="0">无</option>
+                                                        {volist name="rfidspecs" id="vo" key="k"}
+                                                            <option value="{$vo.specid}">{$vo.typename}</option>
+                                                        {/volist}
+
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <hr class='hr-normal'/>
+                                            <div class='row-fluid'>
+                                                <div class='span3'>
+                                                    <div class='lead'>
+                                                        <i class='icon-user '></i>
+                                                        商品重量
+                                                    </div>
+                                                </div>
+                                                <div class='span8 offset1'>
+                                                    <p>商品标重：<span id="weight"></span></p>
+                                                    <p>浮动重量：<span id="weightdrift"></span></p>
+                                                </div>
+                                            </div>
+                                            <div class='form-actions'>
+                                                <ul class='pager'>
+                                                    <li class='previous'>
+                                                        <a href='#' id="last">上一个</a>
+                                                    </li>
+                                                    <li class='next'>
+                                                        <a href='#' id="next">下一个</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<!--包含底部js文件-->
+{include file="public/footer" /}
+<!-- jqGrid插件包-必要 -->
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/jqGrid_5/js/jquery.jqGrid.min.js"></script>
+<!-- jqGrid插件的多语言包-非必要 -->
+<!-- 在jqgrid/js/i18n下还有其他的多语言包 -->
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/jqGrid_5/js/i18n/grid.locale-cn.js"></script>
+<script>
+    var goodsid = "{$goodsid}";
+    var sidx = "{$sidx}";
+    var sord = "{$sord}";
+    var rows;
+    $(function () {
+
+        //页面加载完成之后执行
+        pageInit();
+    });
+    var status = "{$status}";
+    var name = "{$name}";
+    function pageInit() {
+        //创建jqGrid组件
+        jQuery("#gridTable").jqGrid(
+            {
+                url: 'goodslist',//组件创建完成之后请求数据的url
+                postData:{
+                    status: status,
+                    s_name: name,
+                },
+                datatype: "json",//请求数据返回的类型。可选json,xml,txt
+                colModel: [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
+                    {
+                        name: 'goodsid',
+                        index: 'goodsid',
+                        hidden: true
+                    },
+                    {
+                        name: 'status',
+                        index: 'status',
+                        sortable: false,
+                        align: "left",
+                        formatter: function (cellvalue, options, rowObject) {
+                            var status = '';
+                            var labelclass = '';
+                            if (rowObject.status == "1") {
+                                status = "已审核";
+                                labelclass = 'label-success';
+                            } else if (rowObject.status == "0") {
+                                status = "待审核";
+                                labelclass = 'label-important';
+                            } else {
+                                status = "未知状态";
+                            }
+
+                            var html = "<div class='pull-left'><p><strong>" + rowObject.goodsname + "</strong></p><p style='margin-bottom: 0px;'><span class='label "+labelclass+"'>" + status + "</span> </p> </div><div class='text-right pull-right'><h4 class='contrast price'>&nbsp;</h4><p><i class='icon-time'></i><span class='has-tooltip' data-title=''>"+rowObject.createtime+"</span></p></div>";
+                            return html;
+                        }
+                    }
+                ],
+                page:{$page},
+                rownumbers: false,
+                rowNum: 10,//一页显示多少条
+                rowList: [10],//可供用户选择一页显示多少条 , 20, 30
+                pager: '#pager2',//表格页脚的占位符(一般是div)的id
+				sortname : '{$sidx}',//初始化的时候排序的字段
+				sortorder : "{$sord}",//排序方式,可选desc,asc
+                mtype: "get",//向后台请求数据的ajax的类型。可选post,get
+//          		styleUI: '',//设置jqgrid的全局样式为bootstrap样式 Bootstrap
+                viewrecords: false,
+                autowidth: true,
+                cellEdit:false,
+                pagerpos: "left",
+                recordpos: "left",
+                height: "auto",
+                loadComplete: function (xhr) {
+                    $("#gridTable").closest(".ui-jqgrid-bdiv").css({'overflow-y': 'auto'});//,'overflow-x':'hidden'
+                    rows = xhr.rows;
+                    if(goodsid!=''&&goodsid!=null){
+                        for(var i = 0;i<rows.length;i++) {
+                            if (rows[i].goodsid == goodsid) {
+//                            alert(rows[i].goodsid);
+                                setgoodsinfo(rows[i].goodsid);
+                            }
+                        }
+                    }else{
+                        if(rows.length>0){
+                            setgoodsinfo(rows[0].goodsid);
+                        }else{
+                            $('#applybtn').hide();
+                        }
+                    }
+                    $('#first_pager2').hide();
+                    $('#last_pager2').hide();
+
+
+                },
+                onSelectRow: function (rowid) {
+                    $('#gridTable tr').removeClass("ui-state-highlight");
+                    var rowData = jQuery("#gridTable").getRowData(rowid);
+                    var goodsid = rowData['goodsid'];
+                    setgoodsinfo(goodsid);
+//                    var page = $('#gridTable').getGridParam('page');
+//                    location.href = 'detail?goodsid='+goodsid+'&page='+page+"&status={$status}";
+                }
+            });
+    }
+
+    function setgoodsinfo(sgoodsid) {
+        goodsid = sgoodsid;
+        var obj;
+        for(var i = 0;i<rows.length;i++){
+            if(rows[i].goodsid == sgoodsid){
+                obj = rows[i];
+                if(rows.length == 1){
+                    $("#last").hide();
+                    $("#next").hide();
+                }else{
+                    if(i == 0){
+                        $("#last").hide();
+                        $("#next").show();
+                        $("#next").attr("href","javascript:setgoodsinfo('"+rows[i+1].goodsid+"');");
+                    }else if(i == rows.length-1){
+                        $("#last").show();
+                        $("#next").hide();
+                        $("#last").attr("href","javascript:setgoodsinfo('"+rows[i-1].goodsid+"');");
+                    }else{
+                        $("#last").show();
+                        $("#next").show();
+                        $("#last").attr("href","javascript:setgoodsinfo('"+rows[i-1].goodsid+"');");
+                        $("#next").attr("href","javascript:setgoodsinfo('"+rows[i+1].goodsid+"');");
+                    }
+                }
+
+            }
+        }
+        //
+        $('#merchantname').html(obj.merchantname);
+        $('#merchantmobile').html(obj.merchantmobile);
+        $('#weight').html(obj.weight+'克');
+        $('#weightdrift').html(obj.weightdrift+'克');
+        $('#picurl').attr("src",obj.picurl);
+        $('#stucode').html(obj.stucode);
+        $('#stucode2').html(obj.goodsid);
+        $('#originalfee').html(obj.originalfee/100+'元');
+        $('#salefee').html(obj.salefee/100+'元');
+        $('#spec').html(obj.spec);
+        $('#createtime').html(obj.createtime);
+        $('#goodsname').html(obj.goodsname);
+        $('#rfidvalue').val(obj.rfidtypeid);
+        var status = '';
+        if (obj.status == "1") {
+            status = "已审核";
+            $('#applystatus').addClass("btn-success");
+            $('#applybtn').hide();
+        } else if (obj.status == "0") {
+            $('#applystatus').addClass("btn-danger");
+            status = "待审核";
+            $('#applybtn').show();
+        } else {
+            status = "未知状态";
+            $('#applybtn').hide();
+        }
+        $('#applystatus').html(status);
+    }
+    function apply() {
+        var rfidspec = $('#rfidvalue').val();
+        if(rfidspec == 0){
+            alert('请选择rfid标签类型');
+            return;
+        }
+        var postData = {
+            'goodsid':goodsid,
+            'status':1,
+            'rfidspec':rfidspec
+        };
+        var url = 'apply';
+        $.post(url,postData,function (result) {
+            if(result.code == 1){
+                location.reload();
+            }else{
+                alert(result.msg);
+            }
+        },"json");
+    }
+</script>
+
+</body>
+</html>

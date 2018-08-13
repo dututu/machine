@@ -1,0 +1,42 @@
+<div id='main-nav-bg'></div>
+<nav class='main-nav-fixed' id='main-nav'>
+	<div class='navigation'>
+		<div class='search'>
+			<form accept-charset="UTF-8" action="search_results.html" method="get" /><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
+			<div class='search-wrapper'>
+				<input autocomplete="off" class="search-query" id="q" name="q" placeholder="Search..." type="text" value="" />
+				<button class="btn btn-link icon-search" name="button" type="submit"></button>
+			</div>
+			</form>
+		</div>
+		<ul class='nav nav-stacked'>
+			{foreach name="Think.session.menus" id="v"}
+			<li class=''>
+				{if condition="count($v['_data']) == 0"}
+				<a href="/{$v['path']}" {if condition="$v['hidden']"}style='display:none;'{/if}>
+					<i class="{$v['remark']}"></i>
+					<span>{$v['rightname']}</span>
+				</a>
+				{/if}
+				{if condition="count($v['_data']) != 0"}
+				<a class='dropdown-collapse ' href='#' {if condition="$v['hidden']"}style='display:none;'{/if}>
+					<i class="{$v['remark']}"></i>
+					<span>{$v['rightname']}</span>
+					<i class='icon-angle-down angle-down'></i>
+				</a>
+				<ul class='nav nav-stacked' {if condition="$v['hidden']"}style='display:none;'{/if}>
+					{foreach name="v['_data']" id="n"}
+					<li class='' {if condition="$n['hidden']"}style='display:none;'{/if}>
+						<a href="/{$n['path']}">
+							<i class='icon-caret-right'></i>
+							<span>{$n['rightname']}</span>
+						</a>
+					</li>
+					{/foreach}
+				</ul>
+				{/if}
+			</li>
+			{/foreach}
+		</ul>
+	</div>
+</nav>

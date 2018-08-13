@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>销售统计</title>
+    {include file="common/header" /}
+    <style>
+
+
+    </style>
+
+</head>
+
+<body>
+<div id="container" class="container">
+    <div class="weui-search weui-flex">
+        <div class="icon fa-calendar"></div>
+        <input class="weui-input weui-input_5" id="start_date" type="text" value="{$date}" readonly>
+        <span>&nbsp ~ &nbsp</span>
+        <input class="weui-input weui-input_5" id="end_date" type="text" value="{$date}" readonly>
+    </div>
+    <div class="content">
+        <div class="header">
+            概览
+        </div>
+        <div class="grids">
+            <div class="weui-flex">
+                <div class="weui-flex__title">流水总额：<span class="font-color-red">888888</span></div>
+            </div>
+            <div class="weui-flex">
+                <div class="weui-flex__item">
+                    1000<p class="">订单数量（笔）</p>
+                </div>
+                <div class="weui-flex__item">33.5<p class="">人均消费（元）</p></div>
+            </div>
+            <div class="weui-flex">
+                <div class="weui-flex__item">weui<p class="">代扣支付（元）</p></div>
+                <div class="weui-flex__item">weui<p class="">储值支付（元）</p></div>
+            </div>
+            <div class="weui-flex">
+                <div class="weui-flex__item">weui<p class="">欠费订单（笔）</p></div>
+                <div class="weui-flex__item">weui<p class="">补缴订单（笔）</p></div>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="header">
+            近7日销售走势图
+        </div>
+        <hr>
+        <div id="echart_1" class="echart">
+
+        </div>
+    </div>
+    <div class="content">
+        <div class="header">
+            订单构成
+        </div>
+        <hr>
+
+        <div id="echart_2" class="echart">
+
+        </div>
+    </div>
+    <div class="content">
+        <div class="header">
+            销售商品分类占比
+        </div>
+        <hr>
+        <div id="echart_3" class="echart">
+
+        </div>
+    </div>
+
+
+
+</div>
+
+<div id="back" onclick="javascript:history.back()">
+    <button>返回</button>
+</div>
+</body>
+
+<script>
+    $(function(){
+        var start = '{$start}';
+        var end = '{$end}';
+        $("#start_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [start],
+            maxDate: end,
+            onChange: function (p, values) {
+                start = values[0];
+            },
+        });
+        $("#end_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [end],
+            minDate: start,
+            onChange: function (p, values) {
+                start = values[0];
+            },
+        });
+        // 基于准备好的dom，初始化echarts实例
+        var myChart_1 = echarts.init(document.getElementById('echart_1'));
+        var myChart_2 = echarts.init(document.getElementById('echart_2'));
+        var myChart_3 = echarts.init(document.getElementById('echart_3'));
+        var option_1 = {
+            title: {
+                text: '近七日销售趋势'
+            },
+            xAxis: {
+                type: 'category',
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: [820, 932, 901, 934, 1290, 1330, 1320],
+                type: 'line'
+            }]
+        };
+        myChart_1.setOption(option_1,true);
+
+        var option_2 = {
+            title: {
+                text: ''
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    label: {
+                        backgroundColor: '#6a7985'
+                    }
+                }
+            },
+            legend: {
+                data:['有效订单','未支付订单','0元订单']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis : [
+                {
+                    type : 'category',
+                    boundaryGap : false,
+                    data : ['周一','周二','周三','周四','周五','周六','周日']
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            series : [
+                {
+                    name:'有效订单',
+                    type:'line',
+                    stack: '总量',
+                    areaStyle: {normal: {}},
+                    data:[120, 132, 101, 134, 90, 230, 210]
+                },
+                {
+                    name:'未支付订单',
+                    type:'line',
+                    stack: '总量',
+                    areaStyle: {normal: {}},
+                    data:[220, 182, 191, 234, 290, 330, 310]
+                },
+                {
+                    name:'0元订单',
+                    type:'line',
+                    stack: '总量',
+                    areaStyle: {normal: {}},
+                    data:[150, 232, 201, 154, 190, 330, 410]
+                },
+
+            ]
+        };
+        myChart_2.setOption(option_2,true);
+
+        var option_3 = {
+            
+            tooltip : {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: ['饮料','牛奶','果汁','其他']
+            },
+            series : [
+                {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius : '55%',
+                    center: ['50%', '60%'],
+                    data:[
+                        {value:335, name:'饮料'},
+                        {value:310, name:'牛奶'},
+                        {value:234, name:'果汁'},
+                        {value:135, name:'其他'},
+                    ],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+        myChart_3.setOption(option_3,true);
+    })
+
+</script>
+
+
+</html>

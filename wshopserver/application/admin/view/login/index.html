@@ -1,0 +1,81 @@
+
+<!--包含头部文件-->
+{include file="public/loginheader" /}
+<style>
+    .footer{
+        position:fixed;
+        bottom:25px;
+        text-align: center;
+        font-size:14px;
+        color:#f7f7f7;
+        width:100%;
+    }
+</style>
+<div id='wrapper'>
+    <div class='application'>
+        <div class='application-content'>
+            	<img src="__STATIC__/admin/assets/images/loginlogo.png" style="width:140px;height:140px;"/>
+        </div>
+    </div>
+    <div class='controls'>
+        <div class='caret'></div>
+        <div class='form-wrapper'>
+            <div class='text-center'><img src="data:image/png;base64,{$picurl}" style="margin-top:10px;width:160px;height:160px;"/></div>
+            <div class='text-center'>
+                <h4 id="scanqr" style="margin-top: 20px;font-weight: normal;">请使用微信扫描二维码登录</h4>
+                <h4 id="loginsuccess" style="color:forestgreen;display: none;"></h4>
+                <h4 id="loginfail" style="color:red;display: none;"></h4>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <small>（ 北京中科锐星科技发展有限公司    京ICP备18022265号）</small>
+</div>
+<!--包含底部js-->
+{include file="public/footer" /}
+<script>
+    var ticket = "{$ticket}";
+    var iCount;
+    $(function() {
+        iCount =  setInterval(function(){
+            querystatus();
+        },3000);
+    });
+    function querystatus() {
+        var postData = {
+            'ticket':ticket
+        };
+        var url = '/admin/login/querystatus';
+        $.post(url,postData,function (result) {
+            if(result.code == 2){
+                clearInterval(iCount);
+                $('#scanqr').hide();
+                $('#loginfail').html(result.msg);
+                $('#loginfail').show();
+                $("#loginfail").shake(2, 10, 400);
+            }else if(result.code == 1){
+                clearInterval(iCount);
+                $('#scanqr').hide();
+                $('#loginsuccess').html(result.msg);
+                $('#loginsuccess').show();
+
+                location.href = "/admin/index";
+            }
+        },"json");
+    }
+    jQuery.fn.shake = function (intShakes /*Amount of shakes*/, intDistance /*Shake distance*/, intDuration /*Time duration*/) {
+        this.each(function () {
+            var jqNode = $(this);
+            jqNode.css({ position: 'relative' });
+            for (var x = 1; x <= intShakes; x++) {
+                jqNode.animate({ left: (intDistance * -1) }, (((intDuration / intShakes) / 4)))
+                    .animate({ left: intDistance }, ((intDuration / intShakes) / 2))
+                    .animate({ left: 0 }, (((intDuration / intShakes) / 4)));
+            }
+        });
+        return this;
+    }
+</script>
+</body>
+</html>

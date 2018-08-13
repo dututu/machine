@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>检测机柜</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    {include file="common/header" /}
+    <style type="text/css">
+        .intro {
+            font-size: 0.6rem;
+            width: 330px;
+            text-align: center;
+            margin: 0 auto;
+            color: #888888;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contianor">
+        <div class="tit">设备查询</div>
+        <div class="dev">
+            <div class="weui-cell weui-cell_vcode border">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">dev_uid</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" id="dev_uid" placeholder="请输入设备id">
+                </div>
+                <div class="weui-cell__ft">
+                    <button class="weui-vcode-btn" id="scanQRCode">扫码输入</button>
+                </div>
+            </div>
+            <div class="intro">
+                说明：设备未绑定前，前先扫描dev_id，以便完成硬件检测及设备绑定；设备绑定后，可扫描机柜二维码，进行硬件检测。
+            </div>
+            <a href="javascript:;" class="weui-btn weui-btn_primary dev_search">联网查询</a>
+        </div>
+        <div class="dev_detail" style="display: none;">
+            <div class="dev_detail_tit">基础设备信息</div>
+            <div class="dev_detail_info">
+                <p>dev_id:
+                    <span id="dev_id">1087</span>
+                </p>
+                <p>dev_uid:
+                    <span id="dev_uids">7172</span>
+                </p>
+                <p>锁id:
+                    <span id="lock_list">1-1-1</span>
+                </p>
+                <p>当前称台数:
+                    <span id="pos">10个</span>
+                </p>
+                <p>台秤列表:
+                    <span id="pos_list">01-01-01;01-01-01;01-01-01;01-01-01;01-01-01;</span>
+                </p>
+                <p>网络连接:
+                    <span id="phy_state">已上线</span>
+                </p>
+                <p>主程序版本:
+                    <span id="version">接口暂无</span>
+                </p>
+
+            </div>
+        </div>
+        <div class="js_dialog" id="iosDialog2" style="opacity: 1;display: block">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__bd content"></div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file="common/footer" /}
+</body>
+<script>
+    var options = {$options};
+    $(document).ready(function () {
+        var dev_uid = getCookie("dev_uid");
+        if (dev_uid.length > 0)
+            $('#dev_uid').val(dev_uid)
+        
+        $('.dev_search').on('click', function () {
+            var dev_uid = $('#dev_uid').val()
+            if (dev_uid.length == 0) {
+                $.alert('请输入设备id'); return;
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: url + 'startcheck',
+                    data: { devuid: dev_uid },
+                    dataType: 'json',
+                    success: function (res) {
+                        //请求成功dev_uid
+                        if (res.code == 0) {
+                            var state = '';
+                            console.log(res.output.dev_list[0].pos_list.lenth)
+                            console.log(res.output.dev_list[0].pos_list)
+                            $('#dev_id').html(res.output.dev_list[0].dev_id);
+                            $('#dev_uids').html(res.output.dev_list[0].dev_uid);
+                            $('#lock_list').html(loopArray(res.output.dev_list[0].lock_list));
+                            $('#pos').html(res.output.dev_list[0].pos_list.length);
+                            $('#pos_list').html(loopArray(res.output.dev_list[0].pos_list));
+                            if (res.output.dev_list[0].phy_state == 0) {
+                                state = '离线'
+                            } else if (res.output.dev_list[0].phy_state == 1) {
+                                state = '已上线'
+                            } else if (res.output.dev_list[0].phy_state == 2) {
+                                state = '从未上线'
+                            } else {
+                                state = '未知状态'
+                            }
+                            $('#phy_state').html(state);
+                            $('.dev_detail').show();
+                            setCookie("dev_uid", res.output.dev_list[0].dev_uid, 10);
+                            $.ajax({
+                                type: "POST",
+                                url: url + 'QuerySWVersion',
+                                data: { devuid: dev_uid },
+                                dataType: 'json',
+                                success: function (res) {
+                                    if(res.code==0) {
+                                        $('#version').html(res.output.version)
+                                    } else {
+                                        $.alert(res.msg)
+                                    }
+                                }
+                            })
+                        } else {
+                            $.alert(res.msg);
+                            // $('.content').html(res.msg)
+                            // $('#iosDialog2').show();
+                        }
+                    }
+                });
+            }
+        })
+
+        var options_arr = eval(options);
+        wx.config({
+            debug: options_arr.debug, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            appId: options_arr.appId, // 必填，公众号的唯一标识
+            timestamp: options_arr.timestamp + "", // 必填，生成签名的时间戳
+            nonceStr: options_arr.nonceStr, // 必填，生成签名的随机串
+            signature: options_arr.signature,// 必填，签名，见附录1
+            jsApiList: options_arr.jsApiList // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+        });
+        wx.ready(function () {
+            //点击按钮扫描二维码
+            document.querySelector('#scanQRCode').onclick = function () {
+                wx.scanQRCode({
+                    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                    scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                    success: function (res) {
+                        
+                         var m = res.resultStr.split(",");
+
+                        //var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                        $('#dev_uid').val(m[1])
+
+                    }
+                });
+            };
+
+        });
+
+    })
+
+</script>
+
+</html>

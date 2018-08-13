@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>检测机柜</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+     {include file="common/header" /}
+</head>
+<body>
+    <div class="contianor">
+        <div class="tit">绑定二维码</div>
+        <div class="dev_detail" id="dev">
+            <div class="dev_detail_tit">基础设备信息</div>
+            <div class="dev_detail_info">
+                <p>dev_uid:
+                    <span id="dev_id">1087</span>
+                </p>
+                <p>dev_uid:
+                    <span id="dev_uids">7172</span>
+                </p>
+                <p>锁id:
+                    <span id="lock_list">1-1-1</span>
+                </p>
+                <p>当前称台数:
+                    <span id="pos">10个</span>
+                </p>
+                <p>台秤列表:
+                    <span id="pos_list">01-01-01;01-01-01;01-01-01;01-01-01;01-01-01;</span>
+                </p>
+                <p>网络连接:
+                    <span id="phy_state">已上线</span>
+                </p>
+                <p>摄像头SN:
+                    <span id="sn">xxxx</span>
+                </p>
+                <p>广告机SN:
+                    <span id="sn">(未开放)</span>
+                </p>
+            
+            </div>
+        </div>
+        <div class="dev_detail" id="marchineInfo"style="display: none;">
+            <div class="dev_detail_tit">知码开门平台机柜信息</div>
+            <div class="dev_detail_info">
+                <p>机柜编号:
+                    <span id="containerid">xm214938742348</span>
+                </p>
+                <p>识别模式:
+                    <span id="rfidtypecode">重力识别</span>
+                </p>
+                <!-- <p>类型:
+                    <span id="">冷藏</span>
+                </p>
+                <p>场合:
+                    <span>室内</span>
+                </p>
+                <p>柜门:
+                    <span>单门</span>
+                </p> -->
+            </div>
+        </div>
+        <div class="weui-cell weui-cell_vcode border">
+            <div class="weui-cell__hd">
+                <label class="weui-label">机柜编号</label>
+            </div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" id="machineid" placeholder="输入机柜编号">
+            </div>
+            <div class="weui-cell__ft">
+                <button class="weui-vcode-btn" id="scanQRCode">扫码输入</button>
+            </div>
+        </div>
+        <div class="btn">
+            <a href="javascript:;" class="weui-btn weui-btn_primary dev_search" style="margin-top:10px">绑定</a>
+        </div>
+        
+    </div>
+    {include file="common/footer" /}
+</body>
+<script>
+    $(document).ready(function () {
+        $('#marchineInfo').hide()
+        var dev_uid = getCookie("dev_uid");
+        if (dev_uid.length == 0) {
+            $.alert('请输入设备id'); return;
+        } else {
+            $.ajax({
+                type: "POST",
+                url: url + 'startcheck',
+                data: { devuid: dev_uid },
+                dataType: 'json',
+                success: function (res) {
+                    //请求成功dev_uid
+                    if (res.code == 0) {
+                        var state = '';
+                        console.log(res.output.dev_list[0].pos_list.lenth)
+                        console.log(res.output.dev_list[0].pos_list)
+                        $('#dev_id').html(res.output.dev_list[0].dev_id);
+                        $('#dev_uids').html(res.output.dev_list[0].dev_uid);
+                        $('#lock_list').html(loopArray(res.output.dev_list[0].lock_list));
+                        $('#pos').html(res.output.dev_list[0].pos_list.length);
+                        $('#pos_list').html(loopArray(res.output.dev_list[0].pos_list));
+                        if (res.output.dev_list[0].phy_state == 0) {
+                            state = '离线'
+                        } else if (res.output.dev_list[0].phy_state == 1) {
+                            state = '已上线'
+                        } else if (res.output.dev_list[0].phy_state == 2) {
+                            state = '从未上线'
+                        } else {
+                            state = '未知状态'
+                        }
+                        $('#phy_state').html(state);
+                        $('#dev').show();
+                        setCookie("dev_uid", res.output.dev_list[0].dev_uid, 10);
+                    } else {
+                        $.alert(res.msg);
+                        // $('.content').html(res.msg)
+                        // $('#iosDialog2').show();
+                    }
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: url + 'QueryCam',
+                async: false,
+                data: { devuid: dev_uid },
+                dataType: 'json',
+                success: function (res) {
+                    //请求成功dev_uid
+                    if (res.code == 0) {
+                        $('#sn').html(res.output.sn);
+                    } else {
+                        $.alert(res.msg);
+                    }
+                }
+            });
+        }
+        var options = {$options};
+        var options_arr = eval(options);
+        wx.config({
+            debug: options_arr.debug, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            appId: options_arr.appId, // 必填，公众号的唯一标识
+            timestamp: options_arr.timestamp + "", // 必填，生成签名的时间戳
+            nonceStr: options_arr.nonceStr, // 必填，生成签名的随机串
+            signature: options_arr.signature,// 必填，签名，见附录1
+            jsApiList: options_arr.jsApiList // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+        });
+        wx.ready(function () {
+            wx.checkJsApi({
+                jsApiList: ['scanQRCode'],
+                success: function (res) {
+
+                }
+            });
+
+            //点击按钮扫描二维码
+            document.querySelector('#scanQRCode').onclick = function () {
+                wx.scanQRCode({
+                    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                    scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                    success: function (res) {
+                        var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                        var m1 = result.split("?")[1];
+
+                        var m2 = m1.split("&")[0];
+                        var m3 = m2.split("=")[1];
+                        $('#machineid').val(m3)
+                        getMachineInfo(m3);
+                    }
+                });
+            };
+
+        });
+
+    })
+
+</script>
+</html>

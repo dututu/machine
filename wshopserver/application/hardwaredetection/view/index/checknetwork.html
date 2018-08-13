@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>检测网络</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {include file="common/header" /}
+    <style>
+        .left div{
+            margin-left: 20px;
+        }
+        .button-check{
+            margin-top: 20px;
+        }
+        .button-center{
+            margin-left: 25%;
+        }
+        .pass{
+            color: red;
+        }
+        .button-center .weui-btn_mini{
+            border:1px solid #f6f6f6;
+        }
+    </style>
+</head>
+<body>
+<div class="contianor">
+    <div class="tit">网络监测</div>
+    <div class="dev_detail" id="dev">
+        <div class="dev_detail_info">
+            <div class="dev_detail_tit">基础信息</div>
+            <div class="ss">连接方式:
+                <span class=""></span>
+            </div>
+            <div class="left wifi">WiFi信息:
+                <div class="wifi-status">无线网络状态：<span></span></div>
+                <div class="device">设备接口名：<span></span></div>
+                <div class="state">连接状态：<span></span></div>
+                <div class="ssid">连接的ssid名称：<span></span></div>
+                <div class="ip">ip地址：<span></span></div>
+            </div>
+            <div class="left csq">4G信息:
+                <div class="rssi">信号强度：<span></span></div>
+                <div class="ber">比特误码率：<span></span></div>
+            </div>
+            <div>测试结果:
+                <span class="result">未检测</span>
+            </div>
+        </div>
+    </div>
+    <div class="button-center ">
+        <div class=" weui-btn weui-btn_mini weui-btn_plain-primary pass" data-n="0">测试失败</div>
+        <div class=" weui-btn weui-btn_mini weui-btn_plain-primary fail" data-n=1>测试通过</div>
+    </div>
+    <div class="button-check">
+        <div class="weui-btn weui-btn_mini weui-btn_plain-primary reflush">刷新</div>
+    </div>
+
+</div>
+{include file="common/footer" /}
+</body>
+<script>
+    $(document).ready(function () {
+        var devuid = $.cookie('dev_uid');
+
+        init();
+
+        $('.reflush').click(function(){
+            init();
+        })
+
+        $('.button-center .weui-btn').on('click',function(){
+            var n = $(this).data('n');
+            var post_url = "{:url('index/checkNetwork')}";
+            $.post(post_url,{devuid:devuid,networkcheck:n},function(d){
+                if(d.code == 0){
+                    if( n == 1)
+                        $('.result').text('已通过');
+                    else
+                        $('.result').text('未通过');
+                    $.alert('提交成功');
+                }else{
+                    $.alert('提交失败');
+                }
+            })
+        })
+        var s = 1;
+        function init(){
+            get_recode();
+            get_4g_info();
+
+        }
+        //获取结果
+        function get_recode(){
+            var recode_url = "{:url('index/getRecode')}";
+            $.post(recode_url,{devuid:devuid},function(data){
+                if( data.code != 0 ){
+                    $.alert('获取信息失败')
+                }else{
+                    var text = data.data.networkcheck == 1 ? '已通过' : '未通过';
+                   $('.result').text(text);
+                }
+            })
+        }
+        function get_wifi_info(){
+            var url = "{:url('testbox/queryWifi')}";
+            $.post(url,{devuid:devuid},function(d){
+                if(d.code == 0 ){
+                    s = 1;
+                    var data = d.output;
+                    $('.device span').text(data.device);
+                    $('.state span').text(data.state);
+                    $('.ssid span').text(data.ssid);
+                    $('.ip span').text(data.ip);
+                    $('.wifi-status span').text('开启');
+                }else{
+                    $('.wifi-status span').text('关闭');
+                    $.alert(d.msg);
+                }
+                if( s == 1){
+                    $('.ss span').text('WIFI');
+                }else{
+                    $('.ss span').text('4G');
+                }
+            })
+        }
+        function get_4g_info(){
+            var url = "{:url('testbox/query4G')}";
+            $.post(url,{devuid:devuid},function(d){
+
+                if(d.code == 0 ){
+                    s = 0;
+                    var data = d.output;
+                    $('.rssi span').text(data.rssi);
+                    $('.ber span').text(data.ber);
+                    $('.wifi-status span').text('开启');
+                }else{
+                    $('.wifi-status span').text('关闭');
+                    $.alert(d.msg);
+                }
+
+                get_wifi_info();
+
+            })
+        }
+
+    })
+
+</script>
+</html>

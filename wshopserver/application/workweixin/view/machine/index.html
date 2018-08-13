@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>平台销售统计</title>
+    {include file="common/header" /}
+    <style>
+
+
+    </style>
+
+</head>
+
+<body>
+<div id="container" class="container">
+    <div class="weui-search weui-flex">
+        <div class="icon fa-calendar"></div>
+        <input class="weui-input weui-input_5" id="start_date" type="text" value="{$date}" readonly>
+        <span>&nbsp ~ &nbsp</span>
+        <input class="weui-input weui-input_5" id="end_date" type="text" value="{$date}" readonly>
+        <a class="icon icon-menu menu open-popup" data-target="#select"></a>
+    </div>
+    <div class="content">
+        <div class="grids">
+            <div class="weui-flex">
+                <div class="weui-flex__item">weui<p class="">Grid</p></div>
+                <div class="weui-flex__item">weui<p class="">Grid</p></div>
+            </div>
+            <div class="weui-flex">
+                <div class="weui-flex__item">weui<p class="">Grid</p></div>
+                <div class="weui-flex__item">weui<p class="">Grid</p></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="content">
+        <div class="ranking">
+            <div class="weui-flex rank">
+                <div class="rank-num">10</div>
+                <div class="weui-flex__item">
+                    <div class="font-color">商户名称:AFSafavdsv AScaVSih;mnlk</div>
+                    <div class="weui-flex font-color">
+                        <div class="weui-flex__item">商户数量：1000</div>
+                        <div class="weui-flex__item">机柜数量：20000</div>
+                        <div class="">最后交易时间：05-01</div>
+                    </div>
+                    <div class="weui-flex font-weight">
+                        <div class="rank-right">联系方式：18611507481</div>
+                        <div class=" weui-flex__item">交易金额：8000.00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="select" class="weui-popup__container popup-bottom">
+        <div class="weui-popup__overlay"></div>
+        <div class="weui-popup__modal">
+            <div class="search-title">筛选</div>
+            <div class="weui-cells">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">机柜类型</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <select class="weui-select" name="select1">
+                            <option selected="" value="1">微信号</option>
+                            <option value="2">QQ号</option>
+                            <option value="3">Email</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">代理商</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <select class="weui-select" name="select1">
+                            <option selected="" value="1">微信号</option>
+                            <option value="2">QQ号</option>
+                            <option value="3">Email</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">排序方式：</label>
+                    </div>
+                    <div class="weui-cell__bd ">
+                        <button class="select-btn btn-choose">交易金额</button>
+                        <button class="select-btn btn-cancel">最后交易时间</button>
+
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">顺序方向：</label>
+                    </div>
+                    <div class="weui-cell__bd ">
+                        <button class="select-btn btn-choose">从高到低</button>
+                        <button class="select-btn btn-cancel">从低到高</button>
+                    </div>
+                </div>
+            </div>
+            <div class="primary weui-flex">
+                <div class="weui-flex__item">
+                    <a href="javascript:;" class="weui-btn weui-btn_plain-default close-popup">取消</a>
+                </div>
+                <div class="weui-flex__item">
+                    <a href="javascript:;" class="weui-btn weui-btn_plain-primary ">确定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{include file="common/footer" /}
+</body>
+
+<script>
+    $(function(){
+        var start = '{$start}';
+        var end = '{$end}';
+        $("#start_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [start],
+            maxDate: end,
+            onChange: function (p, values) {
+                start = values[0];
+            },
+        });
+        $("#end_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [end],
+            minDate: start,
+            onChange: function (p, values) {
+                start = values[0];
+            },
+        });
+    })
+
+</script>
+
+
+</html>

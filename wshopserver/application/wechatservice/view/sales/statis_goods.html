@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title>我的销售</title>
+		<link rel="stylesheet" href="https://cdn.bootcss.com/weui/1.1.2/style/weui.min.css">
+		<link rel="stylesheet" href="https://cdn.bootcss.com/jquery-weui/1.1.2/css/jquery-weui.min.css">
+		<link rel="stylesheet" href="__STATIC__/wechatservice/css/mui.min.css">
+		<link rel="stylesheet" href="__STATIC__/wechatservice/css/mui.picker.all.css">
+		<script src="https://cdn.bootcss.com/vue/2.5.8/vue.min.js"></script>
+		<style>
+			body {
+				height: 100% !important;
+				background: #e7e7e7 !important;
+			}
+			
+			.title-left {
+				color: black;
+				font-size: 18px;
+				-webkit-box-flex: 1;
+				-webkit-flex: 1;
+				flex: 1;
+			}
+			
+			.title-right {
+				padding-right: 13px;
+				position: relative;
+				text-align: right;
+				display: inline-block;
+			}
+			
+			.title-right:after {
+				content: " ";
+				display: inline-block;
+				height: 6px;
+				width: 6px;
+				border-width: 2px 2px 0 0;
+				border-color: #C8C8CD;
+				border-style: solid;
+				-webkit-transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+				transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+				position: relative;
+				top: -2px;
+				position: absolute;
+				top: 50%;
+				margin-top: -4px;
+				right: 2px;
+			}
+
+
+			.blance-top {
+				height: 160px;
+				background: orange;
+				text-align: center;
+			}
+
+			.blance-top .t1 {
+				color: white !important;
+				padding-top:20px;
+			}
+
+			.blance-top .t2 {
+				font-size: 24px;
+				color: white !important;
+			}
+			.product_desc{
+				padding-left: 10px;
+			}
+			.product_desc .pname{
+				color: #999;
+			}
+			.product_desc .pprice{
+				color: #999;
+			}
+
+			.weui-tabbar {
+				line-height: 0px;
+			}
+
+			.weui-tabbar p {
+				margin-bottom: 0px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="page" style="margin-bottom:50px;">
+			<div class="page__bd page__bd_spacing mui-fullscreen">
+				<div class="mui-scroll-wrapper " id="refreshContainer">
+					<div class="mui-scroll">
+				<div class="blance-top">
+					<div style="display: flex;flex-direction: row;justify-content: flex-start;padding-top: 10px;padding-left:10px;">
+						<img src="__STATIC__/wechatservice/img/rili.png" style="width:24px;height:24px;margin-right:5px;"/>
+						<input type="button" placeholder="开始时间" id='datetime-picker' style="width:95px;height:26px;font-size:12px;background: #888;border:0px;color:white;"/>
+						<p style="margin-left:5px;margin-right:5px;padding-top:3px;">~</p>
+						<input type="button" placeholder="结束时间" id='datetime-picker2' style="width:95px;height:26px;font-size:12px;background: #888;border:0px;color: white;"/>
+					</div>
+					<p class="t1">总收款<span id="records"></span>笔，合计</p>
+					<p class="t2"><span id="totalfee"></span>元</p>
+				</div>
+				<div class="weui-tab">
+					<div class="weui-navbar">
+						<div class="weui-navbar__item gotosales" >
+							销售明细
+						</div>
+						<div class="weui-navbar__item gotomachine" >
+							机柜分析
+						</div>
+						<div class="weui-navbar__item weui-bar__item_on">
+							商品分析
+						</div>
+					</div>
+					<div class="weui-tab__panel">
+
+						<div class="weui-cells" style="margin-top:0px;">
+							<div class="weui-panel__hd weui-cell ">
+								<div class="title-left">商品销售分析</div>
+								<span class="title-right">按交易额统计</span>
+							</div>
+							<div id="app">
+							<div v-for="salse in salesList" class="weui-cell">
+								<div class="weui-cell__hd"><img :src="salse.picurl" alt="" style="width:40px;margin-right:5px;display:block"></div>
+								<div class="weui-cell__bd product_desc">
+									<p class="pname">{{salse.goodsname}}(规格：{{salse.spec}})</p>
+									<p class="pprice">价格：{{salse.totalfee/100}}元</p>
+								</div>
+								<div class="weui-cell__ft product_price">{{salse.t/100}}元</div>
+							</div></div>
+						</div>
+					</div>
+				</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<div class="weui-tabbar" style="position:fixed">
+			<a href="{:url('wechatservice/sales/statis')}" class="weui-tabbar__item">
+				<div class="weui-tabbar__icon">
+					<img src="__STATIC__/wechatservice/img/label_default.png" alt="">
+				</div>
+				<p class="weui-tabbar__label">交易概况</p>
+			</a>
+			<a href="{:url('wechatservice/sales/mysales')}" class="weui-tabbar__item">
+				<div class="weui-tabbar__icon">
+					<img src="__STATIC__/wechatservice/img/weight.png" alt="">
+				</div>
+				<p class="weui-tabbar__label">交易明细</p>
+			</a>
+		</div>
+	</body>
+	<!-- body 最后 -->
+	<script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/jquery-weui/1.1.2/js/jquery-weui.min.js"></script>
+
+
+	<script src="__STATIC__/wechatservice/js/mui.min.js "></script>
+	<script src="__STATIC__/wechatservice/js/mui.picker.all.js "></script>
+	<script src="__STATIC__/wechatservice/js/mui.poppicker.js "></script>
+	<! -- 引入微信官方的JSSDK 1.2版本-->
+	<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+	<script>
+
+        var starttime = '1900-01-01';
+        var endtime = '2222-01-01';
+        starttime = getNowFormatDate();
+        $('#datetime-picker').val(starttime);
+        endtime = getNowFormatDate();
+        $('#datetime-picker2').val(endtime);
+        var page = 1;
+        var rows = 5;
+        mui.init({
+            pullRefresh: {
+                container: '#refreshContainer',//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+                up: {
+                    height: 50,//可选.默认50.触发上拉加载拖动距离
+                    auto: false,//可选,默认false.自动上拉加载一次
+                    contentrefresh: "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+                    contentnomore: '没有更多数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+                    callback: pullfresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+                }
+            }
+        });
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                salesList: []
+            },
+            created: function () { //created方法，页面初始调用
+                var _self = this;
+
+                mui.ajax('/wechatservice/sales/goodssaleslist', {
+                    data: {
+                        page: page,
+                        rows: rows,
+                        starttime:starttime,
+                        endtime:endtime
+                    },
+                    dataType: 'json',//服务器返回json格式数据
+                    type: 'get',//HTTP请求类型
+                    timeout: 10000,//超时时间设置为10秒；
+                    success: function (data) {
+                        //服务器返回响应，根据响应结果，分析是否登录成功
+                        _self.salesList = data.data.data;
+//                        var hasnext = data.data.hasnext;
+//                        _self.endPullupToRefresh(!hasnext);//true表示没有更多数据了：
+                    },
+                    error: function (xhr, type, errorThrown) {
+                        //异常处理；
+                        console.log(type);
+                    }
+                });
+                getfee();
+            }
+        });
+
+        function pullfresh() {
+            var hasnext = false;
+            page++;
+            var _self = this;
+            mui.ajax('/wechatservice/sales/goodssaleslist', {
+                data: {
+                    page: page,
+                    rows: rows,
+                    starttime:starttime,
+                    endtime:endtime
+                },
+                dataType: 'json',//服务器返回json格式数据
+                type: 'get',//HTTP请求类型
+                timeout: 10000,//超时时间设置为10秒；
+                success: function (data) {
+                    //服务器返回响应，根据响应结果，分析是否登录成功
+//                    _self.goodsList = data.data.data;
+                    app.salesList = app.salesList.concat(data.data.data);
+                    var hasnext = data.data.hasnext;
+                    _self.endPullupToRefresh(!hasnext);//true表示没有更多数据了：
+                },
+                error: function (xhr, type, errorThrown) {
+                    //异常处理；
+                    console.log(type);
+                }
+            });
+        }
+        mui("#refreshContainer").on("tap",".gotosales",gotosales);
+        mui("#refreshContainer").on("tap",".gotomachine",gotomachine);
+        function gotosales() {
+            location.href = '/wechatservice/sales/mysales'
+        }
+        function gotomachine() {
+            location.href = '/wechatservice/sales/statismachine'
+        }
+        function gotogoods() {
+            location.href = '/wechatservice/sales/statisgoods'
+        }
+        function getfee() {
+            mui.ajax('/wechatservice/sales/calufee', {
+                data: {
+                    starttime:starttime,
+                    endtime:endtime
+                },
+                dataType: 'json',//服务器返回json格式数据
+                type: 'get',//HTTP请求类型
+                timeout: 10000,//超时时间设置为10秒；
+                success: function (data) {
+                    //服务器返回响应，根据响应结果，分析是否登录成功
+                    var totalfee = data.data.totalfee;
+                    var records = data.data.records;
+                    $('#totalfee').html(totalfee);
+                    $('#records').html(records);
+                },
+                error: function (xhr, type, errorThrown) {
+                    //异常处理；
+                    console.log(type);
+                }
+            });
+        }
+
+        mui("#refreshContainer").on("tap","#datetime-picker",function () {
+            var dtPicker = new mui.DtPicker({'type':'date'});
+            dtPicker.show(function (selectItems) {
+                var newstarttime = selectItems.y.value+'-'+selectItems.m.value+'-'+selectItems.d.value;
+                var date1 = new Date(newstarttime);
+                var date2 = new Date(endtime);
+                var time1 = date1.getTime();
+                var time2 = date2.getTime();
+                if(time2 - time1 <0){
+                    mui.alert("提示","开始时间不能大于结束时间",function(){
+                        //回调函数
+                    })
+                    return;
+                }if(time2 - time1 >30*24*60*60*1000){
+                    mui.alert("提示","时间跨度不能超过30天",function(){
+                        //回调函数
+                    })
+                    return;
+                }else{
+                    $('#datetime-picker').val(newstarttime);
+                    starttime = newstarttime;
+                    searchbytime();
+                }
+
+            })
+        });
+        mui("#refreshContainer").on("tap","#datetime-picker2",function () {
+            var dtPicker = new mui.DtPicker({'type':'date'});
+            dtPicker.show(function (selectItems) {
+                var newendtime = selectItems.y.value+'-'+selectItems.m.value+'-'+selectItems.d.value;
+                var date1 = new Date(starttime);
+                var date2 = new Date(newendtime);
+                var time1 = date1.getTime();
+                var time2 = date2.getTime();
+                if(time2 - time1 <0){
+                    mui.alert("提示","结束时间不能小于开始时间",function(){
+                        //回调函数
+
+                    })
+                    return;
+                }if(time2 - time1 >30*24*60*60*1000){
+                    mui.alert("提示","时间跨度不能超过30天",function(){
+                        //回调函数
+                    })
+                    return;
+                }else{
+                    $('#datetime-picker2').val(newendtime);
+                    endtime = newendtime;
+                    searchbytime();
+                }
+
+            })
+        });
+        function searchbytime() {
+            getfee();
+            page = 0;
+            app.salesList = [];
+            pullfresh();
+        }
+        function getNowFormatDate() {
+            var date = new Date();
+            var seperator1 = "-";
+            var seperator2 = ":";
+            var month = date.getMonth() + 1;
+            var strDate = date.getDate();
+            if (month >= 1 && month <= 9) {
+                month = "0" + month;
+            }
+            if (strDate >= 0 && strDate <= 9) {
+                strDate = "0" + strDate;
+            }
+            var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
+            return currentdate;
+        }
+	</script>
+</html>

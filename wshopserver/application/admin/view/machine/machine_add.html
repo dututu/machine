@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+{include file="public/layerheader" /}
+<link rel="stylesheet" href="__STATIC__/admin/uploadify/uploadifive.css"/>
+<style>
+    .box{
+        margin-bottom: 0px;
+    }
+    .box .box-content{
+        padding: 0px;
+        padding-top: 10px;
+        border: 0px;
+    }
+    .form-actions{
+        margin-bottom: 0px;
+        text-align: right;
+    }
+    .error{
+        color:red;
+        display:inline;
+    }
+</style>
+<body class=''>
+
+<div class='container-fluid'>
+        <div class="row-fluid">
+    <div class="span12 box">
+        <div class="box-content">
+            <form id="form-category-add"  action="{:url('machine/machinesave')}" class="form form-horizontal "  method="post" style="margin-bottom: 0;"><div style="margin:0;padding:0;display:inline"></div>
+                <div class="control-group">
+                    <label class="control-label" for="factory">生产厂家：</label>
+                    <div class="controls">
+                        <select id="factory" name="factory">
+                            <option value="0">请选择生产厂家</option>
+                            {volist name="factory" id="vo" key="k"}
+                                <option value="{$key}">{$vo}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="func">功能类型：</label>
+                    <div class="controls">
+                        <select id="func" name="func">
+                            <option value="0">请选择功能类型</option>
+                            {volist name="functype" id="vo" key="k"}
+                                <option value="{$key}">{$vo}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="doortype">柜门数量：</label>
+                    <div class="controls">
+                        <select id="doortype" name="doortype">
+                            <option value="0">请选择柜门数量</option>
+                            {volist name="doortype" id="vo" key="k"}
+                            <option value="{$key}">{$vo}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="place">使用场合：</label>
+                    <div class="controls">
+                        <select id="place" name="place">
+                            <option value="0">请选择使用场合</option>
+                            {volist name="place" id="vo" key="k"}
+                            <option value="{$key}">{$vo}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="place">识别模式：</label>
+                    <div class="controls">
+                        <select id="rfidtype" name="rfidtype">
+                            <option value="0">请选择识别模式</option>
+                            {volist name="rfidtype" id="vo" key="k"}
+                            <option value="{$key}">{$vo}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="contractdate">订单年月日：</label>
+                    <div class="controls">
+                        <input id="contractdate" name="contractdate"  placeholder="请输入年月日" type="text">
+                        （例如：2017年12月12日，应输入171212）
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="remark">备注：</label>
+                    <div class="controls">
+                        <textarea id="remark" name="remark" placeholder="备注" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="num">机柜数量：</label>
+                    <div class="controls">
+                        <input id="num" name="num" placeholder="请输入机柜数量" type="text" >
+                        （单次创建不能超过20个机柜）
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">
+                        创建
+                    </button>
+                    <button class="btn" type="button" onclick="javascript:close_layer();">取消</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+    </div>
+{include file="public/footer" /}
+<script>
+    function close_layer(){
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.$('.btn-refresh').click();
+        parent.layer.close(index);
+    }
+    //
+    $(function(){
+    	$("#form-category-add").validate({
+    		rules:{
+                factory:{
+    				required:true
+    			},
+                func:{
+                    required:true
+                },
+                doortype:{
+                    required:true
+                },
+                place:{
+                    required:true
+                },
+                rfidtype:{
+                    required:true
+                },
+                contractdate:{
+                    required:true
+                },
+                num:{
+                    required:true
+                }
+    		},
+    		onkeyup:false,
+    		focusCleanup:true,
+    		success:"valid",
+    		submitHandler:function(form){
+    		    if($('#factory').val()!=0&&$('#func').val()!=0&&$('#doortype').val()!=0&&$('#place').val()!=0&&$('#rfidtype').val()!=0){
+    		        if($('#num').val()>0&&$('#num').val()<=20){
+                        $.ajax({
+                            type: "POST",
+                            dataType: "json",
+                            url: '{:url(\'machine/machinesave\')}',
+                            data: $('#form-category-add').serialize(),
+                            success: function (result) {
+                                if(result.code == 1){
+                                    parent.location.reload();
+                                    var index = parent.layer.getFrameIndex(window.name);
+                                    parent.layer.close(index);
+                                }else{
+                                    alert(result.msg);
+                                }
+                            },
+                            error: function(data) {
+                                alert("error:"+data.responseText);
+                            }
+                        });
+                    }else{
+                        alert('请输入正确的机柜数量');
+
+                    }
+
+                }else{
+    		        alert('请完善下拉框信息');
+                }
+
+    		}
+    	});
+    });
+</script>
+
+
+</body>
+</html>

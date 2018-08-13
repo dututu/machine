@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title>商品信息管理</title>
+		<link rel="stylesheet" href="https://cdn.bootcss.com/weui/1.1.2/style/weui.min.css">
+		<link rel="stylesheet" href="https://cdn.bootcss.com/jquery-weui/1.1.2/css/jquery-weui.min.css">
+		<link rel="stylesheet" href="__STATIC__/wechatservice/css/mui.min.css">
+		<script src="https://cdn.bootcss.com/vue/2.5.8/vue.min.js"></script>
+		<style>
+			body {
+				/*height: 100% !important;*/
+				background: #e7e7e7 !important;
+			}
+			html,
+			body {
+				background-color: #efeff4;
+			}
+			.mui-views,
+			.mui-view,
+			.mui-pages,
+			.mui-page,
+			.mui-page-content {
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				width: 100%;
+				height: 100%;
+				background-color: #efeff4;
+			}
+			.mui-pages {
+				height: auto;
+			}
+			.mui-scroll-wrapper,
+			.mui-scroll {
+				background-color: #efeff4;
+			}
+			.mui-page.mui-transitioning {
+				-webkit-transition: -webkit-transform 300ms ease;
+				transition: transform 300ms ease;
+			}
+			.mui-page-left {
+				-webkit-transform: translate3d(0, 0, 0);
+				transform: translate3d(0, 0, 0);
+			}
+			.mui-ios .mui-page-left {
+				-webkit-transform: translate3d(-20%, 0, 0);
+				transform: translate3d(-20%, 0, 0);
+			}
+			.mui-navbar .mui-bar {
+				position: absolute;
+				background: transparent;
+				text-align: center;
+			}
+			.mui-android .mui-navbar-inner.mui-navbar-left {
+				opacity: 0;
+			}
+			.mui-ios .mui-navbar-left .mui-left,
+			.mui-ios .mui-navbar-left .mui-center,
+			.mui-ios .mui-navbar-left .mui-right {
+				opacity: 0;
+			}
+			.mui-navbar .mui-btn-nav {
+				-webkit-transition: none;
+				transition: none;
+				-webkit-transition-duration: .0s;
+				transition-duration: .0s;
+			}
+			.mui-navbar .mui-bar .mui-title {
+				display: inline-block;
+				width: auto;
+			}
+			.mui-page-shadow {
+				position: absolute;
+				right: 100%;
+				top: 0;
+				width: 16px;
+				height: 100%;
+				z-index: -1;
+				content: '';
+			}
+			.mui-page-shadow {
+				background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
+				background: linear-gradient(to right, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
+			}
+			.mui-navbar-inner.mui-transitioning,
+			.mui-navbar-inner .mui-transitioning {
+				-webkit-transition: opacity 300ms ease, -webkit-transform 300ms ease;
+				transition: opacity 300ms ease, transform 300ms ease;
+			}
+			.mui-page {
+				display: none;
+			}
+			.mui-pages .mui-page {
+				display: block;
+			}
+			.mui-page .mui-table-view:first-child {
+				margin-top: 15px;
+			}
+			.mui-page .mui-table-view:last-child {
+				margin-bottom: 30px;
+			}
+			.mui-table-view {
+				margin-top: 20px;
+			}
+
+			.mui-table-view span.mui-pull-right {
+				color: #999;
+			}
+			.mui-fullscreen {
+				position: fixed;
+				z-index: 20;
+				background-color: #000;
+			}
+			.mui-ios .mui-navbar .mui-bar .mui-title {
+				position: static;
+			}
+
+			.mui-plus.mui-plus-stream .mui-stream-hidden{
+				display: none !important;
+			}
+			.add_goods{
+				width:45px;height:45px;position: fixed;right:10%;bottom: 5%;z-index: 44;
+			}
+			.goodsitem{
+				margin:5px;background: #FFFFFF;border-radius: 5px;color: #808080;font-size: 14px;
+			}
+			.goodsitem label{
+				padding:10px 10px;padding-right: 0px;
+			}
+			.goodsitem .info{
+				display: flex;flex-direction:row;justify-content:flex-start;align-items:flex-start;
+			}
+			.goodsitem .info .infoitem{
+				display: flex;flex-direction:row;justify-content:space-between;align-items:center;
+			}
+			.mui-scroll p{
+				margin-bottom:5px !important;
+			}
+			/**type*/
+			.mui-popover{
+				width:100%;
+				height:100%;
+				border-radius: 0px;
+				background-color: transparent;
+				box-shadow:none;
+				-webkit-box-shadow:none;
+			}
+			.mui-popover.mui-active{
+				opacity:0.9;
+
+			}
+			.mui-badge{
+				font-size:16px;
+				background-color:white;
+				margin-top:5px;
+			}
+		</style>
+	</head>
+
+	<body class="mui-fullscreen">
+	<!--页面主结构开始-->
+	<div id="muiapp" class="mui-views">
+		<div class="mui-view">
+			<div class="mui-pages">
+			</div>
+		</div>
+	</div>
+	<!--页面主结构结束-->
+	<!--单页面开始-->
+	<div id="setting" class="mui-page">
+
+
+		<!--页面主内容区开始-->
+		<div class="mui-page-content">
+			<div class="mui-row">
+				<div class="mui-col-sm-2 mui-col-xs-2 ">
+					<img id="open" src="__STATIC__/wechatservice/img/f0ca.png" style="margin-left:5px;width:32px;height:32px;margin-top:10px;">
+				</div>
+				<div class="mui-col-sm-9 mui-col-xs-9 tagsContaine" style="width:73%;">
+					<div class="tagList" id="currenttags">
+						<!--<div class="tagItem" id="1"><span>进口水果</span>-->
+						<!--<div class="delete"></div>-->
+						<!--</div>-->
+						<!--<div class="tagItem" id="2"><span>速冻食品</span>-->
+						<!--<div class="delete"></div>-->
+						<!--</div>-->
+					</div>
+				</div>
+				<div class="mui-col-sm-1 mui-col-xs-1">
+					<a href="/wechatservice/goods/add"><img src="__STATIC__/wechatservice/img/jia.png" style="width:28px;height:28px;margin-top:10px;"/></a>
+				</div>
+			</div>
+
+			<div class="mui-scroll-wrapper" id="refreshContainer" style="top:40px;">
+				<div class="mui-scroll">
+					<div class="page" id="app">
+						<div class="page__bd page__bd_spacing">
+							<div v-for="goods in goodsList" style="background: #FFFFFF;margin:5px 5px;border-radius: 5px;padding: 10px;color: #808080;font-size: 14px;">
+								<div class="flex-row" style="display: flex;flex-direction:row;justify-content:flex-start;align-items:flex-start;">
+									<div class="flex-view-item">
+										<img :src="goods.picurl" style="height: 60px;width:60px;" />
+									</div>
+									<div class="flex-view-item" style="width: 100%;padding-left: 10px;">
+										<div class="flex-row" style="display: flex;flex-direction:row;justify-content:space-between;align-items:center;">
+											<p>{{goods.goodsname}} 规格：{{goods.spec}}</p>
+											<p v-if="goods.status === 0" style="color: red;">待审批</p>
+											<p v-else-if="goods.status === 1" style="color: green;">已审批</p>
+										</div>
+
+										<div class="flex-row" style="display: flex;flex-direction:row;justify-content:space-between;align-items:center;">
+											<p>分类：{{goods.categoryname}}</p>
+											<p>价格：<span style="color:red;">{{goods.salefee/100}}元 </span><span style='text-decoration:line-through;font-size:12px;'>({{goods.originalfee/100}}元)</span></p>
+										</div>
+										<div class="flex-row" style="display: flex;flex-direction:row;justify-content:space-between;align-items:center;">
+											<p>rfid标签类型：{{goods.typename}}</p>
+										</div>
+									</div>
+								</div>
+								<div style="width:100%;text-align: right;margin-top: 5px;">
+									<p class="editgoods"  v-bind:data-goodsid="goods.goodsid">编辑></p>
+									<!--<p class="editgoods" v-if="goods.status === 0" v-bind:data-goodsid="goods.goodsid">编辑></p>-->
+									<!--<p class="buyrfid" v-else-if="goods.status === 1" v-bind:data-goodsid="goods.goodsid">编辑&购买标签></p>-->
+								</div>
+
+							</div>
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<style>
+			.tagsContaine .tagList{
+				float:left;
+			}
+			.tagsContaine .tagList .tagItem{
+				height: 30px;
+				line-height: 22px;
+				background-color: #fff;
+				padding: 5px 10px;
+				text-align: center;
+				float: left;
+				margin: 5px;
+				border-radius: 10px;
+				color: #000;
+				font-size: 14px;
+				letter-spacing: 0px;
+				cursor: pointer;
+			}
+			.tagsContaine .tagList .tagItem .delete{
+				display: block;
+				float: right;
+				width: 15px;
+				height: 15px;
+				background-image: url(__STATIC__/wechatservice/img/x.png);
+				background-repeat: round;
+				margin-top: -10px;
+				margin-right: -10px;
+			}
+			.tagsContaine .tagList .tagItem2{
+				height: 30px;
+				line-height: 22px;
+				background-color: #fff;
+				padding: 5px 10px;
+				text-align: center;
+				float: left;
+				margin: 5px;
+				border-radius: 10px;
+				color: #000;
+				font-size: 14px;
+				letter-spacing: 0px;
+				cursor: pointer;
+			}
+			.tagsContaine .tagList .tagItem3{
+				height: 30px;
+				line-height: 22px;
+				background-color: #fff;
+				padding: 5px 10px;
+				text-align: center;
+				float: left;
+				margin: 5px;
+				border-radius: 10px;
+				color: #000;
+				font-size: 14px;
+				letter-spacing: 0px;
+				cursor: pointer;
+			}
+		</style>
+		<!--页面主内容区结束-->
+		<div id="popover" class="mui-popover">
+			<div class="mui-content-padded">
+				<div class="mui-row">
+					<div class="mui-col-sm-10 mui-col-xs-10 tagsContaine">
+						<div class="tagList" id="searchtags">
+							<!--<div class="tagItem" id="1"><span>进口水果</span>-->
+								<!--<div class="delete"></div>-->
+							<!--</div>-->
+							<!--<div class="tagItem" id="2"><span>速冻食品</span>-->
+								<!--<div class="delete"></div>-->
+							<!--</div>-->
+						</div>
+					</div>
+					<div class="mui-col-sm-2 mui-col-xs-2">
+						<button type="button" class="mui-btn mui-btn-green" id="confirmtype" style="float:right;">确定
+						</button>
+					</div>
+				</div>
+				<hr/>
+				<div class="mui-row" style="margin-top:10px;">
+					<div class="mui-col-sm-12 mui-col-xs-12 tagsContaine">
+						<div class="tagList" id="alltags">
+							<!--<div class="tagItem2" data-id="11"><span>进口水果</span></div>-->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--单页面结束-->
+	<div id="account" class="mui-page" >
+		<div class="mui-page-content">
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<form class="" id="rfidform" method="post" action="">
+						<input type="hidden" name="ftotalfee" id="ftotalfee" value="0">
+						<div class="">
+							<div class="page__bd page__bd_spacing">
+								<div class="weui-panel weui-panel_access">
+									<div class="weui-panel__hd">绑定商品</div>
+									<div id="rfidgoodsitem" style="background: #FFFFFF;border-radius: 5px;padding: 10px;">
+
+
+									</div>
+								</div>
+							</div>
+							<div>
+								<p style="color: #808080;font-size: 14px;padding-left: 15px;padding-top: 15px;" class="cleargoods">清空购买清单</p>
+								<div class="weui-btn-area">
+									<a class="weui-btn weui-btn_default select_more showmoreModal"
+									   id="showTooltips2">选择更多</a>
+								</div>
+
+							</div>
+							<div class="weui-panel weui-panel_access" style="margin-top: 15px;">
+								<div class="weui-panel__hd">快递信息</div>
+								<div class="mui-input-row">
+									<label>配送地址</label>
+									<input type="text" class="mui-input-clear" placeholder="请输入配送地址" name="location" id="location">
+								</div>
+								<div class="mui-input-row">
+									<label>联系人</label>
+									<input type="text" class="mui-input-clear" placeholder="请输入联系人姓名" name="username" id="username">
+								</div>
+								<div class="mui-input-row">
+									<label>联系电话</label>
+									<input type="tel" class="mui-input-clear" placeholder="请输入手机号" name="mobile" id="mobile">
+								</div>
+								<div class="mui-input-row">
+									<p style="padding-left:15px;padding-right:20px;margin-top: 10px;"><span>金额满{$rfidfreefee/100}元免运费</span><span style="float:right;" id="freightfee">运费:{$rfidperorderfreight/100}元</span></p>
+									<input type="hidden" id="freightfeevalue" name="freightfeevalue" value="0"/>
+								</div>
+							</div>
+
+							<div class="weui-btn-area">
+								<a class="weui-btn weui-btn_primary prepay"  id="paybtn">下单支付</a>
+								<a class="weui-btn weui-btn_default closebuymodal" id="showTooltips1">返回</a>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="selectgoods" class="mui-page">
+		<div class="mui-page-content">
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<div class="page" id="appselect">
+						<div class="page__bd page__bd_spacing">
+							<div v-for="goods in goodsList" class="weui-cells weui-cells_checkbox goodsitem">
+								<label v-if="goods.status === 1" class="weui-cell weui-check__label" :for="goods.goodsid">
+									<div class="weui-cell__bd">
+										<div>
+											<div class="flex-row info">
+												<div class="flex-view-item">
+													<img :src="goods.picurl" style="height: 60px;width:60px;"/>
+												</div>
+												<div class="flex-view-item" style="width: 100%;padding-left: 10px;">
+													<div class="flex-row infoitem">
+														<p>{{goods.goodsname}}</p>
+													</div>
+
+													<div class="flex-row infoitem">
+														<p>规格：{{goods.spec}}</p>
+														<p>价格：{{goods.salefee/100}}元</p>
+													</div>
+													<div class="flex-row infoitem">
+														<p>分类：{{goods.goodscategoryname}}</p>
+														<p>rfid标签类型：{{goods.rfidtypename}}</p>
+													</div>
+												</div>
+											</div>
+										</div>
+
+
+									</div>
+									<div class="weui-cell__hd">
+										<input v-model="goods.checked" type="checkbox" class="weui-check" :value="goods.goodsid" name="checkbox"
+											   :id="goods.goodsid" >
+										<i class="weui-icon-checked"></i>
+									</div>
+								</label>
+
+							</div>
+						</div>
+					</div>
+					<div class="flex-row"
+						 style="display: flex;flex-direction:row;justify-content:center;align-items:center;margin-top: 20px;">
+						<a class="weui-btn weui-btn_default closeselectmodal" style="margin-top: 0px;width:40%;"  id="ss">返回</a>
+						<a class="weui-btn weui-btn_primary confirmselect" style="margin-top: 0px;width:40%;" id="confirmselect">确定</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	</body>
+	<script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/jquery-weui/1.1.2/js/jquery-weui.min.js"></script>
+	<script src="https://cdn.bootcss.com/jquery-weui/1.1.2/js/swiper.min.js"></script>
+
+
+	<script src="__STATIC__/wechatservice/js/mui.min.js "></script>
+	<script src="__STATIC__/wechatservice/js/mui.view.js "></script>
+	<script src="__STATIC__/wechatservice/js/mui.pullToRefresh.js "></script>
+	<script src="__STATIC__/wechatservice/js/mui.pullToRefresh.material.js "></script>
+	<script type="text/javascript">
+		var searchparams = '';
+        var hasnext1 = false;
+		var rfidgoods = [];
+        var rfidallselectgoods = [];
+        mui.init({
+            pullRefresh : {
+                container:'#refreshContainer',//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+            down : {
+//                range:'40px', //可选 默认100px,控件可下拉拖拽的范围
+//                offset:'40px', //可选 默认0px,下拉刷新控件的起始位置
+                auto: true,//可选,默认false.首次加载自动上拉刷新一次
+                callback :pulldownrefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+            },
+            up : {
+                    height:50,//可选.默认50.触发上拉加载拖动距离
+                    auto:false,//可选,默认false.自动上拉加载一次
+                    contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+                    contentnomore:'没有更多数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+                	offset:'40px', //可选 默认0px,下拉刷新控件的起始位置
+                    callback :pullfresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+                }
+            }
+        });
+        mui("#refreshContainer").on("tap",".buyrfid",buyrfid);
+        mui("#refreshContainer").on("tap",".editgoods",editgoods);
+        mui("#account").on("tap",".cleargoods",cleargoods);
+        mui("#account").on("tap",".showmoreModal",showmoreModal);
+        function editgoods() {
+            var goodsid = $(this).attr('data-goodsid');
+            location.href = '/wechatservice/goods/edit?goodsid='+goodsid;
+        }
+		function buyrfid() {
+            rfidgoods = [];
+		    var goodsid = $(this).attr('data-goodsid');
+            var goods;
+            for(var i = 0;i<app.goodsList.length;i++){
+                if(app.goodsList[i].goodsid == goodsid){
+                    goods = app.goodsList[i];
+                    break;
+                }
+            }
+            $.actions({
+                actions: [{
+                    text: "信息修改",
+                    onClick: function() {
+                        location.href = '/wechatservice/goods/edit?goodsid='+goodsid;
+                    }
+                },{
+                    text: "购买电子标签",
+                    onClick: function() {
+                        $('#rfidgoodsitem').html('');
+                        rfidgoods.push(goods);
+                        setGoods();
+                        $(document).attr("title","购买电子标签");
+                        viewApi.go('#account');
+                    }
+                }]
+            });
+        }
+        function cleargoods() {
+            rfidgoods = [];
+            $('#rfidgoodsitem').html('');
+        }
+        mui("#account").on("tap",".closebuymodal",closebuymodal);
+        function closebuymodal() {
+            $(document).attr("title","商品信息管理");
+            viewApi.back();
+        }
+        mui("#selectgoods").on("tap",".closeselectmodal",closeselectmodal);
+        function closeselectmodal() {
+            viewApi.back();
+        }
+        var appselect = null;
+        function showmoreModal() {
+            viewApi.go('#selectgoods');
+            if(appselect == null){
+                appselect = new Vue({
+                    el: '#appselect',
+                    data: {
+                        goodsList : []
+                    },
+                    created: function () { //created方法，页面初始调用
+                        var _self = this;
+                        $.ajax({
+                            type: 'GET',
+                            url: '/wechatservice/goods/goodslist?page=1&rows=1000',
+                            success:function(data) {
+                                _self.goodsList = [];
+                                rfidallselectgoods = [];
+                                rfidallselectgoods = data.data.data;
+
+                                for(var k = 0;k<rfidallselectgoods.length;k++){
+                                    rfidallselectgoods[k].checked = false;
+                                    for(var i=0;i<rfidgoods.length;i++){
+                                        if(rfidgoods[i].goodsid == rfidallselectgoods[k].goodsid){
+                                            rfidallselectgoods[k].checked = true;
+                                            break;
+                                        }
+                                    }
+
+                                }
+                                _self.goodsList = rfidallselectgoods;
+                            }
+                        });
+                    }
+                });
+			}else{
+                $.ajax({
+                    type: 'GET',
+                    url: '/wechatservice/goods/goodslist?page=1&rows=1000',
+                    success:function(data) {
+                        appselect.goodsList = [];
+                        rfidallselectgoods = [];
+                        rfidallselectgoods = data.data.data;
+                        for(var k = 0;k<rfidallselectgoods.length;k++){
+                            rfidallselectgoods[k].checked = false;
+                            for(var i=0;i<rfidgoods.length;i++){
+                                if(rfidgoods[i].goodsid == rfidallselectgoods[k].goodsid){
+                                    rfidallselectgoods[k].checked = true;
+                                    break;
+                                }
+                            }
+
+                        }
+                        appselect.goodsList = rfidallselectgoods;
+                    }
+                });
+			}
+
+        }
+        mui("#selectgoods").on("tap",".confirmselect",confirmselect);
+        function confirmselect() {
+            $('input[name="checkbox"]:checked').each(function(){
+                for(var k = 0;k<rfidallselectgoods.length;k++){
+
+                    if(rfidallselectgoods[k].goodsid == $(this).val()){
+                        var has = false;
+                        for(var i=0;i<rfidgoods.length;i++){
+                            if(rfidgoods[i].goodsid == rfidallselectgoods[k].goodsid){
+                                has = true;
+                                break;
+							}
+                        }
+                        if(!has){
+                            rfidgoods.push(rfidallselectgoods[k]);
+                            var html = '<div class="flex-row"style="display: flex;flex-direction:row;justify-content:flex-start;align-items:flex-start;"><div class="flex-view-item"><img src="'+rfidallselectgoods[k].picurl+'"style="height: 60px;width:60px;"/></div><div class="flex-view-item"style="width: 100%;padding-left: 10px;color: #808080;font-size: 14px;"><div class="flex-row"style="display: flex;flex-direction:row;justify-content:space-between;align-items:center;"><p>'+rfidallselectgoods[k].goodsname+'</p></div><div class="flex-row"style="display: flex;flex-direction:row;justify-content:space-between;align-items:center;"><p>规格：'+rfidallselectgoods[k].spec+'</p><p>价格：'+rfidallselectgoods[k].salefee/100+'元</p></div><div class="flex-row"style="display: flex;flex-direction:row;justify-content:space-between;align-items:center;"><p>分类：'+rfidallselectgoods[k].categoryname+'</p><p>rfid标签类型：'+rfidallselectgoods[k].typename+'</p></div></div></div><div class="weui-cells"><div class="rfidcount"><div class="mui-input-row"><label>购买数量</label><input type="hidden" value="'+rfidallselectgoods[k].goodsid+'" name="rgoodsid[]"><input type="number" id="'+rfidallselectgoods[k].goodsid+'" data-unitfee="'+rfidallselectgoods[k].unitfee+'" class="mui-input-clear countclass" placeholder="标签数量('+rfidallselectgoods[k].minsubcount+'个起)" data-min="'+rfidallselectgoods[k].minsubcount+'" name="rfidcount[]"></div></div></div><div style="width:100%;text-align: right;margin-top: 5px;"><a id="fee'+rfidallselectgoods[k].goodsid+'" name="subfee"  class=""style="color: #808080;font-size: 16px;">金额：0.0</a></div>';
+                            $('#rfidgoodsitem').append(html);
+						}
+                        break;
+					}
+				}
+            });
+//            setGoods();
+            viewApi.back();
+        }
+        mui("#account").on("tap",".prepay",prepay);
+        function prepay() {
+            var location = $("#location").val();
+            var username = $("#username").val();
+            var mobile = $("#mobile").val();
+            var hasempty = false;
+            $(".countclass").each(function(){
+                if(isNull($(this).val())){
+                    $.alert("请输入标签购买数量", "提示");
+                    hasempty = true;
+                    return false;
+				}else{
+                    var min = $(this).attr('data-min');
+                    if($(this).val()<min){
+                        $.alert("标签数量不符合要求", "提示");
+                        hasempty = true;
+                        return false;
+					}
+				}
+            });
+            if(hasempty){
+                return false;
+			}
+            if(isNull(location)){
+                $.alert("请输入配送地址", "提示");
+                return false;
+            }
+            if(isNull(username)){
+                $.alert("请输入联系人姓名", "提示");
+                return false;
+            }
+            if(isNull(mobile)){
+                $.alert("请输入手机号", "提示");
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: '/wechatservice/rfid/generateOrder',
+                data: $('#rfidform').serialize(),
+                success: function (result) {
+                    console.log(result);
+                    if(result.code == 1){
+                        document.location.href='/wechatservice/rfid/orderresult?totalfee='+result.data.totalfee+'&orderno='+result.data.orderno;
+                    }else{
+                        alert(result.msg);
+                    }
+                },
+                error: function(data) {
+                    alert("error:"+data.responseText);
+                }
+            });
+        }
+        function setGoods() {
+//            $('#rfidgoodsitem').html('');
+			for(var i=0;i<rfidgoods.length;i++){
+			    var html = '<div class="flex-row" style="display: flex;flex-direction:row;justify-content:flex-start;align-items:flex-start;"><div class="flex-view-item"><img src="'+rfidgoods[i].picurl+'"style="height: 60px;width:60px;"/></div><div class="flex-view-item"style="width: 100%;padding-left: 10px;color: #808080;font-size: 14px;"><div class="flex-row"style="display: flex;flex-direction:row;justify-content:space-between;align-items:center;"><p>'+rfidgoods[i].goodsname+'</p></div><div class="flex-row"style="display: flex;flex-direction:row;justify-content:space-between;align-items:center;"><p>规格：'+rfidgoods[i].spec+'</p><p>价格：'+rfidgoods[i].salefee/100+'元</p></div><div class="flex-row"style="display: flex;flex-direction:row;justify-content:space-between;align-items:center;"><p>分类：'+rfidgoods[i].categoryname+'</p><p>rfid标签类型：'+rfidgoods[i].typename+'</p></div></div></div><div class="weui-cells"><div class="rfidcount"><div class="mui-input-row"><label>购买数量</label><input type="hidden" value="'+rfidgoods[i].goodsid+'" name="rgoodsid[]"><input type="number" id="'+rfidgoods[i].goodsid+'" data-unitfee="'+rfidgoods[i].unitfee+'" class="mui-input-clear countclass" placeholder="标签数量('+rfidgoods[i].minsubcount+'个起)" data-min="'+rfidgoods[i].minsubcount+'" name="rfidcount[]"></div></div></div><div style="width:100%;text-align: right;margin-top: 5px;"><a id="fee'+rfidgoods[i].goodsid+'" name="subfee"  class="" style="color: #808080;font-size: 16px;">金额：0.0</a></div>';
+				$('#rfidgoodsitem').append(html);
+			}
+        }
+
+        var page = 1;
+        var rows = 5;
+
+        //初始化单页view
+        var viewApi = mui('#muiapp').view({
+            defaultPage: '#setting'
+        });
+        //初始化单页的区域滚动
+        mui('.mui-scroll-wrapper').scroll();
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                goodsList : []
+            },
+            created: function () { //created方法，页面初始调用
+
+            }
+        });
+        function pulldownrefresh() {
+            page = 1;
+            app.goodsList = [];
+            var _self = this;
+            mui.ajax('/wechatservice/goods/goodslist',{
+                data:{
+                    page:page,
+                    rows:rows,
+                    searchparams:searchparams
+                },
+                dataType:'json',
+                type:'get',
+                timeout:10000,
+                success:function(data){
+//                    _self.goodsList = data.data.data;
+                    app.goodsList = app.goodsList.concat(data.data.data);
+                    _self.endPulldownToRefresh(true);
+                    hasnext1 = data.data.hasnext;
+                    _self.enablePullupToRefresh();
+                    if(hasnext1){
+                        _self.endPullupToRefresh(false);//true表示没有更多数据了：
+                    }else{
+                        _self.endPullupToRefresh(true);//true表示没有更多数据了：
+                    }
+
+                },
+                error:function(xhr,type,errorThrown){
+                    //异常处理；
+                    console.log(type);
+                }
+            });
+        }
+        function pullfresh() {
+
+            page++;
+            var _self = this;
+            mui.ajax('/wechatservice/goods/goodslist',{
+                data:{
+                    page:page,
+                    rows:rows,
+                    searchparams:searchparams
+                },
+                dataType:'json',
+                type:'get',
+                timeout:10000,
+                success:function(data){
+//                    _self.goodsList = data.data.data;
+                    app.goodsList = app.goodsList.concat(data.data.data);
+                    hasnext1 = data.data.hasnext;
+                    if(hasnext1){
+                        _self.endPullupToRefresh(false);//true表示没有更多数据了：
+					}else{
+                        _self.endPullupToRefresh(true);//true表示没有更多数据了：
+					}
+
+                },
+                error:function(xhr,type,errorThrown){
+                    //异常处理；
+                    console.log(type);
+                }
+            });
+        }
+        var view = viewApi.view;
+        (function($) {
+            //处理view的后退与webview后退
+            var oldBack = $.back;
+            $.back = function() {
+                if (viewApi.canBack()) { //如果view可以后退，则执行view的后退
+                    viewApi.back();
+                } else { //执行webview后退
+                    oldBack();
+                }
+            };
+            //监听页面切换事件方案1,通过view元素监听所有页面切换事件，目前提供pageBeforeShow|pageShow|pageBeforeBack|pageBack四种事件(before事件为动画开始前触发)
+            //第一个参数为事件名称，第二个参数为事件回调，其中e.detail.page为当前页面的html对象
+            view.addEventListener('pageBeforeShow', function(e) {
+                //				console.log(e.detail.page.id + ' beforeShow');
+            });
+            view.addEventListener('pageShow', function(e) {
+                //				console.log(e.detail.page.id + ' show');
+            });
+            view.addEventListener('pageBeforeBack', function(e) {
+                //				console.log(e.detail.page.id + ' beforeBack');
+            });
+            view.addEventListener('pageBack', function(e) {
+                //				console.log(e.detail.page.id + ' back');
+            });
+        })(mui);
+        mui('body').on('input','.countclass', function()
+        {
+            var count = $(this).val();
+            var goodsid = $(this).attr('id');
+            var unitfee = $(this).attr('data-unitfee');
+            var subtotalfee = count*unitfee/100;
+            $(this).attr('data-fee',count*unitfee);
+            $('#fee'+goodsid).html('金额:'+subtotalfee+'元');
+            var totalfee = 0;
+//            var is=document.getElementsByTagName('subfee');console.log(is)
+//            for(var i=0;i<is.length;i++){
+//
+//                totalfee+=is[i].getAttribute('data-fee');
+//            }
+            $(".countclass").each(function(i){
+                totalfee=parseInt($(this).attr('data-fee'))+totalfee;
+            });
+
+            $('#ftotalfee').val(totalfee);
+            //
+            var mianfee = "{$rfidfreefee/100}";
+            var frefee = "{$rfidperorderfreight/100}";
+			if(totalfee/100>=mianfee){
+			    $('#freightfee').html('免运费');
+                $('#freightfeevalue').val('0');
+                $('#paybtn').html('下单支付（合计'+totalfee/100+"元）");
+			}else{
+                $('#freightfee').html('运费:'+frefee+'元');
+            	$('#freightfeevalue').val(frefee*100);
+                var sum = totalfee + parseInt(frefee*100);
+                $('#paybtn').html('下单支付（合计'+sum/100+"元）");
+			}
+
+        });
+        //标签选择
+        document.getElementById("open").addEventListener('tap',function () {
+            //清空数据
+
+            mui("#popover").popover("toggle");
+        });
+//        document.getElementById("confirmtype").addEventListener('tap',function () {
+//            mui("#popover").popover("toggle");
+//        });
+        mui("#popover").on("tap", ".tagItem2", function() {
+            var id = this.getAttribute("data-id");
+            var typename = this.querySelector("span").innerHTML;
+        	var html = '<div class="tagItem" id="'+id+'"><span>'+typename+'</span><div class="delete"></div></div>';
+            $('#searchtags').append(html);
+
+        });
+        mui("#popover").on("tap", ".delete", function() {
+            var id = this.parentNode.getAttribute("id");
+            $('#'+id).remove();
+        });
+        mui("#popover").on("tap", "#confirmtype", function() {
+            searchparams = '';
+            $('#currenttags').html('');
+            mui(".tagItem").each(function () {
+//                alert(this.getAttribute("id"));
+                searchparams = searchparams+ this.getAttribute("id")+',';
+                var typename = this.querySelector("span").innerHTML;
+                var html = '<div class="tagItem3"><span>'+typename+'</span></div>';
+                $('#currenttags').append(html);
+            });
+            page = 0;
+            app.goodsList = [];
+            mui("#popover").popover("toggle");
+            mui('#refreshContainer').pullRefresh().refresh(true);
+            mui('#refreshContainer').pullRefresh().pulldownLoading();
+        });
+        $(function() {
+            mui.ajax('/wechatservice/goods/categorylist',{
+                data:{
+//                    page:page,
+//                    rows:rows
+                },
+                dataType:'json',
+                type:'get',
+                timeout:10000,
+                success:function(data){
+                    for(var i=0;i<data.data.length;i++){
+                        var html = '<div class="tagItem2" data-id="'+data.data[i].categoryid+'"><span>'+data.data[i].categoryname+'</span></div>';
+                        $('#alltags').append(html);
+                    }
+                },
+                error:function(xhr,type,errorThrown){
+                    //异常处理；
+                    console.log(type);
+                }
+            });
+        })
+        function isNull(str){
+            if ( str == "" ) return true;
+            var regu = "^[ ]+$";
+            var re = new RegExp(regu);
+            return re.test(str);
+        }
+	</script>
+</html>

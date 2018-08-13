@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>代理商查看</title>
+    {include file="common/header" /}
+    <style>
+
+
+    </style>
+
+</head>
+
+<body>
+<div id="container" class="container">
+    <div class="content-top">
+        <div class="weui-flex__title">代理商：惺惺惜惺惺</div>
+        <div class="weui-flex">
+            <div class="weui-flex__item">商户数量：8000</div>
+            <div class="weui-flex__item">机柜总数量：9000</div>
+        </div>
+        <div class="weui-flex">
+            <div class="weui-flex__item">联系人：文雪</div>
+            <div class="weui-flex__item">电话：18611507481</div>
+        </div>
+
+    </div>
+    <div class="ranking content-center">
+        <div class="header">商户查看</div>
+        <div class="weui-flex content-detail">
+            <div class="weui-flex__item">
+                <div class="">商户名称:AFSafavdsv AScaVSih;mnlk</div>
+                <div class="weui-flex">
+                    <div class="weui-flex__item">交易流水额：1000</div>
+                    <div class="weui-flex__item">总机柜数：20000</div>
+                </div>
+                <div class="weui-flex">
+                    <div class="weui-flex__item">联系人：文雪</div>
+                    <div class="  rank-right">电话：18611507481</div>
+                </div>
+            </div>
+            <div class="weui-panel__ft view-detail">
+                <a href="{:url('merchant/busDetail.html')}" class="weui-cell_access">
+                    <span class="weui-cell__ft">查看</span>
+                </a>
+            </div>
+        </div>
+        <div class="weui-flex content-detail">
+            <div class="weui-flex__item">
+                <div class="">商户名称:AFSafavdsv AScaVSih;mnlk</div>
+                <div class="weui-flex">
+                    <div class="weui-flex__item">交易流水额：1000</div>
+                    <div class="weui-flex__item">总机柜数：20000</div>
+                </div>
+                <div class="weui-flex">
+                    <div class="weui-flex__item">联系人：文雪</div>
+                    <div class="  rank-right">电话：18611507481</div>
+                </div>
+            </div>
+            <div class="weui-panel__ft view-detail">
+                <a href="{:url('merchant/busDetail.html')}" class="weui-cell_access">
+                    <span class="weui-cell__ft">查看</span>
+                </a>
+            </div>
+        </div>
+        <div class="weui-flex content-detail">
+            <div class="weui-flex__item">
+                <div class="">商户名称:AFSafavdsv AScaVSih;mnlk</div>
+                <div class="weui-flex">
+                    <div class="weui-flex__item">交易流水额：1000</div>
+                    <div class="weui-flex__item">总机柜数：20000</div>
+                </div>
+                <div class="weui-flex">
+                    <div class="weui-flex__item">联系人：文雪</div>
+                    <div class="  rank-right">电话：18611507481</div>
+                </div>
+            </div>
+            <div class="weui-panel__ft view-detail">
+                <a href="{:url('merchant/busDetail.html')}" class="weui-cell_access">
+                    <span class="weui-cell__ft">查看</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<div id="back" onclick="javascript:history.back()">
+    <button>返回</button>
+</div>
+</body>
+
+<script>
+    $(function(){
+        var start = '{$start}';
+        var end = '{$end}';
+        $("#start_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [start],
+            maxDate: end,
+            onChange: function (p, values) {
+                start = values[0];
+            },
+        });
+        $("#end_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [end],
+            minDate: start,
+            onChange: function (p, values) {
+                start = values[0];
+            },
+        });
+
+    })
+
+</script>
+
+
+</html>

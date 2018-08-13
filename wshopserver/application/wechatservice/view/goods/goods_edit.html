@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>编辑商品</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/weui/1.1.1/style/weui.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/jquery-weui/1.1.1/css/jquery-weui.min.css">
+    <style>
+        body {
+            height: 100% !important;
+            background: #E7E7E7 !important;
+        }
+
+        .upload_head {
+            color: #999999;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="weui-gallery" id="gallery">
+    <span class="weui-gallery__img" id="galleryImg"></span>
+    <div class="weui-gallery__opr">
+        <a href="javascript:" rel="external nofollow" class="weui-gallery__del">
+            <i class="weui-icon-delete weui-icon_gallery-delete"></i>
+        </a>
+    </div>
+</div>
+    <form class="" id="mainform" method="post" action="{:url('goods/update')}">
+        <input type="hidden" name="goodsid" value="{$goods.goodsid}"/>
+    <div class="page">
+        <div class="page__bd page__bd_spacing">
+            <div class="weui-panel weui-panel_access">
+                <div class="weui-panel__hd">分类</div>
+                <div class="weui-panel__ft">
+                    <a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link">
+                        <div class="weui-cell__bd" id="selectedCategory">{$categoryname}</div>
+                        <input type="hidden" id="categoryid" name="categoryid" value="{$goods.goodscategoryid}">
+                        <span id="choose" class="weui-cell__ft">选择分类</span>
+                    </a>
+                </div>
+            </div>
+            <div class="weui-panel weui-panel_access">
+                <div class="weui-panel__hd">名称</div>
+                <div class="weui-panel__bd" style="padding:10px 15px;">
+                    <input class="weui-input" placeholder="请输入名称" id="goodsname" name="goodsname" value="{$goods.goodsname}"/>
+                </div>
+            </div>
+            <div class="weui-panel weui-panel_access">
+                <div class="flex-row" style="display: flex;flex-direction:row;justify-content:space-between;align-items:center;width:100%;">
+                    <div style="width:80%;">
+                        <div class="weui-panel__hd">条形码</div>
+                        <div class="weui-panel__bd" style="padding:10px 15px;">
+                            <input class="weui-input" placeholder="请输入条形码" id="stucode" name="stucode" value="{$goods.stucode}"/>
+                        </div>
+                    </div>
+                    <img id="scanQRCode" src="__STATIC__/wechatservice/img/scanbar.png" style="margin-right:10px;width:40px;height:40px;">
+                </div>
+            </div>
+            <div class="weui-panel weui-panel_access">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <div class="weui-uploader">
+                            <div class="weui-uploader__hd">
+                                <p class="weui-uploader__title upload_head">头图</p>
+                                <div class="weui-uploader__info js_counter">0/1</div>
+                            </div>
+                            <div class="weui-uploader__bd">
+                                <ul class="weui-uploader__files" id="uploaderFiles">
+                                    <li class="weui-uploader__file"
+                                        style="background-image:url('{$goods.path}')"></li>
+                                </ul>
+                                <div class="weui-uploader__input-box">
+                                    <input id="uploaderInput" class="weui-uploader__input js_file" type="file" accept="image/*"
+                                           multiple="false">
+                                    <input id="picurl"  name="picurl" type="hidden" value="{$goods.picurl}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-panel weui-panel_access">
+                <div class="weui-panel__hd">价格</div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label class="weui-label">原价(元)</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" placeholder="请输入价格" id="originalfee" name="originalfee" value="{$goods.originalfee/100}">
+                    </div>
+                </div>
+                <div class="weui-cell ">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">销售价(元)</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" placeholder="请输入价格" id="salefee" name="salefee" value="{$goods.salefee/100}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="weui-panel weui-panel_access">
+                <div class="weui-panel__hd">规格</div>
+                <div class="weui-cell ">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">规格名称</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" placeholder="请输入规格名称" id="spec" name="spec" value="{$goods.spec}">
+                    </div>
+                </div>
+            </div>
+            <div class="weui-panel weui-panel_access">
+                <div class="weui-panel__hd">商品重量</div>
+                <div class="weui-cell ">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">商品标准重量（克）</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="number" placeholder="请输入重量" id="weight" name="weight" value="{$goods.weight}">
+                    </div>
+                </div>
+                <div class="weui-cell ">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">商品浮动重量（克）</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="number" placeholder="请输入重量" id="weightdrift" name="weightdrift" value="{$goods.weightdrift}">
+                    </div>
+                </div>
+            </div>
+            <div class="weui-btn-area">
+                <button type="button" class="weui-btn weui-btn_primary" id="subbtn">确定</button>
+                <a class="weui-btn weui-btn_default" href="javascript:goback()"  id="ga_back">返回</a>
+            </div>
+        </div>
+    </div>
+        <div class="weui_dialog_alert" style="display: none;">
+            <div class="weui_mask"></div>
+            <div class="weui_dialog">
+                <div class="weui_dialog_hd"> <strong class="weui_dialog_title">警告</strong>
+                </div>
+                <div class="weui_dialog_bd">弹窗内容，告知当前页面信息等</div>
+                <div class="weui_dialog_ft">
+                    <a href="javascript:;" class="weui_btn_dialog primary">确定</a>
+                </div>
+            </div>
+        </div>
+</form>
+<div id="select_category" class="weui-popup__container">
+    <div class="weui-popup__overlay"></div>
+    <div class="weui-popup__modal">
+        <div class="weui-cells weui-cells_checkbox">
+            {volist name="categorys" id="vo" key="k"}
+            <label class="weui-cell weui-check__label" for="{$vo.categoryid}">
+                <div class="weui-cell__bd">
+                    <div class="flex-row"
+                         style="display: flex;flex-direction:row;justify-content:flex-start;align-items:center;">
+                        <img src="{$vo.iconurl}" style="width: 60px;height: 60px;"/>
+                        <p style="margin-left: 10px;">{$vo.categoryname}</p>
+                    </div>
+
+
+                </div>
+                <div class="weui-cell__hd">
+                    <input type="radio" class="weui-check" name="radio" id="{$vo.categoryid}" value="{$vo.categoryid}" data-name="{$vo.categoryname}" >
+                    <i class="weui-icon-checked"></i>
+                </div>
+            </label>
+            {/volist}
+
+        </div>
+
+        <div class="flex-row"
+             style="display: flex;flex-direction:row;justify-content:center;align-items:center;margin-top: 20px;">
+            <a class="weui-btn weui-btn_default" style="margin-top: 0px;width:40%;" href="javascript:" id="modal_close">返回</a>
+            <a class="weui-btn weui-btn_primary" style="margin-top: 0px;width:40%;" href="javascript:"
+               id="modal_confirm">确定</a>
+        </div>
+    </div>
+</div>
+</body>
+
+<script src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/jquery-weui/1.1.1/js/jquery-weui.min.js"></script>
+<! -- 引入微信官方的JSSDK 1.2版本-->
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="__STATIC__/wechatservice/js/exif.js "></script>
+<script>
+    $("#choose").on("click", function () {
+        $("#select_category").popup();
+    });
+    $("#modal_close").on("click", function () {
+        $.closePopup();
+    });
+
+    $("#modal_confirm").on("click", function () {
+        $('input[name="radio"]:checked').each(function(){
+            var categoryid = $(this).val();
+            var categoryname = $(this).attr('data-name');
+            $('#selectedCategory').html(categoryname);
+            $('#categoryid').val(categoryid);
+        });
+        $.closePopup();
+    });
+    $("#subbtn").on("click", function () {
+        var categoryid = $("#categoryid").val();
+        var goodsname = $("#goodsname").val();
+        var stucode = $("#stucode").val();
+        var picurl = $("#picurl").val();
+        var originalfee = $("#originalfee").val();
+        var salefee = $("#salefee").val();
+        var spec = $("#spec").val();
+        var weight = $("#weight").val();
+        var weightdrift = $("#weightdrift").val();
+        if(isNull(categoryid)){
+            $.alert("请选择商品分类", "提示");
+            return;
+        }
+        if(isNull(goodsname)){
+            $.alert("请输入商品名称", "提示");
+            return;
+        }
+        if(isNull(stucode)){
+            $.alert("请输入条形码", "提示");
+            return;
+        }
+        if(isNull(picurl)){
+            $.alert("请上传一张商品图片", "提示");
+            return;
+        }
+        if(isNull(originalfee)){
+            $.alert("请输入商品原价(数字)", "提示");
+            return;
+        }
+        if(isNull(salefee)){
+            $.alert("请输入商品销售价(数字)", "提示");
+            return;
+        }
+        if(isNull(spec)){
+            $.alert("请输入商品规格", "提示");
+            return;
+        }
+        if(isNull(weight)){
+            $.alert("请输入商品重量(数字)", "提示");
+            return;
+        }
+        if(isNull(weightdrift)){
+            $.alert("请输入商品浮动重量(数字)", "提示");
+            return;
+        }
+        $("#subbtn").text("正在操作...");
+        $("#subbtn").attr("disabled","true");
+        $("#mainform").submit();
+    });
+    function isNull(str){
+        if ( str == "" ) return true;
+        var regu = "^[ ]+$";
+        var re = new RegExp(regu);
+        return re.test(str);
+    }
+    function goback() {
+        location.href = "index";
+    }
+</script>
+<script>
+
+    $(function () {
+        // 允许上传的图片类型
+        var allowTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'];
+        // 1024KB，也就是 1MB
+        var maxSize = 1024 * 1024*5;
+        // 图片最大宽度
+        var maxWidth = 860;
+        // 最大上传图片数量
+        var maxCount = 1;
+        $('.weui-uploader__input').on('change', function (event) {
+            var files = event.target.files;
+            // 如果没有选中文件，直接返回
+            if (files.length === 0) {
+                return;
+            }
+
+            for (var i = 0, len = files.length; i < len; i++) {
+                var file = files[i];
+                var reader = new FileReader();
+
+                // 如果类型不在允许的类型范围内
+                if (allowTypes.indexOf(file.type) === -1) {
+                    $.alert('该类型不允许上传');
+                    continue;
+                }
+
+                if (file.size > maxSize) {
+                    $.alert('图片太大，不允许上传');
+                    continue;
+                }
+
+                if ($('.weui-uploader__file').length >= maxCount) {
+                    $.alert('最多只能上传' + maxCount + '张图片');
+                    return;
+                }
+
+                reader.onload = function (e) {
+                    var img = new Image();
+                    img.onload = function () {
+                        // 不要超出最大宽度
+                        var w = Math.min(maxWidth, img.width);
+                        // 高度按比例计算
+                        var h = img.height * (w / img.width);
+                        // var canvas = document.createElement('canvas');
+                        // var ctx = canvas.getContext('2d');
+                        // // 设置 canvas 的宽度和高度
+                        // canvas.width = w;
+                        // canvas.height = h;
+                        // ctx.drawImage(img, 0, 0, w, h);
+                        // var base64 = canvas.toDataURL('image/png');
+                        var base64 = compress(img,w,h,0.4);
+
+                        // 插入到预览区
+                        var $preview = $('<li class="weui-uploader__file weui_uploader_status" style="background-image:url(' + base64 + ')"></li>');
+                        $('.weui-uploader__files').append($preview);
+                        var num = $('.weui-uploader__file').length;
+                        $('.js_counter').text(num + '/' + maxCount);
+
+                        //post base64
+//
+                        var param = {
+                            'base64':base64
+                        };
+                        $.showLoading("上传中...");
+                        $.ajax({
+                            url: '/clientapi/image/base64_upload',
+                            type: 'POST',
+                            data: param,
+        //                cache: false,
+        //                processData: false,
+        //                contentType: false,
+                            success:function (response) {
+                                $.hideLoading();
+                                console.log(response);
+                                $('#picurl').attr('value',response);
+//                                $.alert(response.reason,siteTitle);
+                            },
+                            error:function () {
+                                $.hideLoading();
+                                alert('上传失败');
+                            }
+                        });
+                    };
+
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        //gallery
+        var index; //第几张图片
+        $('#uploaderFiles').on("click", "li", function() {
+            index = $(this).index();
+            $('#galleryImg').attr("style", this.getAttribute("style"));
+            $('#gallery').fadeIn(100);
+        });
+        $('#gallery').on("click", function() {
+            $('#gallery').fadeOut(100);
+        });
+        //删除图片
+        $(".weui-gallery__del").click(function() {
+            console.log('删除');
+            $('#uploaderFiles').find("li").eq(index).remove();
+            $('#hiddenUploaderFiles').find("input").eq(index).remove();
+            var num = $('.weui-uploader__file').length;
+            $('.js_counter').text(num + '/' + maxCount);
+        });
+
+        var u = navigator.userAgent;
+        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+        // var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+        if(isAndroid){
+            $('#uploaderInput').attr("capture","camera");
+        }
+        //获取图片方向
+        function getPhotoOrientation(img) {
+            var orient;
+            EXIF.getData(img, function () {
+                orient = EXIF.getTag(this, 'Orientation');
+            });
+            return orient;
+        }
+        //图片压缩
+        function compress(img, width, height, ratio) {
+            var canvas, ctx, img64, orient;
+
+            //获取图片方向
+            orient = getPhotoOrientation(img);
+
+            canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+
+            ctx = canvas.getContext("2d");
+
+            //如果图片方向等于6 ，则旋转矫正，反之则不做处理
+            if (orient == 6) {
+                ctx.save();
+                ctx.translate(width / 2, height / 2);
+                ctx.rotate(90 * Math.PI / 180);
+                ctx.drawImage(img, 0 - height / 2, 0 - width / 2, height, width);
+                ctx.restore();
+            } else {
+                ctx.drawImage(img, 0, 0, width, height);
+            }
+
+            img64 = canvas.toDataURL("image/jpeg", ratio);
+            return img64;
+        }
+    });
+    var options = {$options};
+    var options_arr = eval(options);
+    wx.config({
+        debug: options_arr.debug, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: options_arr.appId, // 必填，公众号的唯一标识
+        timestamp: options_arr.timestamp + "", // 必填，生成签名的时间戳
+        nonceStr: options_arr.nonceStr, // 必填，生成签名的随机串
+        signature: options_arr.signature,// 必填，签名，见附录1
+        jsApiList: options_arr.jsApiList // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+    });
+    wx.ready(function() {
+        wx.checkJsApi({
+            jsApiList : ['scanQRCode'],
+            success : function(res) {
+
+            }
+        });
+
+        //点击按钮扫描二维码
+        document.querySelector('#scanQRCode').onclick = function() {
+            wx.scanQRCode({
+                needResult : 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                scanType : [ "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                success : function(res) {
+                    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                    var rs = result.split(',');
+                    if(rs.length>1){
+                        $('#stucode').val(rs[1]);
+                    }
+                }
+            });
+        };
+
+    });
+    //# sourceURL=pen.js
+</script>
+</html>

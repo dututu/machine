@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+{include file="public/layerheader" /}
+<style>
+    .box{
+        margin-bottom: 0px;
+    }
+    .box .box-content{
+        padding: 0px;
+        padding-top: 10px;
+        border: 0px;
+    }
+    .form-actions{
+        margin-bottom: 0px;
+        text-align: right;
+    }
+    .error{
+        color:red;
+    }
+</style>
+<body class=''>
+
+<div class='container-fluid'>
+        <div class="row-fluid">
+    <div class="span12 box">
+        <div class="box-content">
+            <form id="form-category-add"  action="savefeight" class="form form-horizontal "  method="post" style="margin-bottom: 0;"><div style="margin:0;padding:0;display:inline"></div>
+                <div class="control-group">
+                    <label class="control-label" for="rfidperorderfreight">每笔订单运费：</label>
+                    <div class="controls">
+                        <input id="rfidperorderfreight" name="rfidperorderfreight"  placeholder="请输入金额" type="text">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="rfidfreefee">免运费金额：</label>
+                    <div class="controls">
+                        <input id="rfidfreefee" name="rfidfreefee" placeholder="请输入金额" type="text" >
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">
+                        确定
+                    </button>
+                    <button class="btn" type="button" onclick="javascript:close_layer();">取消</button>
+                </div>
+            </form>
+        </div>
+        
+    </div>
+</div>
+    </div>
+{include file="public/footer" /}
+<script>
+    function close_layer(){
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.$('.btn-refresh').click();
+        parent.layer.close(index);
+    }
+
+    //
+    //
+    $(function(){
+        $("#form-category-add").validate({
+            rules:{
+                rfidperorderfreight:{
+                    required:true
+                },
+                rfidfreefee:{
+                    required:true
+                }
+            },
+            onkeyup:false,
+            focusCleanup:true,
+            success:"valid",
+            submitHandler:function(form){
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: 'savefeight',
+                    data: $('#form-category-add').serialize(),
+                    success: function (result) {
+                        if(result.code == 1){
+                            parent.location.reload();
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        }else{
+                            alert(result.msg);
+                        }
+                    },
+                    error: function(data) {
+                        alert("error:"+data.responseText);
+                    }
+                });
+            }
+        });
+    });
+
+</script>
+</body>
+</html>

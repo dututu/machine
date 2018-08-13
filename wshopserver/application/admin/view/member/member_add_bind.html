@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+{include file="public/layerheader" /}
+<style>
+	.box{
+		margin-bottom: 0px;
+	}
+	.box .box-content{
+		padding: 0px;
+		padding-top: 10px;
+		border: 0px;
+	}
+	.form-actions{
+		margin-bottom: 0px;
+		text-align: right;
+	}
+.error{
+	color:red;
+}
+</style>
+</head>
+<body class='contrast-red '>
+
+<div class='container-fluid'>
+        <div class="row-fluid">
+    <div class="span12 box">
+        <div class="box-content" style="height: 325px;overflow-y: auto;">
+            <form id="form-category-add"  action="http://www.douban.com" class="form form-horizontal "  method="post" style="margin-bottom: 0;"><div style="margin:0;padding:0;display:inline"></div>
+                <div class="control-group" style="text-align: center;margin-bottom: 0px;padding-top:35px;">
+                    <img src="data:image/png;base64,{$picurl}" style="width:160px;height: 160px;"/>
+                </div>
+                <div class="control-group" style="text-align: center;margin-bottom: 0px;">
+                    <p>请使用微信扫描二维码绑定身份</p>
+                </div>
+                
+                <div class="form-actions" style="margin-top: 0px;position: absolute;bottom: 0px;width: 100%;padding: 0px;padding-top:20px;padding-bottom:20px;">
+                    <button class="btn btn-primary" type="submit" style="margin-right: 20px;">
+                        完成
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+    </div>
+</div>
+    </div>
+{include file="public/footer" /}
+<script>
+    var ticket = "{$ticket}";
+    var iCount;
+    $(function() {
+        iCount =  setInterval(function(){
+            querystatus();
+        },3000);
+    });
+    function querystatus() {
+        var postData = {
+            'ticket':ticket
+        };
+        var url = 'querystatus';
+        $.post(url,postData,function (result) {
+            if(result.code == 2){
+                alert('该用户已经绑定，请勿重复绑定');
+                clearInterval(iCount);
+                close_layer();
+            }else if(result.code == 1){
+                clearInterval(iCount);
+                alert('绑定成功');
+                close_layer();
+            }
+        },"json");
+    }
+</script>
+<script>
+	function close_layer(){
+			var index = parent.layer.getFrameIndex(window.name);
+			parent.layer.close(index);
+            parent.location.reload();
+	}
+	
+	
+	
+$(function(){
+	
+	$("#form-category-add").validate({
+		rules:{
+			categoryname:{
+				required:true
+			},
+			categoryno:{
+				required:true
+			}
+		},
+		onkeyup:false,
+		focusCleanup:true,
+		success:"valid",
+		submitHandler:function(form){
+//			$(form).ajaxSubmit();
+			var index = parent.layer.getFrameIndex(window.name);
+			parent.$('.btn-refresh').click();
+			parent.layer.close(index);
+		}
+	});
+});
+
+</script>
+</body>
+</html>

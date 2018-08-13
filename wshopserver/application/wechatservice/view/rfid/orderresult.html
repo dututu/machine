@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>支付</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/weui/1.1.2/style/weui.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/jquery-weui/1.1.2/css/jquery-weui.min.css">
+    <style>
+        body {
+            height: 100% !important;
+            background: #fbfbfb !important;
+        }
+
+        .weui-msg__desc {
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="page">
+    <div class="page__bd page__bd_spacing">
+        <div class="weui-msg">
+            <div class="weui-msg__icon-area"><i class="weui-icon-waiting weui-icon_msg"></i></div>
+            <div class="weui-msg__text-area">
+                <h2 class="weui-msg__title">待支付</h2>
+                <p class="weui-msg__desc">{$totalfee/100}元</p>
+            </div>
+            <div class="weui-msg__opr-area">
+                <p class="weui-btn-area">
+                    <a href="javascript:startPay();" class="weui-btn weui-btn_primary">支付</a>
+                    <a href="javascript:history.back(-1);" class="weui-btn weui-btn_default">取消</a>
+                </p>
+            </div>
+            <!--<div class="weui-msg__extra-area">-->
+            <!--<div class="weui-footer">-->
+            <!--<p class="weui-footer__links">-->
+            <!--<a href="javascript:void(0);" class="weui-footer__link">底部链接文本</a>-->
+            <!--</p>-->
+            <!--<p class="weui-footer__text">Copyright © 2008-2016 weui.io</p>-->
+            <!--</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+</div>
+</body>
+
+<script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-weui/1.1.2/js/jquery-weui.min.js"></script>
+<! -- 引入微信官方的JSSDK 1.2版本-->
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script type="text/javascript">
+    var options = {$options};
+    var pay_param2 = {$payoptions};
+    var options_arr = eval(options);
+    wx.config({
+        debug: options_arr.debug, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: options_arr.appId, // 必填，公众号的唯一标识
+        timestamp: options_arr.timestamp + "", // 必填，生成签名的时间戳
+        nonceStr: options_arr.nonceStr, // 必填，生成签名的随机串
+        signature: options_arr.signature,// 必填，签名，见附录1
+        jsApiList: options_arr.jsApiList // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+    });
+    wx.ready(function () {
+        // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+
+        //{"appId":"wxdee00ccdb3bec1a6","timeStamp":"1513653862","nonceStr":"tsxnuabuihboenxauk8yju0e2n2mkdr3","package":"prepay_id=wx2017121911211848f849255c0895529647","signType":"MD5","paySign":"028DAFEF545D0DE4EF99034BF0964482","timestamp":"1513653862"}
+
+
+        callWxJsPay(pay_param2);
+
+    });
+    wx.error(function (res) {
+        // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+    });
+
+    function callback(state, msg) {
+        if (state == 'cancel') {
+            $.toast("取消支付", "cancel");
+        } else if (state == 'fail') {
+            $.alert(msg, "提示", function () {
+//                    window.history.back(-1);
+            });
+        } else if (state == 'ok') {
+            $.toast("支付成功");
+            location.href="/wechatservice/rfid/orders";
+        }
+
+    }
+
+    //调用微信JS api 支付function
+    function jsApiCall(pay_param) {
+        var pay_param_arr = eval(pay_param);
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest', {
+                'appId': pay_param_arr.appId,
+                'timeStamp': pay_param_arr.timeStamp + "",
+                'nonceStr': pay_param_arr.nonceStr,
+                'package': pay_param_arr.package,
+                'signType': pay_param_arr.signType,
+                'paySign': pay_param_arr.paySign
+            },
+            function (res) {
+                if (res.err_msg == "get_brand_wcpay_request:ok") {
+                    //成功
+                    callback("ok");
+                } else if (res.err_msg == "get_brand_wcpay_request:cancel") {
+                    //取消
+                    callback("cancel", "您已经取消支付");
+                } else {
+                    //失败
+                    callback("fail", "支付失败");
+                }
+            });
+    }
+
+    /** * 微信公众号支付
+     * @param pay_param 服务端生成的pay_param
+     */
+    function callWxJsPay(pay_param) {
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+            }
+        } else {
+            jsApiCall(pay_param);
+        }
+    }
+
+    function startPay() {
+        callWxJsPay(pay_param2);
+    }
+
+
+</script>
+</html>

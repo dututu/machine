@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>订单管理</title>
+    {include file="common/header" /}
+    <style>
+    </style>
+
+</head>
+
+<body>
+   
+<div id="container" class="container">
+    <div class="weui-search weui-flex">
+        <div class="icon fa-calendar"></div>
+        <input class="weui-input weui-input_5" id="start_date" type="text" value="{$date}" readonly>
+        <span>&nbsp ~ &nbsp</span>
+        <input class="weui-input weui-input_5" id="end_date" type="text" value="{$date}" readonly>
+        <a class="icon icon-menu menu open-popup" data-target="#select"></a>
+    </div>
+    <div class="content-top">
+        <div class="weui-flex">
+            <div class="weui-flex__item weui-flex__title">代理商总数：4000</div>
+            <div class="weui-flex__item weui-flex__title">商户总数：4000</div>
+
+        </div>
+
+        <div class="weui-flex">
+            <div class="weui-flex__item">流水总金额：8000</div>
+            <div class="weui-flex__item">订单总笔数：9000</div>
+        </div>
+        <div class="weui-flex">
+            <div class="weui-flex__item">退款总金额：1111</div>
+            <div class="weui-flex__item">交易机柜数：111223</div>
+        </div>
+
+    </div>
+    <div class="ranking content-center">
+        <div class="">销售明细</div>
+        <div class="weui-flex content-detail">
+            <div class="weui-flex__item">
+                <div class="">订单编号：1111111</div>
+                <div class="">下单时间：1111111</div>
+                <div class="weui-flex">
+                    <div class="photo"><img src="https://pro.modao.cc/uploads3/images/1222/12220663/raw_1503974885.jpeg" class="photo__thumb" alt=""></div>
+                    <div class="photo"><img src="https://pro.modao.cc/uploads3/images/1222/12220663/raw_1503974885.jpeg" class="photo__thumb" alt=""></div>
+                    <div class="photo"><img src="https://pro.modao.cc/uploads3/images/1222/12220663/raw_1503974885.jpeg" class="photo__thumb" alt=""></div>
+                    <div class="photo"><img src="https://pro.modao.cc/uploads3/images/1222/12220663/raw_1503974885.jpeg" class="photo__thumb" alt=""></div>
+                </div>
+                <div class="weui-flex">
+                    <div class="weui-flex__item">交易流水额：1000</div>
+                    <div class="weui-flex__item">总机柜数：20000</div>
+                    <!-- <a href="{:url('merchant/busDetail.html')}" class="weui-cell_access">
+                        <span class="weui-cell__ft">详情</span>
+                    </a> -->
+                </div>
+                <span class="order-status color-green">已完成</span>
+            </div>
+        </div>
+        <div class="weui-flex content-detail">
+            <div class="weui-flex__item">
+                <div class="">订单编号：1111111</div>
+                <div class="">下单时间：1111111</div>
+                <div class="weui-flex">
+                    <div class="photo"><img src="https://pro.modao.cc/uploads3/images/1222/12220663/raw_1503974885.jpeg" class="photo__thumb" alt=""></div>
+                    <div class="photo"><img src="https://pro.modao.cc/uploads3/images/1222/12220663/raw_1503974885.jpeg" class="photo__thumb" alt=""></div>
+                    <div class="photo"><img src="https://pro.modao.cc/uploads3/images/1222/12220663/raw_1503974885.jpeg" class="photo__thumb" alt=""></div>
+                    <div class="photo"><img src="https://pro.modao.cc/uploads3/images/1222/12220663/raw_1503974885.jpeg" class="photo__thumb" alt=""></div>
+                </div>
+                <div class="weui-flex">
+                    <div class="weui-flex__item">共4件商品</div>
+                    <div class="weui-flex__item">实付金额：20000元</div>
+                    <!-- <a href="{:url('merchant/busDetail.html')}" class="weui-cell_access">
+                        <span class="weui-cell__ft">详情</span>
+                    </a> -->
+                </div>
+                <span class="order-status color-orange">退款中</span>
+            </div>
+        </div>
+        <div class="weui-flex content-detail">
+            <div class="weui-flex__item">
+                <div class="">订单编号：1111111</div>
+                <div class="">下单时间：1111111</div>
+                <div class="weui-flex">
+                    <div class="photo"><img src="https://pro.modao.cc/uploads3/images/1222/12220663/raw_1503974885.jpeg" class="photo__thumb" alt=""></div>
+                    <div class="photo"><img src="https://pro.modao.cc/uploads3/images/1222/12220663/raw_1503974885.jpeg" class="photo__thumb" alt=""></div>
+                    <div class="photo"><img src="https://pro.modao.cc/uploads3/images/1222/12220663/raw_1503974885.jpeg" class="photo__thumb" alt=""></div>
+                    <div class="photo"><img src="https://pro.modao.cc/uploads3/images/1222/12220663/raw_1503974885.jpeg" class="photo__thumb" alt=""></div>
+                </div>
+                <div class="weui-flex">
+                    <div class="weui-flex__item">交易流水额：1000</div>
+                    <div class="weui-flex__item">总机柜数：20000</div>
+                    <!-- <a href="{:url('merchant/busDetail.html')}" class="weui-cell_access">
+                        <span class="weui-cell__ft">详情</span>
+                    </a> -->
+                </div>
+                <span class="order-status color-green">已完成</span>
+            </div>
+        </div>
+    </div>
+    <div class="weui-loadmore weui-loadmore_line weui-loadmore_dot">
+        <span class="weui-loadmore__tips">点击加载更多</span>
+    </div>
+</div>
+<div id="select" class="weui-popup__container popup-bottom">
+    <div class="weui-popup__overlay"></div>
+    <div class="weui-popup__modal">
+        <div class="search-title">筛选</div>
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">平台商务</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <select class="weui-select" name="select1">
+                        <option selected="" value="1">微信号</option>
+                        <option value="2">QQ号</option>
+                        <option value="3">Email</option>
+                    </select>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">代理商</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <select class="weui-select" name="select1">
+                        <option selected="" value="1">微信号</option>
+                        <option value="2">QQ号</option>
+                        <option value="3">Email</option>
+                    </select>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">商户</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <select class="weui-select" name="select1">
+                        <option selected="" value="1">微信号</option>
+                        <option value="2">QQ号</option>
+                        <option value="3">Email</option>
+                    </select>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">订单状态</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <select class="weui-select" name="select1">
+                        <option selected="" value="1">已完成</option>
+                        <option value="2">转退款</option>
+                        <option value="3">已取消</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="primary weui-flex">
+            <div class="weui-flex__item">
+                <a href="javascript:;" class="weui-btn weui-btn_plain-default close-popup">取消</a>
+            </div>
+            <div class="weui-flex__item">
+                <a href="javascript:;" class="weui-btn weui-btn_plain-primary ">确定</a>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="common/footer" /}
+</body>
+
+<script>
+    $(function(){
+        var start = '{$start}';
+        var end = '{$end}';
+        $("#start_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [start],
+            maxDate: end,
+            onChange: function (p, values) {
+                start = values[0];
+            },
+        });
+        $("#end_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [end],
+            minDate: start,
+            onChange: function (p, values) {
+                start = values[0];
+            },
+        });
+        $('.content-detail').on('click',function() {
+            location.href='/workweixin/merchant/busdetail.html'
+        })
+    })
+
+</script>
+
+
+</html>

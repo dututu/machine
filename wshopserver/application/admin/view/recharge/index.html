@@ -1,0 +1,323 @@
+<!--包含头部文件-->
+{include file="public/header" /}
+<!-- jqGrid组件基础样式包-必要 -->
+<link rel="stylesheet" href="__STATIC__/admin/assets/javascripts/jqGrid_5/css/ui.jqgrid.css"/>
+
+<!-- jqGrid主题包-非必要 -->
+<!-- 在jqgrid/css/css这个目录下还有其他的主题包，可以尝试更换看效果 -->
+<!--<link rel="stylesheet" href="assets/javascripts/jqGrid_5/css/ui.jqgrid-bootstrap-ui.css" />-->
+
+<link rel="stylesheet" href="__STATIC__/admin/css/gridlist.css"/>
+<div id='wrapper'>
+    <!--包含菜单文件-->
+    {include file="public/menu" /}
+    <section id='content'>
+        <div class='container-fluid'>
+            <div class='row-fluid' id='content-wrapper'>
+                <div class='span12'>
+                    <div class='page-header'>
+                        <h1 class='pull-left'>
+                            <i class='icon-cog'></i>
+                            <span>充值规则管理</span>
+                        </h1>
+                        <div class='pull-right'>
+                            <ul class='breadcrumb'>
+                                <li>
+                                    <a href="{:url('index/index')}"><i class='icon-home' style="font-size:17px;"></i>
+                                    </a>
+                                </li>
+                                <li class='separator'>
+                                    <i class='icon-angle-right'></i>
+                                </li>
+                                <li>
+                                    系统设置
+                                </li>
+                                <li class='separator'>
+                                    <i class='icon-angle-right'></i>
+                                </li>
+                                <li class='active'>充值规则管理</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class='row-fluid'>
+                        <div class='span12 box bordered-box orange-border' style='margin-bottom:0;'>
+                            <div class='box-header sea-blue-background'>
+                                <div class='title'>充值规则列表</div>
+                                <div class='actions'>
+                                    <a href="#" class="btn box-remove btn-mini btn-link"><i class='icon-remove'></i>
+                                    </a>
+                                    <a href="#" class="btn box-collapse btn-mini btn-link"><i></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class='box-content box-no-padding'>
+                                <div style="display: flex;align-items: center;align-content: center;">
+                                    <label style="margin-left: 15px;">搜索:</label><input type="text"
+                                                                                        style="margin-top: 5px;margin-left: 10px;"
+                                                                                        id="s_name" class="input-text "
+                                                                                        placeholder="面值">
+                                    <label style="margin-left: 15px;">
+                                        <input class="btn btn-success" name="button"
+                                               type="button" onclick="queryData();"
+                                               value="搜索"
+                                               style="margin-left: 10px;">
+                                    </label>
+                                    <button class="btn btn-success" name="button"
+                                            style="position: absolute;;right:15px;" type="submit"
+                                            onclick="category_add('创建新面值','add','860','440')">创建新面值
+                                    </button>
+                                </div>
+                                <div class='responsive-table'>
+                                    <div class='scrollable-area'>
+                                        <!-- jqgrid -->
+                                        <table id="gridTable" class="table-bordered table-striped "></table>
+                                        <!-- jqgrid end-->
+                                        <div id="pager2"></div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <hr class='hr-drouble'/>
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<div class='row-fluid'>
+    <div class='span6 box'>
+        <div class='box-content'>
+            <div class='modal hide fade' id='modal-example2' role='dialog' tabindex='-1'>
+                <div class='modal-header'>
+                    <button class='close' data-dismiss='modal' type='button'>&times;</button>
+                    <h3>修改商品分类</h3>
+                </div>
+                <div class='modal-body'>
+                    <form class='form' style='margin-bottom: 0;'/>
+                    <div class='control-group'>
+                        <label class='control-label'>Full name</label>
+                        <div class='controls'>
+                            <input class='span12' id='full-name' type='text'/>
+                            <p class='help-block'/>
+                        </div>
+                    </div>
+                    <div class='control-group'>
+                        <label class='control-label'>Street</label>
+                        <div class='controls'>
+                            <input class='span12' id='address-line2' placeholder='Street placeholder' type='text'/>
+                            <small class='muted'>Description for street field</small>
+                        </div>
+                    </div>
+                    <div class='control-group'>
+                        <label class='control-label'>City</label>
+                        <div class='controls'>
+                            <input class='span12' id='city' placeholder='City placeholder' type='text'/>
+                            <p class='help-block'/>
+                        </div>
+                    </div>
+                    <div class='control-group'>
+                        <label class='control-label'>Company</label>
+                        <div class='controls'>
+                            <div class='input-append'>
+                                <input class='span6' id='appendedInputButtons' type='text'/>
+                                <button class='btn' type='button'>
+                                    <i class='icon-building'></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+                <div class='modal-footer'>
+                    <button class='btn' data-dismiss='modal'>取消</button>
+                    <button class='btn btn-primary'>保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--包含底部js-->
+{include file="public/footer" /}
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/jqGrid_5/js/jquery.jqGrid.min.js"></script>
+<!-- jqGrid插件的多语言包-非必要 -->
+<!-- 在jqgrid/js/i18n下还有其他的多语言包 -->
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/jqGrid_5/js/i18n/grid.locale-cn.js"></script>
+<script>
+    $(function () {
+        //页面加载完成之后执行
+        pageInit();
+    });
+
+    function pageInit() {
+        //创建jqGrid组件
+        jQuery("#gridTable").jqGrid(
+            {
+                url: 'rulelist',//组件创建完成之后请求数据的url
+                datatype: "json",//请求数据返回的类型。可选json,xml,txt
+                colNames: ['编号', '面值(元)', '赠送(元)', '当前状态', '创建时间', '最后修改时间', '备注', '操作'],//jqGrid的列显示名字
+                colModel: [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
+                    {name: 'activityno', index: 'activityno', align: "center"},
+                    {
+                        name: 'fee',
+                        index: 'fee',
+                        sortable: false,
+                        align: "center",
+                        formatter: function (cellvalue, options, rowObject) {
+                            return cellvalue / 100;
+                        }
+                    },
+                    {
+                        name: 'giftfee',
+                        index: 'giftfee',
+                        sortable: false,
+                        align: "center",
+                        formatter: function (cellvalue, options, rowObject) {
+                            return cellvalue / 100;
+                        }
+                    },
+                    {
+                        name: 'status',
+                        index: 'status',
+                        sortable: false,
+                        align: "center",
+                        formatter: function (cellvalue, options, rowObject) {
+                            if (cellvalue == "0") {
+                                return "<span class='label label-success '>上架</span>";
+                            } else if (cellvalue == "1") {
+                                return "<span class='label label-important '>下架</span>";
+                            }
+                        }
+                    },
+                    {name: 'createtime', index: 'createtime', align: "center", sortable: false},
+                    {name: 'updatetime', index: 'updatetime', align: "center", sortable: false},
+                    {name: 'remark', index: 'remark', align: "center", sortable: false},
+
+                    {
+                        align: "center",
+                        sortable: false,
+                        formatter: function (cellvalue, options, rowObject) {
+//                            if (rowObject.status == 0) {
+//                                var ss = '<a class="btn btn-danger btn-mini" href="javascript:down(this,\'' + rowObject.activityid + '\')">下架</a>';
+//                                return ss;
+//                            } else {
+//                                var ss = '<a class="btn btn-success btn-mini" href="javascript:up(this,\'' + rowObject.activityid + '\')">上架</a>';
+//                                return ss;
+//                            }
+                            if (rowObject.status == 0) {
+                                var select = '<select data-id="'+rowObject.activityid+'" class="optsel" style="width:50%;background-color: #0163ac;color:white;"><option value ="0">更多</option><option value ="1">下架</option></select>';
+                                return select;
+                            }else{
+                                var select = '<select data-id="'+rowObject.activityid+'" class="optsel" style="width:50%;background-color: #0163ac;color:white;"><option value ="0">更多</option><option value ="2">上架</option></select>';
+                                return select;
+                            }
+
+                        }
+                    }
+                ],
+                rownumbers: true,
+                rowNum: 10,//一页显示多少条
+                rowList: [10, 20, 30],//可供用户选择一页显示多少条
+                pager: '#pager2',//表格页脚的占位符(一般是div)的id
+//				sortname : 'id',//初始化的时候排序的字段
+//				sortorder : "desc",//排序方式,可选desc,asc
+                mtype: "get",//向后台请求数据的ajax的类型。可选post,get
+//          		styleUI: '',//设置jqgrid的全局样式为bootstrap样式 Bootstrap
+                viewrecords: true,
+                autowidth: true,
+                pagerpos: "left",
+                recordpos: "right",
+                height: "auto",
+                loadComplete: function (xhr) {
+                    $("#gridTable").closest(".ui-jqgrid-bdiv").css({'overflow-y': 'auto'});//,'overflow-x':'hidden'
+                    $('.optsel').change(function(){
+                        var index = $(this).val();
+                        var id = $(this).attr('data-id');
+                        if(index == 1){
+                            down(this,id);
+                        }else if(index == 2){
+                            up(this,id);
+                        }
+                    });
+                },
+            });
+    }
+
+    //条件查询
+    function queryData() {
+        var s_name = $("#s_name").val();
+        var page = $('#gridTable').getGridParam('page'); // current page
+        var rows = $('#gridTable').getGridParam('rows'); // rows
+        var sidx = $('#gridTable').getGridParam('sidx'); // sidx
+        var sord = $('#gridTable').getGridParam('sord'); // sord
+        jQuery("#gridTable").jqGrid('setGridParam', {
+            url: "rulelist",
+            postData: {
+                s_name: s_name
+            },
+            page: page,
+            rows: rows,
+            sidx: sidx,
+            sord: sord
+        }).trigger("reloadGrid");
+    }
+</script>
+<script>
+
+    function category_add(title, url, w, h) {
+        layer.open({
+            type: 2,
+            title: title,
+            shadeClose: true,
+            shade: 0.8,
+            area: ['560px', '450px'],
+            content: url
+        });
+        layer.iframeAuto();
+    }
+
+    function down(obj, id) {
+        layer.confirm('确认要下架吗？', function (index) {
+            var postData = {
+                'id': id,
+                'status': 1
+            };
+            var url = 'updatestatus';
+            $.post(url, postData, function (result) {
+                if (result.code == 1) {
+                    layer.msg('已下架!', {icon: 1, time: 1000});
+                    location.reload();
+                } else {
+                    alert(result.msg);
+                }
+            }, "json");
+
+        });
+    }
+
+    function up(obj, id) {
+        layer.confirm('确认要上架吗？', function (index) {
+            var postData = {
+                'id': id,
+                'status': 0
+            };
+            var url = 'updatestatus';
+            $.post(url, postData, function (result) {
+                if (result.code == 1) {
+                    layer.msg('已上架!', {icon: 1, time: 1000});
+                    location.reload();
+                } else {
+                    alert(result.msg);
+                }
+            }, "json");
+
+        });
+    }
+</script>
+</body>
+</html>

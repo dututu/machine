@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>用户统计</title>
+    {include file="common/header" /}
+</head>
+
+<body>
+<div id="container" class="container">
+    <div class="weui-search weui-flex">
+        <div class="icon fa-calendar"></div>
+        <input class="weui-input weui-input_5" id="start_date" type="text" value="{$date}" readonly>
+        <span>&nbsp ~ &nbsp</span>
+        <input class="weui-input weui-input_5" id="end_date" type="text" value="{$date}" readonly>
+    </div>
+    <div class="content">
+        <div class="header">
+            概览
+        </div>
+        <div class="grids">
+            <div class="weui-flex">
+                <div class="weui-flex__title">用户总量：<span class="font-color-red">10000</span></div>
+            </div>
+            <div class="weui-flex">
+                <div class="weui-flex__item">1000（10%）<p class="">新增用户（个）</p></div>
+                <div class="weui-flex__item">200（20%）<p class="">新开通储值用户（个）</p></div>
+            </div>
+            <div class="weui-flex">
+                <div class="weui-flex__item">200<p class="">充值金额（元）</p></div>
+                <div class="weui-flex__item">25<p class="">人均消费</p></div>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="header">
+            用户购买频次
+        </div>
+        <div id="echart_3" class="echart">
+
+        </div>
+    </div>
+
+
+
+</div>
+
+<div id="back" onclick="javascript:history.back()">
+    <button>返回</button>
+</div>
+</body>
+
+<script>
+    $(function(){
+        var start = '{$start}';
+        var end = '{$end}';
+        $("#start_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [start],
+            maxDate: end,
+            onChange: function (p, values) {
+                start = values[0];
+            },
+        });
+        $("#end_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [end],
+            minDate: start,
+            onChange: function (p, values) {
+                start = values[0];
+            },
+        });
+        // 基于准备好的dom，初始化echarts实例
+        var myChart_3 = echarts.init(document.getElementById('echart_3'));
+        var option_3 = {
+            title : {
+                text: '某站点用户访问来源',
+                subtext: '纯属虚构',
+                x:'center'
+            },
+            tooltip : {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: ['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
+            },
+            series : [
+                {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius : '55%',
+                    center: ['50%', '60%'],
+                    data:[
+                        {value:335, name:'直接访问'},
+                        {value:310, name:'邮件营销'},
+                        {value:234, name:'联盟广告'},
+                        {value:135, name:'视频广告'},
+                        {value:1548, name:'搜索引擎'}
+                    ],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+        myChart_3.setOption(option_3,true);
+    })
+
+</script>
+
+
+</html>

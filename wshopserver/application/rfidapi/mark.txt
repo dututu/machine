@@ -1,0 +1,17 @@
+1、运营平台拉取RFID云平台订单信息(购物、理货)	
+https://s.wemall.com.cn/rfidapi/Order/selOrder
+2、运营品台从RFID平台拉取机柜物品库存清单（B端查看库存）
+https://s.wemall.com.cn/rfidapi/Kus/list
+3、主控推送订单结果
+https://s.wemall.com.cn/rfidapi/Rfid/index
+
+
+相关文件
+1、gshopserver/applications/rfidapi
+2、gshopserver/extend/master/RfidApis
+   					  master/MasterApis
+3、gshopserver/application/common/model/Taglib
+					/common/model/Orderbase
+					/common/model/Orderepc
+					/common/model/Orderdetail
+					/common/model/Salegoods

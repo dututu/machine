@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>称重智能柜</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/weui/1.1.2/style/weui.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/jquery-weui/1.1.2/css/jquery-weui.min.css">
+    <link rel="stylesheet" href="__STATIC__/wechatservice/css/mui.min.css">
+    <script src="https://cdn.bootcss.com/vue/2.5.8/vue.min.js"></script>
+    <style>
+        html,
+        body {
+            background-color: #efeff4;
+        }
+
+    </style>
+    <style>
+        .weui-panel__bd {
+            display: none;
+        }
+
+        .expand_item .turn_up:after {
+            transform: matrix(0.71, -0.71, 0.71, 0.71, 0, 0);
+        }
+
+        .expand_item .turn_down:after {
+            transform: matrix(.71, .71, .71, -.71, 0, 0)
+        }
+
+        .g_item {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            margin-top: 5px;
+        }
+
+        .g_item .item1 p {
+            margin-top: 5px;
+        }
+
+        .g_item .item2 {
+            margin-left: 5px;
+        }
+
+        .g_item .item2 p {
+            margin-top: 5px;
+        }
+
+        .box {
+            margin: 5px;
+            border-radius: 5px;
+        }
+
+        .weui-tabbar{
+            line-height: 0px;
+        }
+        .weui-tabbar p{
+            margin-bottom: 0px;
+        }
+
+    </style>
+</head>
+
+<body class="mui-fullscreen">
+
+<div class="mui-page-content" >
+    <!--<div class="mui-row">-->
+        <!--<div class="mui-col-sm-2 mui-col-xs-2 ">-->
+            <!--<img id="open" src="__STATIC__/wechatservice/img/f0ca.png" style="margin-left:5px;width:40px;height:40px;">-->
+        <!--</div>-->
+        <!--<div class="mui-col-sm-10 mui-col-xs-10 tagsContaine" >-->
+            <!--<div class="tagList" id="currenttags">-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--style="top:40px;"-->
+    <div class="mui-scroll-wrapper" id="refreshContainer" >
+        <div class="mui-scroll">
+            <div class="page" id="app">
+                <div class="page__bd page__bd_spacing">
+
+                    <div class="weui-panel weui-panel_access box" v-for="machine in machineList">
+                        <div class="weui-panel__hd ">
+                            <div style="display: flex;flex-direction:row;justify-content: space-between;">
+                                <p>机柜名称：{{machine.machinename}}</p>
+                                <a v-bind:data-machineid="machine.machineid" class="boxplan" style="color: green;">规划货架></a>
+                            </div>
+                            <p>货架层数：{{machine.floor}}层 秤台数：{{machine.plat}}个</p>
+                            <p>当前商品数：{{machine.nums}} （最多{{machine.plat*3}}种）</p>
+                        </div>
+                        <div class="weui-panel__bd">
+                            <div class="weui-media-box weui-media-box_appmsg">
+                                <div class="weui-media-box__bd">
+                                    <p class="weui-media-box__desc">货架规划明细：</p>
+                                    <div v-for="floor in machine.floors">
+                                        <p class="weui-media-box__desc">第{{floor.floor}}层（{{floor.pos}}）</p>
+                                        <div class="g_item" v-for="goods in floor.goods">
+                                            <div class="item1">
+                                                <img :src="goods.picurl"
+                                                     style="width:32px;height:32px;">
+                                            </div>
+                                            <div class="item2">
+                                                <p class="weui-media-box__desc">
+                                                    商品：{{goods.goodsname}}，规格：{{goods.spec}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="weui-panel__ft">
+                            <a href="javascript:void(0);"
+                               class="weui-cell weui-cell_access weui-cell_link expand_item">
+                                <div class="weui-cell__bd"></div>
+                                <span class="weui-cell__ft turn_down">展开</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<!-- 容器 -->
+<div class="weui-tabbar">
+    <a href="{:url('wechatservice/onsale/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon">
+            <img src="__STATIC__/wechatservice/img/label_default.png" alt="">
+        </div>
+        <p class="weui-tabbar__label">rfid智能柜</p>
+    </a>
+    <a href="{:url('wechatservice/onsale/weightbox')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon">
+            <img src="__STATIC__/wechatservice/img/weight.png" alt="">
+        </div>
+        <p class="weui-tabbar__label">称重智能柜</p>
+    </a>
+</div>
+</body>
+<!-- body 最后 -->
+<script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-weui/1.1.2/js/jquery-weui.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-weui/1.1.2/js/swiper.min.js"></script>
+
+<script src="__STATIC__/wechatservice/js/mui.min.js "></script>
+<script src="__STATIC__/wechatservice/js/mui.view.js "></script>
+<script>
+    var searchparams = '';
+    var page = 1;
+    var rows = 5;
+    mui.init({
+        pullRefresh : {
+            container:'#refreshContainer',//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+            down : {
+//                range:'40px', //可选 默认100px,控件可下拉拖拽的范围
+//                offset:'40px', //可选 默认0px,下拉刷新控件的起始位置
+                auto: true,//可选,默认false.首次加载自动上拉刷新一次
+                callback :pulldownrefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+            },
+            up : {
+                height:50,//可选.默认50.触发上拉加载拖动距离
+                auto:false,//可选,默认false.自动上拉加载一次
+                contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+                contentnomore:'没有更多数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+                callback :pullfresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+            }
+        }
+    });
+    mui("#refreshContainer").on("tap",".boxplan",boxplan);
+    function boxplan() {
+        var machineid = $(this).attr('data-machineid');
+        location.href = '/wechatservice/onsale/boxplan?machineid='+machineid;
+    }
+    mui("#refreshContainer").on("tap",".expand_item",expand);
+    function expand() {
+        var sty = $(this).parent().prev(".weui-panel__bd").attr("style");
+        if(sty == 'display: block;') { //已经显示
+            $(this).find(".weui-cell__ft").attr("class", "weui-cell__ft turn_down");
+            $(this).find(".weui-cell__ft").html("展开");
+        } else {
+            $(this).find(".weui-cell__ft").attr("class", "weui-cell__ft turn_up");
+            $(this).find(".weui-cell__ft").html("收缩");
+        }
+
+        $(this).parent().prev(".weui-panel__bd").toggle(function() {
+            $(this).parent().prev(".weui-panel__bd").animate({
+                height: 'toggle',
+                opacity: 'toggle'
+            }, "slow");
+        });
+    }
+    var app = new Vue({
+        el: '#app',
+        data: {
+            machineList : []
+        },
+        created: function () { //created方法，页面初始调用
+
+        }
+    });
+    function pulldownrefresh() {
+        page = 1;
+        app.machineList = [];
+        var _self = this;
+        mui.ajax('/wechatservice/onsale/machinelist',{
+            data:{
+                page:page,
+                rows:rows,
+                searchparams:searchparams
+            },
+            dataType:'json',//服务器返回json格式数据
+            type:'get',//HTTP请求类型
+            timeout:10000,//超时时间设置为10秒；
+            success:function(data){
+                //服务器返回响应，根据响应结果，分析是否登录成功
+                app.machineList = app.machineList.concat(data.data.data);
+                _self.endPulldownToRefresh(true);
+                var hasnext1 = data.data.hasnext;
+                _self.enablePullupToRefresh();
+                if(hasnext1){
+                    _self.endPullupToRefresh(false);//true表示没有更多数据了：
+                }else{
+                    _self.endPullupToRefresh(true);//true表示没有更多数据了：
+                }
+
+            },
+            error:function(xhr,type,errorThrown){
+                //异常处理；
+                console.log(type);
+            }
+        });
+    }
+    function pullfresh() {
+        var hasnext = false;
+        page++;
+        var _self = this;
+        mui.ajax('/wechatservice/machine/machinelist',{
+            data:{
+                page:page,
+                rows:rows,
+                searchparams:searchparams
+            },
+            dataType:'json',//服务器返回json格式数据
+            type:'get',//HTTP请求类型
+            timeout:10000,//超时时间设置为10秒；
+            success:function(data){
+                //服务器返回响应，根据响应结果，分析是否登录成功
+                app.machineList = app.machineList.concat(data.data.data);
+                hasnext = data.data.hasnext;
+                if(hasnext){
+                    _self.endPullupToRefresh(false);//true表示没有更多数据了：
+                }else{
+                    _self.endPullupToRefresh(true);//true表示没有更多数据了：
+                }
+            },
+            error:function(xhr,type,errorThrown){
+                //异常处理；
+                console.log(type);
+            }
+        });
+    }
+    //标签选择
+    document.getElementById("open").addEventListener('tap',function () {
+        //清空数据
+
+        mui("#popover").popover("toggle");
+    });
+    //        document.getElementById("confirmtype").addEventListener('tap',function () {
+    //            mui("#popover").popover("toggle");
+    //        });
+    mui("#popover").on("tap", ".tagItem2", function() {
+        var id = this.getAttribute("data-id");
+        var typename = this.querySelector("span").innerHTML;
+        var html = '<div class="tagItem" id="'+id+'"><span>'+typename+'</span><div class="delete"></div></div>';
+        $('#searchtags').append(html);
+//            if(id){
+//                document.getElementById("col1").value = this.querySelector(".col1").innerHTML;
+//                document.getElementById("col2").value = this.querySelector(".col2").innerHTML;
+//                document.getElementById("col3").value = this.querySelector(".col3").innerHTML;
+//                document.getElementById("col1").setAttribute("demoid", id);
+//                title.innerHTML = "编辑数据";
+//                if(!add_div.classList.contains("mui-hidden")){
+//                    add_div.classList.add("mui-hidden");
+//                }
+//                edit_div.classList.remove("mui-hidden");
+//                mui("#popover").popover("toggle");
+//            }
+
+    });
+    mui("#popover").on("tap", ".delete", function() {
+        var id = this.parentNode.getAttribute("id");
+        $('#'+id).remove();
+    });
+    mui("#popover").on("tap", "#confirmtype", function() {
+        searchparams = '';
+        $('#currenttags').html('');
+        mui(".tagItem").each(function () {
+            searchparams = searchparams+ this.getAttribute("id")+',';
+            var typename = this.querySelector("span").innerHTML;
+            var html = '<div class="tagItem3"><span>'+typename+'</span></div>';
+            $('#currenttags').append(html);
+        });
+        page = 0;
+        app.machineList = [];
+        mui("#popover").popover("toggle");
+        mui('#refreshContainer').pullRefresh().refresh(true);
+        mui('#refreshContainer').pullRefresh().pulldownLoading();
+    });
+    $(function() {
+        mui.ajax('/wechatservice/machine/grouplist',{
+            data:{
+//                    page:page,
+//                    rows:rows
+            },
+            dataType:'json',//服务器返回json格式数据
+            type:'get',//HTTP请求类型
+            timeout:10000,//超时时间设置为10秒；
+            success:function(data){
+                for(var i=0;i<data.data.length;i++){
+                    var html = '<div class="tagItem2" data-id="'+data.data[i].groupid+'"><span>'+data.data[i].groupname+'</span></div>';
+                    $('#alltags').append(html);
+                }
+            },
+            error:function(xhr,type,errorThrown){
+                //异常处理；
+                console.log(type);
+            }
+        });
+    })
+</script>
+</html>

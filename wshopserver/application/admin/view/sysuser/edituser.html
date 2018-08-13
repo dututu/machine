@@ -1,0 +1,94 @@
+<!--包含头部文件-->
+{include file="public/header" /}
+<div id='wrapper'>
+    <!--包含菜单文件-->
+    {include file="public/menu" /}
+    <section id='content'>
+        <div class='container-fluid'>
+            <div class='row-fluid' id='content-wrapper'>
+                <div class='span12'>
+                    <div class='page-header'>
+                        <h1 class='pull-left'>
+                            <i class='icon-cog'></i>
+                            <span>系统用户管理</span>
+                        </h1>
+                        <div class='pull-right'>
+                            <ul class='breadcrumb'>
+                                <li>
+                                    <a href="index.html"><i class='icon-bar-chart'></i>
+                                    </a>
+                                </li>
+                                <li class='separator'>
+                                    <i class='icon-angle-right'></i>
+                                </li>
+                                <li>
+                                    角色权限
+                                </li>
+                                <li class='separator'>
+                                    <i class='icon-angle-right'></i>
+                                </li>
+                                <li class='active'>系统用户管理</li>
+                            </ul>
+                        </div>
+                    </div>
+<div class="panel">
+    <!-- <div class="panel-heading">
+        <h3 class="panel-title">Add &amp; Remove Rows</h3>
+    </div> -->
+
+    <!-- Foo Table - Add & Remove Rows -->
+    <!--===================================================-->
+    <div class="panel-body">
+        <form class="form-inline" method="post">
+            <input type="hidden" name="id" value="{$user_data['userid']}">
+            <table class="table table-striped table-bordered table-hover table-condensed">
+                <tr>
+                    <th>角色组</th>
+                    <td>
+                        {foreach name="data" item="v"}
+                        {$v['authname']}
+                        <input class="xb-icheck" type="checkbox" name="group_ids[]" value="{$v['groupid']}"
+                               {if condition="in_array($v['groupid'],$group_data)"}    checked="checked"{/if} >
+                        &emsp;
+                        {/foreach}
+                    </td>
+                </tr>
+                <tr>
+                    <th>姓名</th>
+                    <td>
+                        <input class="form-control" type="text" name="username" value="{$user_data['nickname']}"
+                               required="required">
+                    </td>
+                </tr>
+                <!--<tr>-->
+                    <!--<th>手机号</th>-->
+                    <!--<td>-->
+                        <!--<input class="form-control" type="text" name="phone" value="{$user_data['mobile']}"-->
+                               <!--required="required">-->
+                    <!--</td>-->
+                <!--</tr>-->
+                <tr>
+                    <th></th>
+                    <td>
+                        <input class="btn btn-success" type="submit" value="修改">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <!--===================================================-->
+    <!-- End Foo Table - Add & Remove Rows -->
+
+</div>
+                </div>
+            </div>
+        </div>
+</section>
+</div>
+{include file="public/footer" /}
+<script>
+    var SCOPE = {
+        'listorder_url': "{:url('category/listorder')}",
+    };
+
+</script>

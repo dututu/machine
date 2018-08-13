@@ -1,0 +1,141 @@
+<?php
+namespace app\rfidapi\controller;
+use think\Controller;
+use think\Db;
+use \think\Log;
+use \think\Request;
+use think\Loader;
+use traits\model\Transaction;
+use app\common\model\Taglib as TaglibModel;
+use app\common\model\Orderbase as OrderbaseModel;
+use app\common\model\Orderepc as OrderepcModel;
+use app\common\model\Orderdetail as OrderdetailModel;
+use app\common\model\Salegoods as SalegoodsModel;
+Loader::import('master.RfidApis', EXTEND_PATH, '.php');
+
+class Order extends Controller
+{
+    public function selOrder(){
+        $param = file_get_contents('php://input');
+        file_put_contents("order.txt", date('Y-m-d H:i:s',time())."___返回数据：".$param."\r\n",FILE_APPEND);
+        $jdecode = json_decode($param,true);
+        $RfidApi = new \RfidApis('','');
+        $dparam = $RfidApi->decryptadmin($jdecode['param']);
+        if($dparam == "" || $dparam == "null")
+        {
+            $result['code'] = "202";
+            $result['msg'] = "解密错误";
+            $data = $this->jiami($result);
+            echo json_encode($data);exit;
+        }
+        $dparam2 = json_decode($dparam,true);
+        $orderid = isset($dparam2['orderId']) ? $dparam2['orderId'] : '' ;
+        if($orderid == "" || $orderid == "null")
+        {
+            $result['code'] = "203";
+            $result['msg'] = "订单号参数错误";
+            $data = $this->jiami($result);
+            echo json_encode($data);exit;
+        }
+
+        // sql防注入
+        if (!get_magic_quotes_gpc())   
+        {    
+          $orderid = addslashes($orderid);
+        }   
+        $sql = "SELECT orderbase.orderid,orderbase.containerid,orderbase.type,orderdetail.barcode,orderdetail.amount,orderdetail.type as types from orderbase LEFT JOIN orderdetail on orderbase.orderid = orderdetail.orderid WHERE orderbase.orderid = '$orderid'";
+        file_put_contents("1.txt",$sql);
+        $info = Db::query($sql);
+        if(count($info) == 0)
+        {
+            $result['code'] = "204";
+            $result['msg'] = "订单号不存在";
+            $data = $this->jiami($result);
+
+            file_put_contents("order.txt", date('Y-m-d H:i:s',time())."___返回数据：".$param."___解密数据：".$dparam."__MSG"."___返回数据：".json_encode($result)."\r\n",FILE_APPEND);
+
+            echo json_encode($data);
+            exit;
+        }
+
+
+        // type 1购物2理货 types1入2出
+        // echo "<pre>";
+        $result = $data = $adds = $down = array();
+        $result['orderid'] = $info[0]['orderid'];
+        $result['containerid'] = $info[0]['containerid'];
+        $result['type'] = $type = $info[0]['type'];
+
+        if(isset($info[0]) && is_null($info[0]['barcode']))
+        {
+           if($type == 1){
+                $result['datas'] = array();
+           
+           }else{
+                 $result['adds'] = $result['down'] = array();
+           }
+            $data = $this->jiami($result);
+            file_put_contents("order.txt", date('Y-m-d H:i:s',time())."___返回数据：".$param."___解密数据：".$dparam."__MSG"."___返回数据：".json_encode($result)."\r\n",FILE_APPEND);
+            echo json_encode($data);
+            exit;
+        }
+
+
+        foreach ($info as $key => $value) 
+        {
+            // $type = $value['type'];
+            $types = $value['types'];
+            $barcode = $value['barcode'];
+            $amount = $value['amount'];
+            if($type == 1) //1购物
+            {
+                $data[] = array(
+                    'barCode'=>$barcode,
+                    'amount'=>$amount
+                    );
+            } else { //2理货
+                if($types == 1)  //1入库
+                {
+                    $adds[] = array(
+                        'barCode'=>$barcode,
+                        'amount'=>$amount
+                        );
+                } else if($types == 2) {    //2出库
+                    $down[] = array(
+                        'barCode'=>$barcode,
+                        'amount'=>$amount
+                        );
+                }
+            }
+        }
+        
+        if($type == 1)
+        {
+            $result['datas'] = $data;
+        } else {
+            $result['adds'] = $adds;
+            $result['down'] = $down;
+        }
+        $result['timestamp'] = $this->getMillisecond();
+        
+        // $param = json_encode($result);
+        // $param = $RfidApi->encryptadmin($param);
+        // $returndata = array('param'=>$param);
+        file_put_contents("order.txt", date('Y-m-d H:i:s',time())."___返回数据：".$param."___解密数据：".$dparam."__MSG"."___返回数据：".json_encode($result)."\r\n",FILE_APPEND);
+
+        $data = $this->jiami($result);
+        echo json_encode($data,JSON_UNESCAPED_SLASHES); 
+    }
+
+    public function jiami($result){
+        $RfidApi = new \RfidApis('','');
+        $param = $RfidApi->encryptadmin($result);
+        $data = array('param'=>$param);
+        return $data;
+    }
+
+    private function getMillisecond() { 
+      list($t1, $t2) = explode(' ', microtime()); 
+      return (float)sprintf('%.0f',(floatval($t1)+floatval($t2))*1000); 
+    } 
+}

@@ -1,0 +1,63 @@
+<div class="footer">
+    <div style="border-top: 3px solid #adadad;margin: 10px 0; display: flex; padding-top:10px;">
+        <a href="{:url('index/index2')}" class="weui-btn weui-btn_primary footerbtn ing" >设备查询</a>
+        <a href="{:url('index/checkNetwork')}" class="weui-btn weui-btn_primary footerbtn uned" style="margin-top:unset; ">网络监测</a>
+        <a href="{:url('index/testOpen')}" class="weui-btn weui-btn_primary footerbtn uned" style="margin-top:unset; ">测试开门</a>
+        <a href="{:url('index/cabinetInspection')}" class="weui-btn weui-btn_primary footerbtn uned" style="margin-top:unset; ">称台检测</a>
+    </div>
+    <div style="display: flex;padding-bottom:5px; ">
+        <a href="{:url('index/cameratest')}" class="weui-btn weui-btn_primary footerbtn uned">摄像头检测</a>
+        <a href="{:url('index/checkHumiture')}" class="weui-btn weui-btn_primary footerbtn uned" style="margin-top:unset;font-size:0.1rem;">温湿度音量检测</a>
+        <a href="" class="weui-btn weui-btn_primary footerbtn uned weui-btn_disabled" style="margin-top:unset; ">广告机</a>
+        <a href="{:url('index/bindcode')}" class="weui-btn weui-btn_primary footerbtn uned" style="margin-top:unset;">设备绑定</a>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        var devuid = getCookie('dev_uid');
+        if(devuid.length>0) {
+            var recode_url = "{:url('index/getRecode')}";
+            $.post(recode_url, { devuid: devuid }, function (d) {
+                if(d.code==0){
+                    var d = d.data;
+                    console.log(d);
+                    if (d.devcheck == 1)
+                        $('.footer a:eq(0)').removeClass('uned').removeClass('ing').removeClass('weui-btn_primary').addClass('weui-btn_plain-primary');
+                    if (d.networkcheck == 1)
+                        $('.footer a:eq(1)').removeClass('uned').removeClass('ing').removeClass('weui-btn_primary').addClass('weui-btn_plain-primary');
+                    if (d.doorcheck == 1)
+                        $('.footer a:eq(2)').removeClass('uned').removeClass('ing').removeClass('weui-btn_primary').addClass('weui-btn_plain-primary');
+                    if (d.shelfcheck == 1)
+                        $('.footer a:eq(3)').removeClass('uned').removeClass('ing').removeClass('weui-btn_primary').addClass('weui-btn_plain-primary');
+                    if (d.cameracheck == 1)
+                        $('.footer a:eq(4)').removeClass('uned').removeClass('ing').removeClass('weui-btn_primary').addClass('weui-btn_plain-primary');
+                    if (d.tempcheck == 1 && d.volcheck == 1)
+                        $('.footer a:eq(5)').removeClass('uned').removeClass('ing').removeClass('weui-btn_primary').addClass('weui-btn_plain-primary');
+//                    if (d.bingcheck == 1)
+//                        $('.footer a:eq(6)').removeClass('uned').removeClass('ing').removeClass('weui-btn_primary').addClass('weui-btn_plain-primary');
+                    if (d.bingcheck == 1)
+                        $('.footer a:eq(7)').removeClass('uned').removeClass('ing').removeClass('weui-btn_primary').addClass('weui-btn_plain-primary');
+                    
+                    if (String(window.location.pathname).toLowerCase() != '/hardwaredetection/index/cameratest') {
+                        if(d.cameracheck==1)
+                            $('#testresult').html('已测试')
+                    }
+                }
+            })
+            $('.footer a').each(function () {
+                var _this = $(this);
+                if (_this[0].href == String(window.location)) {
+                    _this.removeClass('uned').removeClass('weui-btn_plain-primary').addClass('weui-btn_primary');
+                }
+            });
+        }
+        
+
+        if(!getCookie('dev_uid') && String(window.location.pathname).toLowerCase()!='/hardwaredetection/index/index2') {
+            $.alert('请先输入dev_uid以便获取设备基本信息')
+            location.href = "index2"
+            
+        }
+        
+    })
+</script>

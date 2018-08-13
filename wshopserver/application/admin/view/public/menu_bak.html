@@ -1,0 +1,154 @@
+<div id='main-nav-bg'></div>
+<nav class='main-nav-fixed' id='main-nav'>
+	<div class='navigation'>
+		<div class='search'>
+			<form accept-charset="UTF-8" action="search_results.html" method="get" /><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
+			<div class='search-wrapper'>
+				<input autocomplete="off" class="search-query" id="q" name="q" placeholder="Search..." type="text" value="" />
+				<button class="btn btn-link icon-search" name="button" type="submit"></button>
+			</div>
+			</form>
+		</div>
+		<ul class='nav nav-stacked'>
+			<li class=''>
+				<a href="{:url('index/index')}">
+					<i class='icon-dashboard'></i>
+					<span>平台概况</span>
+				</a>
+			</li>
+			<li class="">
+				<a class='dropdown-collapse ' href='#'>
+					<i class='icon-cog'></i>
+					<span>系统设置</span>
+					<i class='icon-angle-down angle-down'></i>
+				</a>
+				<ul class='nav nav-stacked'>
+					<li class=''>
+						<a href="{:url('goods/index')}">
+							<i class='icon-caret-right'></i>
+							<span>商品管理</span>
+						</a>
+					</li>
+					<li class=''>
+						<a href="{:url('goods/category')}">
+							<i class='icon-caret-right'></i>
+							<span>分类管理</span>
+						</a>
+					</li>
+					<li class=''>
+						<a href="{:url('recharge/index')}">
+							<i class='icon-caret-right'></i>
+							<span>充值规则管理</span>
+						</a>
+					</li>
+					<li class=''>
+						<a href="{:url('rfid/setting')}">
+							<i class='icon-caret-right'></i>
+							<span>其它设置</span>
+						</a>
+					</li>
+				</ul>
+			</li>
+			<li class=''>
+				<a href="{:url('member/index')}">
+					<i class='icon-sitemap'></i>
+					<span>成员管理</span>
+				</a>
+			</li>
+			<li class=''>
+				<a href="{:url('merchant/index')}">
+					<i class='icon-user'></i>
+					<span>商户管理</span>
+				</a>
+			</li>
+			<li>
+				<a class='dropdown-collapse ' href='#'>
+					<i class='icon-group'></i>
+					<span>会员管理</span>
+					<i class='icon-angle-down angle-down'></i>
+				</a>
+				<ul class='nav nav-stacked'>
+					<li class=''>
+						<a href="{:url('user/index')}">
+							<i class='icon-caret-right'></i>
+							<span>会员管理</span>
+						</a>
+					</li>
+					<li class=''>
+						<a href="{:url('recharge/rechargeorder')}">
+							<i class='icon-caret-right'></i>
+							<span>储值管理</span>
+						</a>
+					</li>
+				</ul>
+			</li>
+			<li class=''>
+				<a href="{:url('rfid/index')}">
+					<i class='icon-tag'></i>
+					<span>电子标签</span>
+				</a>
+			</li>
+			<li class=''>
+				<a href="{:url('machine/index')}">
+					<i class='icon-hdd'></i>
+					<span>智能机柜</span>
+				</a>
+			</li>
+			<li class=''>
+				<a href="{:url('trade/index')}">
+					<i class='icon-bar-chart'></i>
+					<span>交易查询</span>
+				</a>
+			</li>
+			<li class="">
+				<a class='dropdown-collapse ' href='#'>
+					<i class='icon-cog'></i>
+					<span>对账</span>
+					<i class='icon-angle-down angle-down'></i>
+				</a>
+				<ul class='nav nav-stacked'>
+					<li class=''>
+						<a href="{:url('checkaccount/index')}">
+							<i class='icon-credit-card'></i>
+							<span>平台对账</span>
+						</a>
+					</li>
+					<li class=''>
+						<a href="{:url('checkaccount/merchantIndex')}">
+							<i class='icon-credit-card'></i>
+							<span>商户对账</span>
+						</a>
+					</li>
+				</ul>
+			</li>
+			
+			<li>
+				<a class='dropdown-collapse ' href='#'>
+					<i class='icon-group'></i>
+					<span>角色权限</span>
+					<i class='icon-angle-down angle-down'></i>
+				</a>
+				<ul class='nav nav-stacked'>
+					<li class=''>
+						<a href="{:url('rule/rulelist')}">
+							<i class='icon-caret-right'></i>
+							<span>权限管理</span>
+						</a>
+					</li>
+					<li class=''>
+						<a href="{:url('rule/rulegroup')}">
+							<i class='icon-caret-right'></i>
+							<span>角色管理</span>
+						</a>
+					</li>
+					<li class=''>
+						<a href="{:url('sysuser/index')}">
+							<i class='icon-caret-right'></i>
+							<span>系统用户管理</span>
+						</a>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</nav>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" href="__STATIC__/wechatservice/css/weui.css" />
+		<style>
+			body {
+				height: 100% !important;
+				background: #E7E7E7 !important;
+			}
+			
+
+			
+			.account-top {
+				padding: 15px 15px;
+				background: white;
+			}
+			
+			.account-top .t1 {
+				padding-left: 10px;
+			}
+			
+			.account-top .t2 {
+				padding-left: 10px;
+			}
+			.account-item{
+				background: white;
+				margin-left: 5px;
+				margin-right: 5px;
+				margin-top: 10px;
+				border-radius: 5px;
+			}
+			.profile {
+			  float: left;
+			  display: block;
+			  width: 60px;
+			  height: 60px;
+			  border: 0 solid #ff0000;
+			  border-radius: 120px;
+			  background-color: #ffffff;
+			}
+			.weui-cell:before{
+				border:0px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="page">
+			<div class="page__bd page__bd_spacing">
+				<div class="weui-cell account-top">
+					<img src="{$sysuser.avatar}" class="profile" />
+					<div>
+						<p class="t1">用户名：{$sysuser.username}</p>
+						<p class="t2">手机号：{$sysuser.mobile}</p>
+					</div>
+
+				</div>
+				<a class="weui-cell weui-cell_access account-item" href="/wechatservice/account/checkaccount">
+					<div class="weui-cell__bd">
+						<p>累积收款总额：{$totalfee}元</p>
+					</div>
+					<div class="weui-cell__ft">对账明细</div>
+				</a>
+				<a class="weui-cell weui-cell_access account-item" href="/wechatservice/sales/statis">
+					<div class="weui-cell__bd">
+						<p>销售记录</p>
+					</div>
+					<div class="weui-cell__ft">查看</div>
+				</a>
+				<a class="weui-cell weui-cell_access account-item" href="/wechatservice/goods">
+					<div class="weui-cell__bd">
+						<p>商品信息</p>
+					</div>
+					<div class="weui-cell__ft">查看</div>
+				</a>
+				<a class="weui-cell weui-cell_access account-item" href="/wechatservice/rfid/orders">
+					<div class="weui-cell__bd">
+						<p>电子标签</p>
+					</div>
+					<div class="weui-cell__ft">查看</div>
+				</a>
+				<a class="weui-cell weui-cell_access account-item" href="/wechatservice/stock">
+					<div class="weui-cell__bd">
+						<p>商品库存</p>
+					</div>
+					<div class="weui-cell__ft">查看</div>
+				</a>
+				<a class="weui-cell weui-cell_access account-item" href="/wechatservice/machine">
+					<div class="weui-cell__bd">
+						<p>智能机柜</p>
+					</div>
+					<div class="weui-cell__ft">查看</div>
+				</a>
+				<!--<a class="weui-cell weui-cell_access account-item" href="javascript:;" style="margin-top: 45px;">-->
+					<!--<div class="weui-cell__bd">-->
+						<!--<p>更多设置</p>-->
+					<!--</div>-->
+					<!--<div class="weui-cell__ft">查看</div>-->
+				<!--</a>-->
+			</div>
+		</div>
+	</body>
+
+</html>

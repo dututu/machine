@@ -1,0 +1,384 @@
+
+<!--包含头部文件-->
+{include file="public/header" /}
+<!-- jqGrid组件基础样式包-必要 -->
+<link rel="stylesheet" href="__STATIC__/admin/assets/javascripts/jqGrid_5/css/ui.jqgrid.css"/>
+
+<!-- jqGrid主题包-非必要 -->
+<!-- 在jqgrid/css/css这个目录下还有其他的主题包，可以尝试更换看效果 -->
+<!--<link rel="stylesheet" href="__STATIC__/admin/assets/javascripts/jqGrid_5/css/ui.jqgrid-bootstrap-ui.css" />-->
+
+<link rel="stylesheet" href="__STATIC__/admin/css/gridlist.css"/>
+<style>
+    .lead {
+        font-size: 16px;
+        font-weight: normal;
+        margin-bottom: 0px;
+        line-height: 20px;
+    }
+    
+    .pull-left {
+        float: left;
+        padding-left: 10px;
+        padding-top: 5px;
+    }
+    .pull-right {
+        padding-right: 10px;
+    }
+    .ui-paging-pager{
+        font-size:14px;
+    }
+    .jqgrow td{
+        border-left:1px solid #DDDDDD;
+    }
+    #pager2{
+        padding:0px !important;
+    }
+    #pg_pager2{
+        padding:5px !important;
+        border-left:1px solid #DDDDDD !important;
+        border-right:1px solid #DDDDDD !important;
+    }
+</style>
+<div id='wrapper'>
+
+    <!--包含菜单文件-->
+    {include file="public/menu" /}
+<section id='content'>
+<div class='container-fluid'>
+<div class='row-fluid' id='content-wrapper'>
+<div class='span12'>
+<div class='page-header'>
+    <h1 class='pull-left'>
+        <i class='icon-bar-chart'></i>
+        <span>对账单概览</span>
+    </h1>
+    <div class='pull-right'>
+                <ul class='breadcrumb'>
+                    <li>
+                        <a href="{:url('index/index')}"><i class='icon-home' style="font-size:17px;"></i>
+                        </a>
+                    </li>
+                    <li class='separator'>
+                        <i class='icon-angle-right'></i>
+                    </li>
+                    <li>
+                        <a href="{:url('checkaccount/index')}">对账管理</a>
+                    </li>
+                    <li class='separator'>
+                        <i class='icon-angle-right'></i>
+                    </li>
+                    <li class='active'>平台对账</li>
+                    <li class='separator'>
+                        <i class='icon-angle-right'></i>
+                    </li>
+                    <li class='active'>对账单概览</li>
+                </ul>
+            </div>
+</div>
+
+
+    <div id='orders'>
+        <div class='row-fluid'>
+            <!--<div class='span4'>
+                <div class='responsive-table'>
+                    <div class='scrollable-area'>
+                         jqgrid -->
+                        <!-- <table id="gridTable" class=""></table> -->
+                        <!-- jqgrid end
+                        <div id="pager2"></div>
+                    </div>
+                </div>
+            </div>-->
+            <div class='span12'>
+                <div class='row-fluid' id='detail'>
+                    <div class='span12 box'>
+                        <div class='box-content'>
+                            <!-- <div class='pull-left'>
+                                <a id="r_b_1" class='btn btn-success ' style="display:block;" href="javascript:regdevice();">下载对账单</a>
+                            </div> -->
+                            <div class='clearfix'></div>
+                            <hr class='hr-normal'/>
+                            <div class='pull-left lead'>
+                                对账单日期：
+                                <span id="stucode2">{$reconciliationtime}</span>
+                                <!-- {switch $billstatus}
+                                    {case '1'}
+                                        <a id="applystatus" class='btn btn-success btn-mini' href='#'>已出账</a>
+                                    {/case}
+                                    {case '0'}
+                                        <a id="applystatus" class='btn btn-important btn-mini' href='#'>未出账</a>
+                                    {/case}
+                                {/switch} -->
+                                 {if condition="($billstatus == 1)"} 
+                                    <a id="applystatus" class='btn btn-success btn-mini' href='#'>已出账</a>
+                                 {else /}
+                                    <a id="applystatus" class='btn btn-important btn-mini' href='#'>未出账</a>
+                                 {/if}
+
+
+
+                               
+                            </div>
+                            <div class='pull-right' style="color: #808080;">
+                                实收金额：<span id="createtime">{$incomeamount/100-$refundamount/100}</span>
+                            </div>
+                            <div class='clearfix'></div>
+                            <hr class='hr-normal'/>
+                            
+                            <div class='row-fluid'>
+                                <div class='span2'>
+                                    <div class='lead'>
+                                        <i class='icon-hdd contrast'></i>
+                                        平台汇总
+                                    </div>
+                                </div>
+                                <div class='span8 offset1'>
+                                    <address>
+                                        <div class='row-fluid'>
+                                            <p class='span6' id="r_faname">交易笔数</p>
+                                            <p class='span6' id="r_funcname">{$orderspens}笔</p>
+                                        </div>
+                                        {eq name="billtype" value="1"}
+                                        <div class='row-fluid'>
+                                            <p class='span6'>商品购买</p>
+                                            <p class='span6'>{$billgood/100}元</p>
+                                        </div>
+                                        <div class='row-fluid'>
+                                            <p class='span6'>储值购买</p>
+                                            <p class='span6'>{$billrecharge/100}元</p>
+                                        </div>
+                                        {else/}
+                                        <div class='row-fluid'>
+                                            <p class='span6'>收入</p>
+                                            <p class='span6'>{$incomeamount/100}元</p>
+                                        </div>
+                                        {/eq}
+                                    
+                                    </address>
+                                </div>
+                            </div>
+                            <hr class='hr-normal'/>
+                            <div class='row-fluid'>
+                                <div class='span2'>
+                                    <div class='lead'>
+                                        <i class='icon-user contrast'></i>
+                                        第三方汇总
+                                    </div>
+                                </div>
+                                <div class='span8 offset1'>
+                                    <address>
+                                        <div class='row-fluid'>
+                                            <p class='span6'>交易笔数</p>
+                                            <p class='span6'>{$billspens}笔</p>
+                                        </div>
+                                        {eq name="billtype" value="1"}
+                                        <div class='row-fluid'>
+                                            <p class='span6'>商品购买</p>
+                                            <p class='span6'>{$ordergood/100}元</p>
+                                        </div>
+                                        <div class='row-fluid'>
+                                            <p class='span6'>储值购买</p>
+                                            <p class='span6'>{$orderrecharge/100}元</p>
+                                        </div>
+                                        {else/}
+                                        <div class='row-fluid'>
+                                            <p class='span6'>收入</p>
+                                            <p class='span6'>{$incomeamount/100}元</p>
+                                        </div>
+                                        {/eq}
+                                        <!-- <p id="r_mac"></p>
+                                                                            <p id="r_rfidcode"></p>
+                                                                            <p id="devid"></p>
+                                                                            <p id="devuid"></p> -->
+                                    </address>
+                                    
+                                </div>
+                            </div>
+                            <!--<div class='row-fluid'>-->
+                                <!--<div class='span2'>-->
+                                    <!--<div class='lead'>-->
+                                        <!--<i class='icon-hdd contrast'></i>-->
+                                        <!--操作记录-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class='span8 offset1'>-->
+
+                                <!--</div>-->
+                            <!--</div>-->
+                            <div class='responsive-table'>
+                                <div class='scrollable-area'>
+                                    <!-- 表格 -->
+                                    <table id="gridTable" class="table-bordered table-striped "></table>
+                                    <!-- 页码 -->
+                                    <div id="pager2"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</div>
+</div>
+</section>
+</div>
+<button class="btn-refresh" onclick="refreshpage();"></button>
+<!--包含底部js文件-->
+{include file="public/footer" /}
+<!-- jqGrid插件包-必要 -->
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/jqGrid_5/js/jquery.jqGrid.min.js"></script>
+<!-- jqGrid插件的多语言包-非必要 -->
+<!-- 在jqgrid/js/i18n下还有其他的多语言包 -->
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/jqGrid_5/js/i18n/grid.locale-cn.js"></script>
+<script>
+    var accountid = "{$accountid}";
+    var rows;
+    $(function () {
+        //页面加载完成之后执行
+        pageInit();
+    });
+    function pageInit() {
+        //创建jqGrid组件
+        //订单状态：1 购物中，2待结账，3已取消，4待支付，5已付款，6已欠费，7转退款，8已完成
+        jQuery("#gridTable").jqGrid(
+            {
+                url: 'getBillDetailList',//组件创建完成之后请求数据的url
+                postData:{
+                    accountid: accountid
+                },
+                datatype: "json",//请求数据返回的类型。可选json,xml,txt
+                colNames: ['交易时间', '流水号', '第三方订单号', '交易类型', '支付类型', '支付方式', '实付金额(平台)', '对账单金额(第三方)', '手续费(元)', '对账状态', '操作'],//jqGrid的列显示名字
+                colModel: [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
+                     { name: 'transactiontime', index: 'transactiontime', align: "center", sortable: false, },
+                    { name: 'serialno', index: 'serialno', align: "center", sortable: false, },
+                    { name: 'batchno', index: 'batchno', align: "center", sortable: false, },
+                    { 
+                        name: 'billtype',
+                        index: 'billtype', 
+                        align: "center", 
+                        sortable: false, 
+                        formatter: function (aa, options, rowObject) {
+                            if(aa==1) {
+                                return '商品购买'
+                            } else if(aa==2) {
+                                return '储值购买';
+                            } else if(aa==3) {
+                                return 'rfid购买';
+                            }
+                        }
+                    },
+                    {
+                        name: 'payresult',
+                        index: 'payresult',
+                        align: "center",
+                        sortable: false,
+                        formatter: function (aa, options, rowObject) {
+                            if (aa == 1) {
+                                return '付款'
+                            } else if (aa == 2) {
+                                return '退款';
+                            } else {
+                                return '状态未知'
+                            }
+                        }
+                    },
+                     {
+                        name: 'paytype',
+                        index: 'paytype',
+                        align: "center",
+                        sortable: false,
+                        formatter: function (aa, options, rowObject) {
+                            if (aa = 2) {
+                                return '微信支付'
+                            } else if (aa = 3) {
+                                return '支付宝支付';
+                            } else {
+                                return '状态未知'
+                            }
+                        }
+                    },
+                    {
+                        name: 'payfee',
+                        index: 'payfee',
+                        align: "center",
+                        sortable: false,
+                        formatter: function (aa, options, rowObject) {
+                            return aa/100;
+                        }
+                    },
+                    {
+                        name: 'billfee',
+                        index: 'billfee',
+                        align: "center",
+                        sortable: false,
+                        formatter: function (aa, options, rowObject) {
+                            return aa / 100;
+                        }
+                    },
+                    {
+                        name: 'fees',
+                        index: 'fees',
+                        align: "center",
+                        sortable: false,
+                        formatter: function (aa, options, rowObject) {
+                            return aa / 100;
+                        }
+                    },
+                    {
+                        name: 'accountstatus',
+                        index: 'accountstatus',
+                        align: "center",
+                        sortable: false,
+                        formatter: function (aa, options, rowObject) {
+                            if (aa == 1) {
+                                return '正常'
+                            } else if (aa == 2) {
+                                return '订单异常';
+                            } else if(aa==3){
+                                return '对账单异常'
+                            } else {
+                                return '未知'
+                            }
+                        }
+                    },
+                    {
+                        name: 'accountstatus',
+                        index: 'accountstatus',
+                        align: "center",
+                        sortable: false,
+                        formatter: function (aa, options, rowObject) {
+                            return '<a class="btn btn-success btn-mini" href="javascript:gotoDetail(\'' + 1 + '\',\'' + rowObject.accountid + '\');">详情</a>'
+                        }
+                    }, 
+                ],
+                page:1,
+                rownumbers: false,
+                rowNum: 10,//一页显示多少条
+                rowList: [10, 20, 30],//可供用户选择一页显示多少条
+                pager: '#pager2',//表格页脚的占位符(一般是div)的id
+//				sortname : 'id',//初始化的时候排序的字段
+//				sortorder : "desc",//排序方式,可选desc,asc
+                mtype: "get",//向后台请求数据的ajax的类型。可选post,get
+//          		styleUI: '',//设置jqgrid的全局样式为bootstrap样式 Bootstrap
+                viewrecords: true,
+                autowidth: true,
+                pagerpos: "left",
+                recordpos: "right",
+                height: "auto",
+                loadComplete: function (xhr) {
+                    $("#gridTable").closest(".ui-jqgrid-bdiv").css({'overflow-y': 'auto'});//,'overflow-x':'hidden'
+                },
+            });
+            
+    }
+    function gotoDetail(page, detailid) {
+        location.href = 'detail?page=' + page + '&accountid=' + detailid;
+    }
+</script>
+</body>
+</html>

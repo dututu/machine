@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>机柜秤台监控</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/weui/1.1.2/style/weui.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/jquery-weui/1.1.2/css/jquery-weui.min.css">
+    <link rel="stylesheet" href="__STATIC__/wechatservice/css/mui.min.css">
+    <style>
+        html,
+        body {
+            background-color: #efeff4;
+        }
+
+    </style>
+    <style>
+
+
+        .expand_item .turn_up:after {
+            transform: matrix(0.71, -0.71, 0.71, 0.71, 0, 0);
+        }
+
+        .expand_item .turn_down:after {
+            transform: matrix(.71, .71, .71, -.71, 0, 0)
+        }
+
+        .g_item {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            margin-top: 5px;
+        }
+
+        .g_item .item1 p {
+            margin-top: 5px;
+        }
+
+        .g_item .item2 {
+            margin-left: 5px;
+        }
+
+        .g_item .item2 p {
+            margin-top: 5px;
+        }
+
+        .box {
+            margin: 5px;
+            border-radius: 5px;
+        }
+.weui-media-box__desc{
+    color: #999999 !important;
+    font-size:14px !important;
+}
+
+    </style>
+</head>
+
+<body class="mui-fullscreen">
+<div class="page">
+    <div class="page__bd page__bd_spacing" style="padding-bottom: 60px;">
+        <div class="weui-panel weui-panel_access box">
+            <div class="weui-panel__hd " >
+                <div style="display: flex;flex-direction:row;justify-content: space-between;">
+                    <p style="color: #333333;font-size:16px;">机柜名称：{$machine.machinename}</p>
+                </div>
+                <p style="color: #333333;">货架层数：{$machine.floor}层 秤台数：{$machine.plat}个</p>
+            </div>
+            <div class="weui-panel__bd">
+                <div class="weui-media-box weui-media-box_appmsg">
+                    <div class="weui-media-box__bd">
+                        <p class="weui-media-box__desc">货架明细：</p>
+                        {volist name="machine.floors" id="floor" key="j"}
+                        <div style="margin-bottom: 30px;">
+                            <div class="weui-flex">
+                                <div class="weui-flex__item" style="color: #999999;font-size:14px;">第{$floor.floor}层
+                                    {if condition="$floor.floor eq 1"}
+                                    <span>顶层</span>
+                                    {/if}
+                                    {if condition="$floor.floor eq 5"}
+                                    <span>底层</span>
+                                    {/if}
+                                    （{$floor.pos}）</div>
+                            </div>
+                            <div>
+                                <p>秤台当前质量：<span class="{$floor.pos}_cur_weight">0</span>克</p>
+                            </div>
+                            <div>
+                                <p>与上次称重之差：<span class="{$floor.pos}_span_weight">0</span>克 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;上一次称重质量：<span class="{$floor.pos}_pre_weight">0</span>克</p>
+                            </div>
+                        </div>
+                        {/volist}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="flex-row"
+         style="display: flex;flex-direction:row;justify-content:center;align-items:center;position:fixed;bottom:0;z-index: 99999;width:100%;background:#f7f7f7;padding:10px 0;">
+        <button class="weui-btn weui-btn_default closeselectmodal" style="margin-top:0px;line-height:1;width:40%;height:42px;"  onclick="closec();">返回</button>
+        <button class="weui-btn weui-btn_primary confirmselect" style="margin-top:0px;line-height:1;width:40%;height:42px;" onclick="queryweight();">刷新</button>
+    </div>
+</div>
+</body>
+<!-- body 最后 -->
+<script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-weui/1.1.2/js/jquery-weui.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-weui/1.1.2/js/swiper.min.js"></script>
+<! -- 引入微信官方的JSSDK 1.2版本-->
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script>
+    var oldweights = [];
+    $(function() {
+        queryweight();
+    });
+        function queryweight() {
+            $.showLoading();
+        var postData = {
+            'machineid':'{$machine.machineid}'
+        };
+        var url = 'weightlist';
+        $.post(url,postData,function (result) {
+            $.hideLoading();
+            if(result.code == 200){
+                var weights = result.data;
+                for(var i = 0;i<weights.length;i++){
+                    $('.'+weights[i].pos+'_cur_weight').html(weights[i].weight);
+                }
+                if(oldweights.length>0){
+                    for(var i = 0;i<weights.length;i++){
+                        for(var k = 0;i<oldweights.length;k++){
+                            if(oldweights[k].pos == weights[i].pos){
+                                $('.'+weights[i].pos+'_pre_weight').html(oldweights[k].weight);
+                                $('.'+weights[i].pos+'_span_weight').html(weights[i].weight-oldweights[k].weight);
+                                break;
+                            }
+                        }
+                    }
+
+                    oldweights = weights;
+                }else{
+                    oldweights = weights;
+                }
+            }else if(result.code == 1){
+                alert('刷新失败');
+            }
+        },"json");
+    }
+    function closec() {
+        WeixinJSBridge.call('closeWindow');
+    }
+</script>
+
+</html>

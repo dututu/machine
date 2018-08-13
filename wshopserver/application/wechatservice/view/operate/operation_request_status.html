@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title>我要运营-申请状态</title>
+		<link rel="stylesheet" href="__STATIC__/wechatservice/css/weui.css" />
+		<style>
+			body {
+				height: 100% !important;
+				background: #E7E7E7 !important;
+			}
+			.flex-view-item {
+				margin-right: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="page">
+			<div class="page__bd page__bd_spacing">
+				<div style="text-align: center;margin-top: 50px;margin-bottom: 50px;">
+					<img src="__STATIC__/admin/assets/images/adminlogo2.png" style="height: 80px;width:80px;" />
+				</div>
+
+				
+				<div style="background: #FFFFFF;padding:15px;">
+					<div class="weui-cells__title">您的申请已提交，稍后会有工作人员与您联系</div>
+					<div class="flex-row" style="display: flex;flex-direction:row;justify-content:flex-start;margin-bottom:-10px;margin-top: 10px;">
+						<div class="flex-view-item">
+							<img src="__STATIC__/wechatservice/img/progress_top.png" style="width: 42px;"/>
+						</div>
+						<div class="flex-view-item">
+							<p class="" style='padding-top: 12px;'>申请已提交</p>
+						</div>
+					</div>
+					{if condition="$status eq 1"}
+					<div class="flex-row" style="display: flex;flex-direction:row;justify-content:flex-start;align-items:center;margin-bottom:-10px;">
+						<div class="flex-view-item">
+							<img src="__STATIC__/wechatservice/img/progress_mid.png" style="width: 42px;"/>
+						</div>
+						<div class="flex-view-item">
+							<p class="" style=''>审核中</p>
+						</div>
+					</div>
+					{elseif condition="$status eq 2"/}
+					<div class="flex-row" style="display: flex;flex-direction:row;justify-content:flex-start;align-items:center;margin-bottom:-10px;">
+						<div class="flex-view-item">
+							<img src="__STATIC__/wechatservice/img/progress_mid.png" style="width: 42px;"/>
+						</div>
+						<div class="flex-view-item">
+							<p class="" style=''>审核已通过，工作人员将于2个工作日内与您联系</p>
+						</div>
+					</div>
+					{elseif condition="$status eq 3"/}
+					<div class="flex-row" style="display: flex;flex-direction:row;justify-content:flex-start;align-items:center;margin-bottom:-10px;">
+						<div class="flex-view-item">
+							<img src="__STATIC__/wechatservice/img/progress_mid.png" style="width: 42px;"/>
+						</div>
+						<div class="flex-view-item">
+							<p class="" style=''>审核未通过</p>
+						</div>
+					</div>
+					{elseif condition="$status eq 4"/}
+					<div class="flex-row" style="display: flex;flex-direction:row;justify-content:flex-start;align-items:center;margin-bottom:-10px;">
+						<div class="flex-view-item">
+							<img src="__STATIC__/wechatservice/img/progress_mid.png" style="width: 42px;"/>
+						</div>
+						<div class="flex-view-item">
+							<p class="" style=''>已停用</p>
+						</div>
+					</div>
+					{elseif condition="$status eq 5"/}
+					<div class="flex-row" style="display: flex;flex-direction:row;justify-content:flex-start;align-items:center;margin-bottom:-10px;">
+						<div class="flex-view-item">
+							<img src="__STATIC__/wechatservice/img/progress_mid.png" style="width: 42px;"/>
+						</div>
+						<div class="flex-view-item">
+							<p class="" style=''>已删除</p>
+						</div>
+					</div>
+					{/if}
+
+					<div class="flex-row" style="display: flex;flex-direction:row;justify-content:flex-start;align-items:flex-end;">
+						<div class="flex-view-item">
+							<img src="__STATIC__/wechatservice/img/pregress_bottom.png" style="width: 42px;"/>
+						</div>
+						<div class="flex-view-item">
+							<p class="" style='padding-bottom: 15px;'>已签署</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="weui-btn-area">
+					<a class="weui-btn weui-btn_default" href="javascript:backtop();"  style="background: white;">返回</a>
+				</div>
+			</div>
+		</div>
+	</body>
+	<! -- 引入微信官方的JSSDK 1.2版本-->
+	<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+	<script>
+		function backtop() {
+            WeixinJSBridge.call('closeWindow');
+        }
+	</script>
+</html>

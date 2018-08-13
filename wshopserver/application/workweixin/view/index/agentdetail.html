@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>商户统计</title>
+    {include file="common/header" /}
+    <style>
+
+
+    </style>
+
+</head>
+
+<body>
+<div id="container" class="container">
+    <div class="weui-search weui-flex">
+        <div class="icon fa-calendar"></div>
+        <input class="weui-input weui-input_5" id="start_date" type="text" value="{$start}" readonly>
+        <span>&nbsp ~ &nbsp</span>
+        <input class="weui-input weui-input_5" id="end_date" type="text" value="{$end}" readonly>
+    </div>
+    <div class="content">
+        <div class="header">
+            概览
+        </div>
+        <div class="grids">
+            <div class="weui-flex">
+                <div class="weui-flex__title">商户数量：<span class="font-color-red">{$data.total_merchant}</span></div>
+            </div>
+            <div class="weui-flex">
+                <div class="weui-flex__item">
+                    {$data.count}（{$data.count_p}%）
+                    <p class="">有交易商户（个）</p>
+                </div>
+                <div class="weui-flex__item">{$data.avg_merchant}<p class="">商户日均交易额</p></div>
+            </div>
+            <div class="weui-flex">
+                <div class="weui-flex__item">{$data.avg_user}<p class="">商户日均用户（个）</p></div>
+                <div class="weui-flex__item">{$data.new_agent}<p class="">新增商户</p></div>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="header">
+            商户交易走势
+        </div>
+        <div id="echart_2" class="echart">
+
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="weui-flex header">
+            <div class=" weui-flex__item">
+                <div class="weui-flex ">
+                    <span class="header__title">商户交易排行</span>
+                    <div class="icon-sort icon-sort__asc"></div>
+                </div>
+            </div>
+            <div class="weui-flex">
+                <select class="weui-select-new" name="select1">
+                    <option selected="" value="0">销售金额</option>
+                    <option value="1">交易商品数量</option>
+                    <option value="2">客单价</option>
+                </select>
+                <span class="biao"></span>
+            </div>
+        </div>
+        <div class="ranking">
+            
+        </div>
+    </div>
+
+</div>
+
+<div id="back" onclick="javascript:history.back()">
+    <button>返回</button>
+</div>
+</body>
+
+<script>
+    $(function(){
+        var start = '{$start}';
+        var end = '{$end}';
+        var obj = common.init('{$start}','{$end}');
+        var url_trend = "{:url('merchant/merchantTrend')}";
+        var url_rank = "{:url('merchant/getMerchantInfo')}";
+        $("#start_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [start],
+            maxDate: end,
+            onChange: function (p, values) {
+                start = values[0];
+            },
+            onClose :function(p){
+                //$("#end_date").calendar('destroy')
+                //_this.get_edate();
+
+                window.location.href="{:url('index/agentDetail')}"+'?start='+start+'&end='+end;
+            }
+        });
+        $("#end_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [end],
+            minDate: start,
+            onChange: function (p, values) {
+                end = values[0];
+            },
+            onClose :function(p){
+                //$("#start_date").calendar('destroy');
+                //_this.get_sdate();
+                window.location.href="{:url('index/agentDetail')}"+'?start='+start+'&end='+end;
+            }
+        });
+        // 基于准备好的dom，初始化echarts实例
+        var myChart_2 = echarts.init(document.getElementById('echart_2'));
+        //走势图
+        var option_2 = obj.get_machinetrend(url_trend);
+        myChart_2.setOption(option_2,true);
+        var hasMore = obj.get_merchantRanking(url_rank);
+
+        var loading = false;
+        $(document.body).infinite().on("infinite", function() {
+            var _this = $(this);
+            if( loading ) return;
+            loading = true;
+            if( hasMore ){
+                _this.hasMore = obj.get_merchantRanking(url_rank,true);
+                console.log('_this.hasMore+++++++++++++++++'+_this.hasMore);
+                if( _this.hasMore ) loading = false;
+            }
+        });
+
+
+
+        $('.container').on('click','.rank',function(){
+            var merchantid = $(this).data('merchantid');
+            //总机柜
+            var t = $(this).find('.tt').text();
+            if( !merchantid )
+                $.alert('参数错误')
+            else{
+                window.location.href="{:url('merchant/busdetail')}"+'?merchantid='+merchantid+'&start='+start+'&end='+end+'&t='+t;
+            }
+
+        })
+    })
+
+</script>
+
+
+</html>

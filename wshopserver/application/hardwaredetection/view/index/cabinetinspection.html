@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title>测试开门</title>
+        {include file="common/header" /}
+        <style>
+            body{
+                background: #f6f6f6;
+            }
+            .container{
+                position: relative;
+                top:10px;
+                margin-bottom: 100px;
+
+            }
+            .content{
+                background: white;
+                padding: 10px;
+            }
+            .content_title{
+                padding: 10px 0;
+            }
+            .content_body{
+                font-size: 12px;
+            }
+            .body_title{
+                border-bottom: 1px solid #ddd;
+            }
+            .weighing{
+                margin-left: 40px;
+            }
+            .body_title{
+                color: rgb(138, 138, 138);
+            }
+            .weighing{
+                height: 40px;
+                line-height: 40px;
+            }
+            .testing_result{
+                color: rgb(37, 155, 36);
+            }
+            .test_button{
+                line-height: 65px;
+            }
+            .test_button .weui-btn_plain-primary{
+                font-size: inherit;
+                /*padding: 0 10px;*/
+            }
+            .weui-btn+.weui-btn{
+                margin-top:unset;
+                margin-left: 10px;
+            }
+            .button{
+                margin: 10px;
+            }
+            .button .weui-btn{
+                padding: 0 5px;
+            }
+            .weui-btn_plain-warn{
+                color: red;
+                border: 1px solid red;
+            }
+
+            .container_title{
+                height: 35px;
+                line-height: 35px;
+            }
+        </style>
+	</head>
+
+	<body>
+        <div id="container" class="container">
+            <div class="container_title">称台检测</div>
+            <div class="content">
+                <div class="content_title">货架明细: </div>
+                <!--<div class="content_body">-->
+                    <!--<div class="body_title">第一层-顶层(01889888)</div>-->
+                    <!--<div class="weighing weui-flex">-->
+                        <!--<div class="weui-flex__item">称台当前质量: <span>8899</span>克 <span class="testing_result">（测试通过）</span></div>-->
+                        <!--<div class="test_button ">-->
+                            <!--<a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_plain-primary">重新检测</a>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            </div>
+
+            <div class="weui-flex button">
+                <div class=" weui-btn weui-btn_mini weui-btn_plain-primary open">开门</div>
+                <div class=" weui-btn weui-btn_mini weui-btn_plain-warn clear">称台归零</div>
+                <div class=" weui-btn weui-btn_mini weui-btn_plain-primary weight">获取称台重量</div>
+                <div class="weui-btn weui-btn_mini weui-btn_plain-primary repeat">重新检测</div>
+            </div>
+
+
+        </div>
+        {include file="common/footer" /}
+	</body>
+
+    <script>
+        $(document).ready(function(){
+            var devuid = $.cookie('dev_uid');
+            var post_url = "{:url('index/cabinetInspection')}";
+            var recode_url = "{:url('index/getRecode')}";
+            var clear_url = "{:url('index/clear')}";
+
+            getweight();
+            //获取称台
+
+
+            $('.open').click(function(){
+                var _this = $(this);
+                var url = "{:url('Testbox/openDoor')}";
+                $.post(url,{devuid:devuid},function(data){
+                    if( data.code != 0 ){
+                        $.alert('开门失败')
+                    }
+                })
+            })
+
+            $('.weight').click(function(){
+                $('.content_body').remove();
+                getweight();
+
+            })
+            $('.repeat').click(function(){
+                //清除数据
+                $.post(clear_url,{devuid:devuid},function(data){
+                    if( data.code == 0 ){
+                        window.location.reload();
+                    }
+                })
+
+            })
+
+            $('.clear').click(function(){
+                var _this = $(this);
+                var url = "{:url('Testbox/clearWeigh')}";
+                $.post(url,{devuid:devuid},function(data){
+                    if( data.code != 0 ){
+                        $.alert('货架清零失败');
+                    }else{
+                        $('.content_body').remove();
+                        getweight();
+                    }
+                })
+            })
+
+            $('.container').on('click','.test_button .weui-btn',function(){
+                var _this = $(this);
+                var index = _this.data('door');
+                var s = _this.hasClass('success');
+                $.post(post_url,{devuid:devuid,pos:index,s:s},function(data){
+                    if( data.code == 0){
+                        _this.parents('.weighing').find('.testing_result').text('（测试通过）')
+                        _this.parent().remove();
+                        var l = $('.test_button .weui-btn').length;
+                        console.log(l);
+                        if( l == 0){
+                            $.post(post_url,{devuid:devuid,shelfcheck:1},function(data){
+
+                            })
+                        }
+                    }else{
+                        $.alert('失败');
+                    }
+
+
+                })
+            })
+            function getweight(){
+                var url = "{:url('Testbox/GetWeight')}";
+                $.post(recode_url,{devuid:devuid},function (d){
+                    var d = d.data;
+                    $.post(url,{devuid:devuid},function(data){
+                        var html = '';
+                        $.each(data,function(i,v){
+                            var str = v.pos;
+                            var arr=str.split('0');
+                            console.log(arr);
+                            var body_title = '';
+                            body_title += '第 '+arr[2]+' 层';
+                            if(arr[3] == 1)
+                                body_title += '-左';
+                            else
+                                body_title += '-右';
+                            body_title += '('+str+')';
+                            var pos = 'pos'+arr[2];
+                            var span ='';
+                            var text ='';
+                            if( d[pos] == 1){
+                                span = '（测试通过）';
+                            }else{
+                                text = '<div class="test_button ">' +
+                                    '<a href="javascript:;" data-door="'+arr[2]+'" class="weui-btn weui-btn_mini weui-btn_plain-primary success">通过检测</a></div>';
+                            }
+                            html += '<div class="content_body">' +
+                                '<div class="body_title">'+body_title+'</div>' +
+                                '<div class="weighing weui-flex">' +
+                                '<div class="weui-flex__item">称台当前质量: <span>'+ v.weight+'</span>克 <span class="testing_result">'+span+'</span></div>';
+                            html += text+'</div></div>';
+                        })
+                        $('.content_title').after(html);
+                    })
+                })
+
+            }
+        })
+    </script>
+
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title>列表</title>
+        {include file="common/header" /}
+        <style>
+            .weui-cell__bd{
+                text-align: right;
+            }
+            .weui-media-box__bd .weui-flex + .weui-flex{
+                padding-top: 6%;
+            }
+            .list{
+                background: #fff;
+                font-size: .7rem;
+            }
+            .list + .list{
+                margin-top: 3%;
+            }
+            .weui-panel{
+                background-color:#f8f8f8;
+            }
+            .weui-media-box_appmsg .weui-media-box__hd{
+                width: 20%;
+                padding-bottom: 20%;
+                border-radius: 50%;
+                background: pink;
+                height: 0;
+            }
+        </style>
+	</head>
+
+	<body>
+        <div id="container" class="container">
+            <div class="weui-panel ">
+                <div class="list">
+                    <div class="weui-panel__hd weui-flex">
+                        <div class="header weui-flex__item">销售统计</div>
+                        <div class="">
+                            <div class="weui-cell weui-cell_select">
+                                <div class="weui-cell__bd">
+                                    <select class="weui-select" name="select1">
+                                        <option selected="" value="1">微信号</option>
+                                        <option value="2">近一周</option>
+                                        <option value="3">Email</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="weui-panel__bd">
+                        <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+                            <div class="weui-media-box__hd">
+                                <img class="weui-media-box__thumb" src="">
+                            </div>
+                            <div class="weui-media-box__bd">
+                                <div class="weui-flex">
+                                    <div class="weui-flex__item">销售金额</div>
+                                    <div>111</div>
+                                </div>
+                                <div class="weui-flex">
+                                    <div class="weui-flex__item">订单数量</div>
+                                    <div>111</div>
+                                </div>
+
+                            </div>
+                        </a>
+                        <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+                            <div class="weui-media-box__hd">
+                                <img class="weui-media-box__thumb" src="">
+                            </div>
+                            <div class="weui-media-box__bd">
+                                <div class="weui-flex">
+                                    <div class="weui-flex__item">销售金额</div>
+                                    <div>111</div>
+                                </div>
+                                <div class="weui-flex">
+                                    <div class="weui-flex__item">订单数量</div>
+                                    <div>111</div>
+                                </div>
+
+                            </div>
+                        </a>
+
+
+                    </div>
+                    <div class="weui-panel__ft">
+                        <a href="{:url('index/saleDetail.html')}" class="weui-cell weui-cell_access weui-cell_link">
+                            <div class="weui-cell__bd">详情</div>
+                            <span class="weui-cell__ft"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="list">
+                    <div class="weui-panel__hd weui-flex">
+                        <div class="header weui-flex__item">机柜统计</div>
+                        <div class="">
+                            <div class="weui-cell weui-cell_select">
+                                <div class="weui-cell__bd">
+                                    <select class="weui-select" name="select1">
+                                        <option selected="" value="1">昨日</option>
+                                        <option value="2">近一周</option>
+                                        <option value="3">近一月</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="weui-panel__bd">
+                        <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+                            <div class="weui-media-box__hd">
+                                <img class="weui-media-box__thumb" src="">
+                            </div>
+                            <div class="weui-media-box__bd">
+                                <div class="weui-flex">
+                                    <div class="weui-flex__item">有交易机柜</div>
+                                    <div>111</div>
+                                </div>
+                                <div class="weui-flex">
+                                    <div class="weui-flex__item">新上线机柜</div>
+                                    <div>111</div>
+                                </div>
+
+                            </div>
+                        </a>
+                        <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+                            <div class="weui-media-box__hd">
+                                <img class="weui-media-box__thumb" src="">
+                            </div>
+                            <div class="weui-media-box__bd">
+                                <div class="weui-flex">
+                                    <div class="weui-flex__item">有交易机柜</div>
+                                    <div>111</div>
+                                </div>
+                                <div class="weui-flex">
+                                    <div class="weui-flex__item">新上线机柜</div>
+                                    <div>111</div>
+                                </div>
+
+                            </div>
+                        </a>
+
+
+                    </div>
+                    <div class="weui-panel__ft">
+                        <a href="{:url('index/machineDetail.html')}" class="weui-cell weui-cell_access weui-cell_link">
+                            <div class="weui-cell__bd">详情</div>
+                            <span class="weui-cell__ft"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="list">
+                    <div class="weui-panel__hd weui-flex">
+                        <div class="header weui-flex__item">商户统计</div>
+                        <div class="">
+                            <div class="weui-cell weui-cell_select">
+                                <div class="weui-cell__bd">
+                                    <select class="weui-select" name="select1">
+                                        <option selected="" value="1">昨日</option>
+                                        <option value="2">近一周</option>
+                                        <option value="3">近一月</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="weui-panel__bd">
+                        <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+                            <div class="weui-media-box__hd">
+                                <img class="weui-media-box__thumb" src="">
+                            </div>
+                            <div class="weui-media-box__bd">
+                                <div class="weui-flex">
+                                    <div class="weui-flex__item">有交易商户</div>
+                                    <div>111</div>
+                                </div>
+                                <div class="weui-flex">
+                                    <div class="weui-flex__item">新增商户</div>
+                                    <div>111</div>
+                                </div>
+
+                            </div>
+                        </a>
+                        <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+                            <div class="weui-media-box__hd">
+                                <img class="weui-media-box__thumb" src="">
+                            </div>
+                            <div class="weui-media-box__bd">
+                                <div class="weui-flex">
+                                    <div class="weui-flex__item">有交易商户</div>
+                                    <div>111</div>
+                                </div>
+                                <div class="weui-flex">
+                                    <div class="weui-flex__item">新增商户</div>
+                                    <div>111</div>
+                                </div>
+
+                            </div>
+                        </a>
+
+
+                    </div>
+                    <div class="weui-panel__ft">
+                        <a href="{:url('index/agentDetail.html')}" class="weui-cell weui-cell_access weui-cell_link">
+                            <div class="weui-cell__bd">详情</div>
+                            <span class="weui-cell__ft"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="list">
+                    <div class="weui-panel__hd weui-flex">
+                        <div class="header weui-flex__item">用户统计</div>
+                        <div class="">
+                            <div class="weui-cell weui-cell_select">
+                                <div class="weui-cell__bd">
+                                    <select class="weui-select" name="select1">
+                                        <option selected="" value="1">昨日</option>
+                                        <option value="2">近一周</option>
+                                        <option value="3">近一月</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="weui-panel__bd">
+                        <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+                            <div class="weui-media-box__hd">
+                                <img class="weui-media-box__thumb" src="">
+                            </div>
+                            <div class="weui-media-box__bd">
+                                <div class="weui-flex">
+                                    <div class="weui-flex__item">有交易用户</div>
+                                    <div>111</div>
+                                </div>
+                                <div class="weui-flex">
+                                    <div class="weui-flex__item">新增用户</div>
+                                    <div>111</div>
+                                </div>
+
+                            </div>
+                        </a>
+                        <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+                            <div class="weui-media-box__hd">
+                                <img class="weui-media-box__thumb" src="">
+                            </div>
+                            <div class="weui-media-box__bd">
+                                <div class="weui-flex">
+                                    <div class="weui-flex__item">有交易用户</div>
+                                    <div>111</div>
+                                </div>
+                                <div class="weui-flex">
+                                    <div class="weui-flex__item">新增用户</div>
+                                    <div>111</div>
+                                </div>
+
+                            </div>
+                        </a>
+
+
+                    </div>
+                    <div class="weui-panel__ft">
+                        <a href="{:url('index/userDetail.html')}" class="weui-cell weui-cell_access weui-cell_link">
+                            <div class="weui-cell__bd">详情</div>
+                            <span class="weui-cell__ft"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {include file="common/footer" /}
+	</body>
+
+
+</html>

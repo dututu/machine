@@ -1,0 +1,316 @@
+<!--包含头部文件-->
+{include file="public/header" /}
+<!-- jqGrid组件基础样式包-必要 -->
+<link rel="stylesheet" href="__STATIC__/admin/assets/javascripts/jqGrid_5/css/ui.jqgrid.css"/>
+
+<!-- jqGrid主题包-非必要 -->
+<!-- 在jqgrid/css/css这个目录下还有其他的主题包，可以尝试更换看效果 -->
+<!--<link rel="stylesheet" href="assets/javascripts/jqGrid_5/css/ui.jqgrid-bootstrap-ui.css" />-->
+<style>
+	.ui-jqgrid .ui-jqgrid-view {
+		font-size: 14px;
+	}
+
+	.ui-jqgrid tr.jqgrow td {
+		font-size: 14px;
+	}
+
+	.table-bordered th, .table-bordered td {
+		border-left: 0px;
+
+	}
+
+	.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+		font-size: 14px;
+	}
+
+	.ui-jqgrid tr.ui-row-ltr td {
+		border-right-color: #DDDDDD;
+	}
+
+	.ui-jqgrid .ui-jqgrid-view {
+		border-top: 1px solid #DDDDDD;
+	}
+
+	.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+		background-color: white;
+	}
+
+	.ui-widget-content {
+		border-left: 0px;
+		border-right: 0px;
+		border-bottom: 1px solid #DDDDDD;
+		border-top: 0px;
+	}
+
+	.ui-jqgrid .ui-jqgrid-hbox {
+		padding-right: 0px;
+	}
+
+	.ui-jqgrid .ui-jqgrid-htable {
+		width: 100% !important;
+	}
+
+	.ui-jqgrid .ui-jqgrid-btable {
+		width: 100% !important;
+	}
+
+	.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+		border-bottom: 1px solid #DDDDDD;
+		border-right: 0px solid #DDDDDD;
+	}
+
+	.ui-th-ltr, .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr {
+		border-left: 1px solid #dddddd;
+	}
+
+	td a {
+		color: white !important;
+	}
+
+	.ui-jqgrid .ui-jqgrid-pager {
+		padding: 5px 0px !important;
+	}
+
+	.ui-pg-selbox {
+		width: auto !important;
+	}
+
+	#pager2_left {
+		padding-left: 10px;
+	}
+
+	#pager2_right {
+		padding-right: 10px;
+	}
+
+	.ui-jqgrid .ui-pg-selbox, .ui-jqgrid .ui-jqgrid-toppager .ui-pg-selbox {
+		border: 1px solid #dddddd;
+	}
+</style>
+<div id='wrapper'>
+	<!--包含菜单文件-->
+	{include file="public/menu" /}
+			<section id='content'>
+				<div class='container-fluid'>
+					<div class='row-fluid' id='content-wrapper'>
+						<div class='span12'>
+							<div class='page-header'>
+								<h1 class='pull-left'>
+        <i class='icon-cog'></i>
+        <span>其它设置</span>
+    </h1>
+								<div class='pull-right'>
+									<ul class='breadcrumb'>
+										<li>
+											<a href="{:url('index/index')}"><i class='icon-home' style="font-size:17px;"></i>
+											</a>
+										</li>
+										<li class='separator'>
+											<i class='icon-angle-right'></i>
+										</li>
+										<li>
+											系统设置
+										</li>
+										<li class='separator'>
+											<i class='icon-angle-right'></i>
+										</li>
+										<li class='active'>其它设置</li>
+									</ul>
+								</div>
+							</div>
+							<div class='row-fluid'>
+								<div class='span12 box bordered-box orange-border' style='margin-bottom:0;'>
+									<div class='box-header sea-blue-background'>
+										<div class='title'>电子标签运费设置</div>
+										<div class='actions'>
+											<a href="#" class="btn box-remove btn-mini btn-link"><i class='icon-remove'></i>
+											</a>
+											<a href="#" class="btn box-collapse btn-mini btn-link"><i></i>
+											</a>
+										</div>
+									</div>
+									<div class='box-content box-no-padding'>
+										<div style="display: flex;justify-content: space-between;align-items: center;padding:15px 15px;" >
+											<label class="span3" style="font-size:18px;"><i class="icon-truck"></i>&nbsp;运费设置</label>
+											<div class="span6" style="">
+												<div class="span12">每笔订单运费：<input type="text"  value="{$rfidperorderfreight}" style="width:120px" class="input-text"></label><small>&nbsp;(每笔订单需要支付的物流费用。单位：元)</small></div>
+												<div class="span12" style="margin-top: 10px;">&nbsp;免运费金额：<input type="text"  value="{$rfidfreefee}" style="width:120px" class="input-text"><small>&nbsp;(满足条件减免运费。单位：元)</small></div>
+											</div>
+											<div class="span3" style="text-align: right;">
+												<button  class="btn btn-primary " type="button" onclick="freight_edit('修改运费','gotofreightedit','500px','220px')">修改</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class='row-fluid' style="margin-top: 20px;">
+								<div class='span12 box bordered-box orange-border' style='margin-bottom:0;'>
+									<div class='box-header sea-blue-background'>
+										<div class='title'>rfid类型列表</div>
+										<div class='actions'>
+											<a href="#" class="btn box-remove btn-mini btn-link"><i class='icon-remove'></i>
+											</a>
+											<a href="#" class="btn box-collapse btn-mini btn-link"><i></i>
+											</a>
+										</div>
+									</div>
+									<div class='box-content box-no-padding'>
+										<div style="display: flex;align-items: center;align-content: center;">
+		<label style="margin-left: 15px;">搜索:</label><input id="s_name" type="text" style="margin-top: 5px;margin-left: 10px;" class="input-text " placeholder="名称">
+											<label style="margin-left: 15px;">
+												<input class="btn btn-success" name="button"
+													   type="button" onclick="queryData();"
+													   value="搜索"
+													   style="margin-left: 10px;">
+											</label>
+											<button class="btn btn-success" name="button" style="position: absolute;;right:15px;" type="button"  onclick="freight_edit('创建rfid类型','addtype','500px','410px')">创建新规格</button>
+	</div>
+										<div class='responsive-table'>
+											<div class='scrollable-area'>
+												<!-- jqgrid -->
+												<table id="gridTable" class="table-bordered table-striped "></table>
+												<!-- jqgrid end-->
+												<div id="pager2"></div>
+
+											</div>
+										</div>
+									</div>
+								</div>
+
+							</div>
+							<hr class='hr-drouble' />
+
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+<!--包含底部js-->
+{include file="public/footer" /}
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/layer/2.4/layer.js"></script>
+<!-- jqGrid插件包-必要 -->
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/jqGrid_5/js/jquery.jqGrid.min.js"></script>
+<!-- jqGrid插件的多语言包-非必要 -->
+<!-- 在jqgrid/js/i18n下还有其他的多语言包 -->
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/jqGrid_5/js/i18n/grid.locale-cn.js"></script>
+<script>
+    $(function () {
+        //页面加载完成之后执行
+        pageInit();
+    });
+
+    function pageInit() {
+        //创建jqGrid组件
+        jQuery("#gridTable").jqGrid(
+            {
+                url: 'typelist',//组件创建完成之后请求数据的url
+                datatype: "json",//请求数据返回的类型。可选json,xml,txt
+                colNames: ['rfid规格名称', '备注',  '标签单价', '最低起订量', '修改时间', '操作'],//jqGrid的列显示名字
+                colModel: [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
+                    {name: 'typename', index: 'typename', align: "center"},
+                    {name: 'remark', index: 'remark', align: "center"},
+                    {
+                        name: 'unitfee',
+                        index: 'unitfee',
+                        sortable: false,
+                        align: "center",
+                        formatter: function (cellvalue, options, rowObject) {
+                            return cellvalue/100;
+                        }
+                    },
+                    {name: 'minsubcount', index: 'minsubcount', align: "center", sortable: false},
+                    {name: 'updatertime', index: 'updatertime', align: "center", sortable: false},
+                    {
+                        align: "center",
+                        sortable: false,
+                        formatter: function (cellvalue, options, rowObject) {
+//                            var ss = '<a class="btn btn-success btn-mini" href="javascript:freight_edit(\'编辑rfid类型\',\'edittype?typeid='+rowObject.specid+'\',\'500px\',\'410px\')">编辑</a>';
+//                            var ss2 = '<a class="btn btn-danger btn-mini" style="margin-left:10px;" href="javascript:deltype(this,\''+rowObject.specid+'\')">删除</a>';
+//                            return ss+ss2;
+                            var select = '<select data-id="'+rowObject.specid+'" class="optsel" style="width:50%;background-color: #0163ac;color:white;"><option value ="0">更多</option><option value ="1">编辑</option><option value ="2">删除</option></select>';
+                            return select;
+                        }
+                    }
+                ],
+                rownumbers: true,
+                rowNum: 10,//一页显示多少条
+                rowList: [10, 20, 30],//可供用户选择一页显示多少条
+                pager: '#pager2',//表格页脚的占位符(一般是div)的id
+//				sortname : 'id',//初始化的时候排序的字段
+//				sortorder : "desc",//排序方式,可选desc,asc
+                mtype: "get",//向后台请求数据的ajax的类型。可选post,get
+//          		styleUI: '',//设置jqgrid的全局样式为bootstrap样式 Bootstrap
+                viewrecords: true,
+                autowidth: true,
+                pagerpos: "left",
+                recordpos: "right",
+                height: "auto",
+                loadComplete: function (xhr) {
+                    $("#gridTable").closest(".ui-jqgrid-bdiv").css({'overflow-y': 'auto'});//,'overflow-x':'hidden'
+                    $('.optsel').change(function(){
+                        var index = $(this).val();
+                        var id = $(this).attr('data-id');
+                        if(index == 1){
+                            freight_edit('编辑rfid类型','edittype?typeid='+id+'','500px','410px')
+                        }else if(index == 2){
+                            deltype(this,id);
+                        }
+                    });
+                },
+            });
+    }
+
+    //条件查询
+    function queryData() {
+        var s_name = $("#s_name").val();
+        var s_select = $("#s_select").val();
+        var page = $('#gridTable').getGridParam('page'); // current page
+        var rows = $('#gridTable').getGridParam('rows'); // rows
+        var sidx = $('#gridTable').getGridParam('sidx'); // sidx
+        var sord = $('#gridTable').getGridParam('sord'); // sord
+        jQuery("#gridTable").jqGrid('setGridParam', {
+            url: "typelist",
+            postData: {
+                s_name: s_name,
+                s_select: s_select
+            },
+            page: page,
+            rows: rows,
+            sidx: sidx,
+            sord: sord
+        }).trigger("reloadGrid");
+    }
+</script>
+		<script>
+			function freight_edit(title, url, w, h) {
+				layer.open({
+				  type: 2,
+				  title: title,
+				  shadeClose: true,
+				  shade: 0.8,
+				  area: [w, h],
+				  content: url
+				}); 
+			}
+            function deltype(obj,id){
+                layer.confirm('确认要删除吗？',function(index){
+                    var postData = {
+                        'id':id
+                    };
+                    var url = 'deltype';
+                    $.post(url,postData,function (result) {
+                        if(result.code == 1){
+                            layer.msg('已删除!',{icon:1,time:1000});
+                            location.reload();
+                        }else{
+                            alert(result.msg);
+                        }
+                    },"json");
+
+                });
+            }
+		</script>
+	</body>
+
+</html>

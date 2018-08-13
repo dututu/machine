@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>商户详情</title>
+    {include file="common/header" /}
+    <style>
+
+
+    </style>
+
+</head>
+
+<body>
+<div id="container" class="container">
+    <div class="content-top">
+        <div class="weui-flex__title">商户：{$data.merchantname}</div>
+        <!--<div class="weui-flex">-->
+            <!--<div class="weui-flex__item">运营人数：{$t}</div>-->
+            <!--<div class="weui-flex__item">机柜总数量：{$t}</div>-->
+        <!--</div>-->
+        <!--<div class="weui-flex">-->
+            <!--<div class="weui-flex__item">联系人：{$data.merchantname}</div>-->
+            <!--<div class="weui-flex__item">电话：{$data.mobile}</div>-->
+        <!--</div>-->
+        <div class="weui-flex">
+            <div class="weui-flex__item">机柜总数量：{$t}</div>
+            <div class="weui-flex__item">电话：{$data.mobile}</div>
+        </div>
+
+    </div>
+    <div class="ranking content-center">
+        <div class="header">机柜详情</div>
+        <div class="list">
+
+            
+        </div>
+    </div>
+
+
+
+</div>
+
+<div id="back" onclick="javascript:history.back()">
+    <button>返回</button>
+</div>
+</body>
+
+<script>
+    $(function(){
+        var start = '{$start}';
+        var end = '{$end}';
+        var obj = common.init('{$start}','{$end}');
+        obj.search.merchantid = '{$merchantid}';
+        var url_rank = "{:url('merchant/getMerchantMachineDetail')}";
+        $("#start_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [start],
+            maxDate: end,
+            onChange: function (p, values) {
+                start = values[0];
+            },
+        });
+        $("#end_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [end],
+            minDate: start,
+            onChange: function (p, values) {
+                start = values[0];
+            },
+        });
+
+        var hasMore = obj.get_merchant_machine(url_rank);
+
+        var loading = false;
+        $(document.body).infinite().on("infinite", function() {
+            var _this = $(this);
+            if( loading ) return;
+            loading = true;
+            if( hasMore ){
+                _this.hasMore = obj.get_merchant_machine(url_rank,true);
+                console.log('_this.hasMore+++++++++++++++++'+_this.hasMore);
+                if( _this.hasMore ) loading = false;
+            }
+        });
+
+
+
+        $('.list').on('click','.content-detail',function(){
+            var machineid = $(this).data('machineid');
+            if( !start || !end){
+                $.alert('时间参数错误')
+                return;
+            }
+
+            if( !machineid ){
+                $.alert('参数错误')
+                return;
+            }
+            window.location.href="{:url('order/saleList')}"+'?machineid='+machineid+'&start='+start+'&end='+end;
+        })
+
+    })
+
+</script>
+
+
+</html>

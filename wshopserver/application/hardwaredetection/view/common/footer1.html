@@ -1,0 +1,37 @@
+<div class="weui-tabbar footer">
+    <a href="{:url('index/index')}" class="weui-tabbar__item">
+        <!--<span class="weui-badge" style="position: absolute;top: -.4em;right: 1em;">8</span>-->
+        <div class="weui-tabbar__icon">
+            <img src="__STATIC__/workweixin/image/report.png" alt="">
+        </div>
+        <p class="weui-tabbar__label">统计报表</p>
+    </a>
+    <a href="{:url('agent/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon">
+            <img src="__STATIC__/workweixin/image/people.png" alt="">
+        </div>
+        <p class="weui-tabbar__label">代理商</p>
+    </a>
+    <!--<a href="{:url('machine/index')}" class="weui-tabbar__item">-->
+        <!--<div class="weui-tabbar__icon">-->
+            <!--<img src="" alt="">-->
+        <!--</div>-->
+        <!--<p class="weui-tabbar__label">智能机柜</p>-->
+    <!--</a>-->
+    <a href="{:url('order/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon">
+            <img src="__STATIC__/workweixin/image/list.png" alt="">
+        </div>
+        <p class="weui-tabbar__label">订单查询</p>
+    </a>
+</div>
+<script>
+    $(document).ready(function(){
+        $('.footer a').each(function(){
+            var _this = $(this);
+            if(_this[0].href == String(window.location)) {
+                _this.addClass('weui-bar__item--on');
+            }
+        });
+    })
+</script>

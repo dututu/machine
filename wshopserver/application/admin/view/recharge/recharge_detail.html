@@ -1,0 +1,335 @@
+
+<!--包含头部文件-->
+{include file="public/header" /}
+<!-- jqGrid组件基础样式包-必要 -->
+<link rel="stylesheet" href="__STATIC__/admin/assets/javascripts/jqGrid_5/css/ui.jqgrid.css"/>
+
+<!-- jqGrid主题包-非必要 -->
+<!-- 在jqgrid/css/css这个目录下还有其他的主题包，可以尝试更换看效果 -->
+<!--<link rel="stylesheet" href="__STATIC__/admin/assets/javascripts/jqGrid_5/css/ui.jqgrid-bootstrap-ui.css" />-->
+
+<link rel="stylesheet" href="__STATIC__/admin/css/gridlist.css"/>
+<style>
+    .lead {
+        font-size: 16px;
+        font-weight: normal;
+        margin-bottom: 0px;
+        line-height: 20px;
+    }
+    .ui-jqgrid-hdiv{
+        display:none;
+    }
+    .pull-left {
+        float: left;
+        padding-left: 10px;
+        padding-top: 5px;
+    }
+    .pull-right {
+        padding-right: 10px;
+    }
+    .ui-paging-pager{
+        font-size:14px;
+    }
+    .jqgrow td{
+        border-left:1px solid #DDDDDD;
+    }
+    #pager2{
+        padding:0px !important;
+    }
+    #pg_pager2{
+        padding:5px !important;
+        border-left:1px solid #DDDDDD !important;
+        border-right:1px solid #DDDDDD !important;
+    }
+</style>
+<div id='wrapper'>
+
+    <!--包含菜单文件-->
+    {include file="public/menu" /}
+    <section id='content'>
+        <div class='container-fluid'>
+            <div class='row-fluid' id='content-wrapper'>
+                <div class='span12'>
+                    <div class='page-header'>
+                        <h1 class='pull-left'>
+                            <i class='icon-bar-chart'></i>
+                            <span>交易查询</span>
+                        </h1>
+                        <div class='pull-right'>
+                            <ul class='breadcrumb'>
+                                <li>
+                                    <a href="{:url('index/index')}"><i class='icon-home' style="font-size:17px;"></i>
+                                    </a>
+                                </li>
+                                <li class='separator'>
+                                    <i class='icon-angle-right'></i>
+                                </li>
+                                <li>
+                                    <a href="{:url('user/index')}">会员管理</a>
+                                </li>
+                                <li class='separator'>
+                                    <i class='icon-angle-right'></i>
+                                </li>
+                                <li>
+                                    <a href="{:url('recharge/rechargeorder')}">储值管理</a>
+                                </li>
+                                <li class='separator'>
+                                    <i class='icon-angle-right'></i>
+                                </li>
+                                <li class='active'>储值订单详情</li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                    <div id='orders'>
+                        <div class='row-fluid'>
+                            <div class='span4'>
+                                <div class='responsive-table'>
+                                    <div class='scrollable-area'>
+                                        <!-- jqgrid -->
+                                        <table id="gridTable" class=""></table>
+                                        <!-- jqgrid end-->
+                                        <div id="pager2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='span8'>
+                                <div class='row-fluid' id='detail'>
+                                    <div class='span12 box'>
+                                        <div class='box-content'>
+                                            <div class='clearfix'></div>
+                                            <div class='pull-left' style="font-size:16px;">
+                                                订单编号：{$rechargeorder.orderno}
+                                                {if condition="$rechargeorder.status eq 1"}
+                                                <a id="r_b_1" class='btn btn-danger btn-mini' href='#'>待付款</a>
+                                                {elseif condition="$rechargeorder.status eq 2"/}
+                                                <a id="r_b_2" class='btn btn-success btn-mini' href='#'>已支付</a>
+                                                {elseif condition="$rechargeorder.status eq 3"/}
+                                                <a id="r_b_3" class='btn btn-default btn-mini' href='#'>已关闭</a>
+                                                {elseif condition="$rechargeorder.status eq 4"/}
+                                                <a id="r_b_4" class='btn btn-default btn-mini' href='#'>已完成</a>
+
+                                                {/if}
+                                            </div>
+                                            <div class='pull-right' style="padding-top:10px;">
+                                                <span class='contrast price' style="font-size:16px;">总额：{$rechargeorder.realfee/100}元</span>
+                                            </div>
+
+                                            <div class='clearfix'></div>
+                                            <small style="color: #808080;padding-left:10px;line-height:3;" >{$rechargeorder.createtime}</small>
+                                            <div class='clearfix'></div>
+                                            <table class='table table-hover' style="font-size:14px;">
+                                                <thead>
+                                                <tr>
+                                                    <th style="text-align: center;">储值活动id</th>
+                                                    <th>
+                                                        <div class='text-center'>储值金额</div>
+                                                    </th>
+                                                    <th>
+                                                        <div class='text-right'>活动有效期</div>
+                                                    </th>
+                                                    <th>
+                                                        <div class='text-right'>实际支付</div>
+                                                    </th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                <tr style="color:#808080;">
+                                                    <td style="text-align: center;">{$rechargeorder.activityno}</td>
+                                                    <td>
+                                                        <div class='text-center'>{$rechargeorder.realfee/100}元</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class='text-right'>长期</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class='text-right'>{$rechargeorder.fee/100}元</div>
+                                                    </td>
+                                                </tr>
+
+
+                                                </tbody>
+                                            </table>
+                                            <hr class='hr-normal'/>
+                                            <div class='row-fluid'>
+                                                <div class='span3'>
+                                                    <div class='lead'>
+                                                        <i class='icon-user contrast'></i>
+                                                        买家信息
+                                                    </div>
+                                                </div>
+                                                <div class='span8 offset1'>
+                                                    <address>
+                                                        <p>买家昵称：{$user.nickname}</p>
+                                                        <p>联系电话：{$user.mobile}</p>
+                                                        <p>微信unionid：{$user.unionid}</p>
+                                                        <p>支付方式：微信支付</p>
+                                                    </address>
+                                                </div>
+                                            </div>
+
+
+
+
+                                            <div class='form-actions'>
+                                                <ul class='pager'>
+                                                    <li class='previous'>
+                                                        <a href='#' id="last">上一单</a>
+                                                    </li>
+                                                    <li class='next'>
+                                                        <a href='#' id="next">下一单</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<!--包含底部js文件-->
+{include file="public/footer" /}
+<!-- jqGrid插件包-必要 -->
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/jqGrid_5/js/jquery.jqGrid.min.js"></script>
+<!-- jqGrid插件的多语言包-非必要 -->
+<!-- 在jqgrid/js/i18n下还有其他的多语言包 -->
+<script type="text/javascript" src="__STATIC__/admin/assets/javascripts/jqGrid_5/js/i18n/grid.locale-cn.js"></script>
+<script>
+    var orderid = "{$orderid}";
+    $(function () {
+        //页面加载完成之后执行
+        pageInit();
+    });
+
+    function pageInit() {
+        //创建jqGrid组件
+        //订单状态：1 购物中，2待结账，3已取消，4待支付，5已付款，6已欠费，7转退款，8已完成
+        jQuery("#gridTable").jqGrid(
+            {
+                url: 'rechargelist',//组件创建完成之后请求数据的url
+                datatype: "json",//请求数据返回的类型。可选json,xml,txt
+                colModel: [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
+                    {
+                        name: 'orderid',
+                        index: 'orderid',
+                        hidden: true
+                    },
+                    {
+                        name: '',
+                        index: 'status',
+                        sortable: false,
+                        align: "left",
+                        formatter: function (cellvalue, options, rowObject) {
+                            var status = '';
+                            if (rowObject.status == "1") {
+                                status = "<span class='label label-important'>待付款</span>";
+                            } else if (rowObject.status == "2") {
+                                status = "<span class='label label-success'>已支付</span>";
+                            } else if (rowObject.status == "3") {
+                                status = "<span class='label label-default'>已关闭</span>";
+                            } else if (rowObject.status == "4") {
+                                status = "<span class='label label-default'>已完成</span>";
+                            }
+                            var html = "<div class='pull-left'><p><strong>" + rowObject.orderno + "</strong></p><p>" + status + "</p></div><div class='text-right pull-right'><h4 class='contrast price'>" + rowObject.fee / 100 + "元</h4><p><i class='icon-time'></i><span class='has-tooltip' style='margin-left:5px;' data-title=''>" + rowObject.createtime + "</span></p></div>";
+                            return html;
+                        }
+                    }
+                ],
+                page:{$page},
+                rownumbers: false,
+                rowNum: 10,//一页显示多少条
+                rowList: [10, 20, 30],//可供用户选择一页显示多少条
+                pager: '#pager2',//表格页脚的占位符(一般是div)的id
+//				sortname : 'id',//初始化的时候排序的字段
+//				sortorder : "desc",//排序方式,可选desc,asc
+                mtype: "get",//向后台请求数据的ajax的类型。可选post,get
+//          		styleUI: '',//设置jqgrid的全局样式为bootstrap样式 Bootstrap
+                viewrecords: false,
+                autowidth: true,
+                pagerpos: "right",
+                recordpos: "left",
+                height: "auto",
+                loadComplete: function (xhr) {
+                    $("#gridTable").closest(".ui-jqgrid-bdiv").css({'overflow-y': 'auto'});//,'overflow-x':'hidden'
+                    var page = $('#gridTable').getGridParam('page');
+                    var rows = xhr.rows;
+                    for (var i = 0; i < rows.length; i++) {
+                        if (rows[i].orderid == orderid) {
+                            if (i == 0) {
+                                $("#last").hide();
+                                $("#next").show();
+                                if (rows[i + 1]) {
+                                    $("#next").attr("href", "rechargedetail?orderid=" + rows[i + 1].orderid+"&page="+page);
+                                }
+
+                            } else if (i == rows.length - 1) {
+                                $("#last").show();
+                                $("#next").hide();
+                                $("#last").attr("href", "rechargedetail?orderid=" + rows[i - 1].orderid+"&page="+page);
+                            } else {
+                                $("#last").show();
+                                $("#next").show();
+                                $("#last").attr("href", "rechargedetail?orderid=" + rows[i - 1].orderid+"&page="+page);
+                                $("#next").attr("href", "rechargedetail?orderid=" + rows[i + 1].orderid+"&page="+page);
+                            }
+
+
+                        }
+                    }
+                },
+                onSelectRow: function (rowid) {
+                    $('#gridTable tr').removeClass("ui-state-highlight");
+                    var rowData = jQuery("#gridTable").getRowData(rowid);
+                    var orderid = rowData['orderid'];
+//                    loaddetail(orderid);
+                    var page = $('#gridTable').getGridParam('page');
+                    location.href = 'rechargedetail?orderid='+orderid+'&page='+page;
+                }
+            });
+    }
+
+    function applyrefund() {
+        var cansub = true;
+        $(".refundfee").each(function () {
+            if ($(this).val() == "") {
+                alert("请填写退款金额");
+                cansub = false;
+                return;
+            }
+        });
+        $(".refundremark").each(function () {
+            if ($(this).val() == "") {
+                alert("请填写退款备注信息");
+                cansub = false;
+                return;
+            }
+        });
+        if (cansub) {
+            $('#refundform').submit();
+//            var postData = {
+//                'orderid':orderid,
+//                'status':1
+//            };
+//            var url = 'applyrefund';
+//            $.post(url,postData,function (result) {
+//                if(result.code == 1){
+//                    location.reload();
+//                }else{
+//                    alert(result.msg);
+//                }
+//            },"json");
+        }
+
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>机柜统计</title>
+    {include file="common/header" /}
+    <style>
+        .weui-cell_select {
+            position: relative;
+        }
+
+        .icon-sort{
+            width: 11%;
+            padding-top: 11%;
+        }
+
+
+
+    </style>
+
+</head>
+
+<body>
+<div id="container" class="container">
+    <div class="weui-search weui-flex">
+        <div class="icon fa-calendar"></div>
+        <input class="weui-input weui-input_5" id="start_date" type="text" value="{$start}" readonly>
+        <span>&nbsp ~ &nbsp</span>
+        <input class="weui-input weui-input_5" id="end_date" type="text" value="{$end}" readonly>
+    </div>
+    <div class="content">
+        <div class="header">
+            概览
+        </div>
+        <div class="grids">
+            <div class="weui-flex">
+                <div class="weui-flex__title">机柜总量： <span class="font-color-red">{$data.totalnumonline}</span></div>
+            </div>
+            <div class="weui-flex">
+                <div class="weui-flex__item">
+                    {$data.realincome} /{$data.pensincome}
+                    <p class="">实际收入(元)/交易笔数</p>
+                </div>
+                <div class="weui-flex__item">{$data.order_ok} ({$data.total_ok}%)
+                    <p class="">有交易机柜数量(台)</p></div>
+            </div>
+            <div class="weui-flex">
+                <div class="weui-flex__item">{$data.machine_pvg}<p class="">机柜日均交易额(元)</p></div>
+                <div class="weui-flex__item">{$data.user_pvg}<p class="">机柜日均用户(个)</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="header">
+            机柜运行走势
+        </div>
+        <div id="echart_2" class="echart">
+
+        </div>
+    </div>
+
+    <div class="content _trand">
+        <div class="weui-flex header ">
+            <div class="weui-flex__item ">
+                <div class="weui-flex">
+                    <div class="header__title">机柜交易排行</div>
+                    <div class="icon-sort icon-sort__asc"></div>
+                </div>
+
+            </div>
+            <div class="weui-flex">
+                <select class="weui-select-new" name="select1">
+                    <option selected="" value="0">实收金额</option>
+                    <option value="1">交易商品数量</option>
+                    <option value="2">客单价</option>
+                </select>
+                <span class="biao"></span>
+            </div>
+
+
+        </div>
+
+        <div class="ranking">
+            <!-- <a class="weui-flex rank">
+            <div class="rank-num">10</div>
+            <div class="weui-flex__item">
+            <div class="font-color">商户名称:AFSafavdsv AScaVSih;mnlk</div>
+            <div class="weui-flex font-color">
+            <div class="weui-flex__item">类型：1000</div>
+            <div class="weui-flex__item">代理商：20000</div>
+            <div class="">最后交易时间：05-01</div>
+            </div>
+            <div class="weui-flex font-weight">
+            <div class="weui-flex__item">交易金额：<span>18611507481</span></div>
+            <div class=" weui-flex__item">累计：<span>8000.00/999999</span></div>
+            </div>
+            </div>
+            </a> -->
+
+        </div>
+
+
+    </div>
+
+    <div class="weui-loadmore">
+        <i class="weui-loading"></i>
+        <span class="weui-loadmore__tips">正在加载</span>
+    </div>
+</div>
+
+<div id="back" onclick="javascript:history.back()">
+    <button>返回</button>
+</div>
+</body>
+
+<script>
+    $(function () {
+
+        //$(document.body).infinite();
+        var start = '{$start}';
+        var end = '{$end}';
+        // 基于准备好的dom，初始化echarts实例
+        var myChart_2 = echarts.init(document.getElementById('echart_2'));
+        var obj = common.init('{$start}','{$end}');
+        var url_rank = "{:url('order/transactionRanking')}";
+        var url_trend = "{:url('order/machineTrend')}";
+        //排行榜
+        var hasMore = obj.get_transactionRanking(url_rank);
+        //走势图
+        var option_2 = obj.get_machinetrend(url_trend);
+        myChart_2.setOption(option_2,true);
+
+
+        var loading = false;
+        $(document.body).infinite().on("infinite", function() {
+            var _this = $(this);
+            if( loading ) return;
+            loading = true;
+            if( hasMore ){
+                _this.hasMore = obj.get_transactionRanking(url_rank,true);
+                console.log('_this.hasMore+++++++++++++++++'+_this.hasMore);
+                if( _this.hasMore ) loading = false;
+            }
+        });
+
+        $("#start_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [start],
+//            maxDate: end,
+            onChange: function (p, values) {
+                start = values[0];
+            },
+            onClose :function(p){
+                //$("#end_date").calendar('destroy')
+                //_this.get_edate();
+
+                window.location.href="{:url('index/machineDetail')}"+'?start='+start+'&end='+end;
+            }
+        });
+        $("#end_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [end],
+            //minDate:  start,
+            onChange: function (p, values) {
+                end = values[0];
+            },
+            onClose :function(p){
+                //$("#start_date").calendar('destroy');
+                //_this.get_sdate();
+                window.location.href="{:url('index/machineDetail')}"+'?start='+start+'&end='+end;
+            }
+        });
+
+        $('.container').on('click','.rank',function(){
+            var machineid = $(this).data('machineid');
+            if( !start || !end){
+                $.alert('时间参数错误')
+                return;
+            }
+
+            if( !machineid ){
+                $.alert('参数错误')
+                return;
+            }
+
+            window.location.href="{:url('order/saleList')}"+'?machineid='+machineid+'&start='+start+'&end='+end;
+        })
+
+    })
+
+</script>
+
+
+</html>

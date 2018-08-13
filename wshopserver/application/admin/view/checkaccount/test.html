@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+</head>
+
+
+<body>
+	<video id="aa">
+		
+		
+	</video>
+</body>
+
+
+</html>
+<script>
+	
+	$(function () { 
+		// document.location.href = "http://wechain:wechain123@f.ustarcloud.com:8080";
+  //     	var url = 'http://wechain:wechain123@f.ustarcloud.com:8080/monitor/5/B731964390831305.mp4';
+		// $("#aa").attr("src",url);
+		// $("#aa").attr("controls","controls");
+		console.log("ajaxDownloadDirectly");
+        var url = "http://wechain:wechain123@f.ustarcloud.com:8080/monitor/5/B731964390831305.mp4";
+        $.ajax({
+            url: url,
+            type: 'get',
+            success: function (res) {
+                console.log("Download file DONE!");
+                console.log(res);
+            }
+        });
+    });
+</script>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title>测试开门</title>
+        {include file="common/header" /}
+        <style>
+            body{
+                background: #f6f6f6;
+            }
+            .container{
+                position: relative;
+                padding-top: 10px;
+                margin-bottom: 100px;
+            }
+            .testing{
+                margin: 10px 30px;
+            }
+            .testing_1{
+                height: 100px;
+                /*line-height: 100px;*/
+                padding-top: 50px;
+            }
+            .testing_1 + .testing_1{
+                margin-top: 20px;
+            }
+            .test_door{
+                margin-left: 80px;
+                color: rgb(138, 138, 138);
+                margin-top: 10px;
+            }
+            .test_door + .test_door{
+                margin-left: 10px;
+            }
+            .container .weui-btn{
+                /*margin: 10px;*/
+                margin: 0 10%;
+
+            }
+            .container .weui-btn+.weui-btn{
+                margin-top:unset;
+            }
+        </style>
+	</head>
+
+	<body>
+        <div id="container" class="container">
+            <div>测试开门</div>
+            <div class="testing">
+                <div class="testing_1">开门检测: <span class="testing_result">未检测</span></div>
+                <div class="testing_1">
+                    门状态检测:
+                    <span class="testing_status">未检测</span><br><br>
+                    <span class="test_door">锁状态:   <span class="door_status">关</span></span>
+                    <span class="test_door">门状态:   <span class="lock_status">关</span></span>
+                </div>
+            </div>
+            <div class="button weui-flex">
+                <div class="weui-flex__item weui-btn weui-btn_mini weui-btn_primary open">点击开门</div>
+                <div class="weui-flex__item weui-btn weui-btn_mini weui-btn_primary status">查询门状态</div>
+            </div>
+        </div>
+        {include file="common/footer" /}
+	</body>
+
+    <script>
+        $(document).ready(function(){
+            var devuid = $.cookie('dev_uid');
+            var post_url = "{:url('index/testOpen')}";
+            var recode_url = "{:url('index/getRecode')}";
+            get_recode();
+
+            $('.open').click(function(){
+                var _this = $(this);
+                var url = "{:url('Testbox/openDoor')}";
+                $.post(url,{devuid:devuid},function(data){
+                    console.log(data);
+                    if( data.code == 0 ){
+                        open_succ(_this);
+
+                    }else{
+                        fail(_this);
+                    }
+                })
+            })
+
+            $('.status').click(function(){
+                var _this = $(this);
+                var url = "{:url('Testbox/getDoorStatus')}";
+                $.post(url,{devuid:devuid},function(data){
+                    if( data.code == 0 ){
+                        var door_status = data.output.door_status;
+                        var lock_status = data.output.status;
+
+                        status_succ(_this,door_status,lock_status);
+
+                    }else{
+                        fail(_this);
+                    }
+
+                })
+
+            })
+            function get_recode(){
+                $.post(recode_url,{devuid:devuid},function(data){
+                    if( data.code != 0 ){
+                        $.alert('获取信息失败')
+                    }else{
+                        var s = data.data.openstatus ? '通过检测': '未通过';
+                        var s_1 = data.data.doorstatus ? '通过检测': '未通过';
+                        $('.testing_result').text(s);
+                        $('.testing_status').text(s_1);
+                    }
+                })
+            }
+            function open_succ(_this){
+                $.modal({
+                    title: "提示",
+                    text: "开门指令已成功下发，门锁是否成功打开 ？",
+                    buttons: [
+                        {
+                            text: "失败",
+                            className: "default",
+                            onClick: function(){
+                                $.post(post_url,{openstatus:0},function(){
+
+                                })
+                            }
+                        },
+                        {
+                            text: "成功",
+                            onClick: function(){
+                                _this.removeClass('weui-btn_primary').addClass('weui-btn_plain-primary');
+                                $('.testing_result').text('测试通过');
+                                testopen();
+                                $.post(post_url,{devuid:devuid,openstatus:1},function(){
+                                })
+                            }
+                        },
+                    ]
+                });
+            }
+            function status_succ(_this,door_status,lock_status){
+                var door_status = door_status ? '开启' : '关闭';
+                var lock_status = lock_status ? '开启' : '关闭';;
+                var text = "门状态："+door_status+"，门锁状态："+lock_status+"，是否正常？";
+                $.modal({
+                    title: "提示",
+                    text: text,
+                    buttons: [
+                        {
+                            text: "不正常",
+                            className: "default",
+                            onClick: function(){
+                                $.post(post_url,{devuid:devuid,lockstatus:0,doorstatus:0},function(){
+
+                                })
+                            }
+                        },
+                        {
+                            text: "正常",
+                            onClick: function(){
+                                //weui-btn weui-btn_plain-primary
+                                _this.removeClass('weui-btn_primary').addClass('weui-btn_plain-primary');
+                                $('.testing_status').text('测试通过');
+                                $('.door_status').text(door_status);
+                                $('.lock_status').text(lock_status);
+                                testopen();
+                                $.post(post_url,{devuid:devuid,lockstatus:1,doorstatus:1},function(){
+
+                                })
+
+                            }
+                        },
+                    ]
+                });
+            }
+            function fail(_this){
+                $.modal({
+                    title: "提示",
+                    text: "指令下发失败。是否重试 ？",
+                    buttons: [
+                        {
+                            text: "取消",
+                            className: "default",
+                            onClick: function(){
+                                console.log(3)
+                            }
+                        },
+                        {
+                            text: "重试",
+                            onClick: function(){
+                                $('.open').trigger('click');
+                            }
+                        },
+                    ]
+                });
+            }
+
+            function testopen(){
+                var c = 0;
+                $('.button .weui-btn').each(function(){
+                    var r = $(this).hasClass('weui-btn_plain-primary');
+                    r ? c ++ : c--;
+                })
+                if(c == 2){
+                    $.post(post_url,{devuid:devuid,doorcheck:1},function(){
+                    })
+                }else{
+                    $.post(post_url,{devuid:devuid,doorcheck:0},function(){
+                    })
+                }
+            }
+        })
+
+    </script>
+
+</html>

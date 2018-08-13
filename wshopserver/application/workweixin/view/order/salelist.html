@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>订单</title>
+    {include file="common/header" /}
+</head>
+
+<body>
+<div id="container" class="container">
+    <div class="ranking content-center">
+        <div class="">销售明细</div>
+        <div class="content-list">
+
+        </div>
+    </div>
+    <div class="weui-loadmore weui-loadmore_line weui-loadmore_dot">
+        <span class="weui-loadmore__tips">上拉加载更多</span>
+    </div>
+</div>
+<div id="back" onclick="javascript:history.back()">
+    <button>返回</button>
+</div>
+</body>
+
+<script>
+    $(function(){
+        var start = '{$start}';
+        var end = '{$end}';
+        var machineid = '{$machineid}';
+        var url_order = "{:url('order/getOrderList')}";
+        var obj = common.init(start,end);
+        //销售列表
+        obj.search.machineid = machineid;
+        var hasMore = obj.get_order_list(url_order);
+        $(document.body).infinite();
+        var loading = false;
+        $(document.body).infinite().on("infinite", function() {
+            var _this = $(this);
+            if( loading ) return;
+            loading = true;
+            if( hasMore ){
+                _this.hasMore = obj.get_order_list(url_order);
+                if( _this.hasMore ) loading = false;
+            }
+        });
+        $("#start_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [start],
+            maxDate: end,
+            onChange: function (p, values) {
+                start = values[0];
+            },
+        });
+        $("#end_date").calendar({
+            dateFormat:'yyyy-mm-dd',
+            value : [end],
+            minDate: start,
+            onChange: function (p, values) {
+                start = values[0];
+            },
+        });
+
+    })
+
+</script>
+
+
+</html>
