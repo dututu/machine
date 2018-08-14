@@ -1,0 +1,359 @@
+body{
+    font-size: 1rem;
+    background-color: #f8f8f8;
+}
+.container{
+    margin-bottom: 3rem;
+}
+.weui-tabbar{
+    position: fixed;
+    z-index: 3;
+}
+.echart{
+    width: 100%;
+    height: 370px;
+}
+
+.weui-input_5{
+    width: 33%;
+    font-size: .6rem;
+    background: #8A8A8A;
+    border-radius: 5%;
+    color: #ffffff;
+    padding: .7%;
+    text-align: center;
+}
+
+.weui-cell_link{
+    font-size: inherit;
+}
+.weui-tabbar__item{
+    font-size: unset;
+}
+.weui-tabbar__label{
+    font-size: .7rem;
+}
+
+.weui-panel__hd{
+    font-size: unset;
+}
+.icon{
+    width: 8%;
+    padding-top: 8%;
+    margin-right: 1%;
+}
+.fa-calendar{
+    background: url(../image/calendar.png);
+    background-size: cover;
+}
+.icon-menu{
+    background: url(../image/menu.png);
+    background-size: cover;
+}
+.icon-sort__asc{
+    background: url(../image/sort_asc.png);
+    background-size: cover;
+}
+.icon-sort__hover{
+    background: url(../image/sort_hover.png);
+    background-size: cover;
+}
+
+.menu{
+    margin-left: 2%;
+}
+.weui-search{
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    position: sticky;
+    top: 0;
+    background: #f8f8f8;
+    z-index: 1;
+}
+.grids{
+    border: 1px solid #D9D9D9;
+    background-color: #ffffff;
+    border-radius: 7px;
+}
+.grids .weui-flex + .weui-flex{
+    border-top: 1px solid #D9D9D9;
+
+}
+.grids .weui-flex__item + .weui-flex__item{
+    border-left: 1px solid #D9D9D9;
+}
+.grids .weui-flex{
+    text-align: center;
+}
+.grids .weui-flex__title{
+    /*margin-left: 4%;*/
+    padding: 13px;
+}
+.grids .weui-flex__item{
+    padding: 3px;
+}
+.grids .weui-flex__item:first-line{
+    font-weight: bold;
+    font-size: .9rem;
+}
+.grids .weui-flex__item p{
+    font-size: .5rem;
+    color: #8A8A8A;
+}
+
+.content{
+    padding: 13px 5px;
+    background-color: rgba(242, 242, 242, 1);
+    margin: 0 10px;
+    border-radius: 7px;
+}
+.content + .content{
+    margin-top: 10px;
+}
+.header{
+    font-size: .9rem;
+    font-weight: bold;
+    color: black;
+    /*border-bottom: 1px solid #cdcdcd;*/
+    margin-bottom: 5px;
+    position: relative;
+    /* background-color: white; */
+}
+.header__title{
+    margin-right: 1%;
+    margin: auto 0;
+}
+#back{
+    position: fixed;
+    bottom: 0;
+    text-align: center;
+    background: #f8f8f8;
+    border-top: 1px solid #ddd;
+    width: 100%;
+    margin-top: 10px;
+    z-index: 3;
+}
+
+#back button{
+    margin: 5px 0;
+    width: 80%;
+    padding: 2%;
+    border-radius: 6px;
+    background: #fff;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    color: rgb(138, 138, 138);
+}
+
+.weui-select{
+    /*height: inherit;*/
+    /*line-height: inherit;*/
+    color: #999;
+    font-size: 0.5rem;
+}
+
+.rank{
+    border: 1px solid #D9D9D9;
+    background-color: #ffffff;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: .6rem;
+    color: black;
+    line-height: 1.2rem;
+}
+.rank + .rank{
+    margin-top: 2px;
+}
+.ranking .weui-flex{
+    align-items: center;
+}
+
+.ranking .rank-num{
+    padding-right: 10px;
+}
+.ranking .rank-total{
+    width: 30%;
+}
+
+.ranking .rank-left{
+    border-right: 1px solid #ddd;
+    width: 9%;
+    text-align: center;
+    padding: 2px 10px;
+    margin-right: 2%;
+}
+.ranking .rank-right{
+    width: 61%;
+}
+#select{
+}
+#select .weui-popup__modal{
+    bottom: 30%;
+    background: white;
+    width: 80%;
+    margin-left: 10%;
+    border-radius: 5px;
+}
+#select .search-title{
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+#select .weui-cells{
+    margin: 0 10px;
+    font-size: .7rem;
+}
+#select .weui-label{
+    width: 4rem;
+}
+#select .select-btn{
+    color: #fff;
+    border: 0;
+    padding: .3rem .5rem;
+    border-radius: 5px;
+    margin-right: 0.1rem;
+}
+#select .select-btn + .select-btn{
+    margin-top: 5px;
+}
+
+#select .btn-choose{
+    background: #1AAD19;
+}
+#select .btn-cancel{
+    background: gray;
+}
+.primary{
+    margin: 15px 0;
+}
+.primary .weui-btn{
+    width: 65%;
+    line-height: unset;
+}
+.content-top{
+    background: white;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 7px;
+    line-height: 1.5rem;
+}
+.content-top .weui-flex__title{
+    font-weight: bolder;
+    font-size: 1rem;
+}
+.view-detail{
+}
+.content-center{
+    border-radius: 7px;
+    background-color: #ffffff;
+    padding: 10px;
+    margin: 10px;
+}
+.content-center .header{
+    padding: 10px 0;
+    color: rgb(138, 138, 138);;
+}
+.content-top .weui-flex{
+    font-size: .7rem;
+}
+.content-detail{
+    border-top: 1px solid #D9D9D9;
+    padding: 5px;
+    font-size: .5rem;
+    line-height: 1rem;
+    position: relative;
+}
+.content-center,.content-top,.ranking,.content-detail{
+    color: rgb(138, 138, 138);
+}
+.font-weight{
+    font-weight: bolder;
+}
+.font-color{
+    color: rgb(138, 138, 138);
+}
+.photo{
+    width: 20%;
+    padding-bottom: 20%;
+    border-radius: 50%;
+    background: white;
+    height: 0;
+    margin: 10px 0;
+    overflow: hidden;
+}
+.photo + .photo{
+    margin-left: 10px;
+}
+.photo .photo__thumb{
+    width: 100%;
+}
+.order-status{
+    position: absolute;
+    right: 5px;
+    top: calc(10% - 5px);
+    padding: 2px 13px;
+    border-radius: 5px;
+    color: white;
+}
+
+.color-green{
+    background: #04BE02;
+}
+.color-gray{
+    background: grey;
+}
+.color-orange{
+    background: rgb(255, 152, 0);
+}
+.color-red{
+    background: rgb(229, 28, 35);
+}
+
+
+.font-color-red{
+    color: rgb(229, 28, 35);
+}
+
+.biao{
+    height: 6px;
+    width: 6px;
+    border-width: 2px 2px 0 0;
+    border-color: #c8c8cd;
+    border-style: solid;
+    -webkit-transform: matrix(.71,.71,-.71,.71,0,0);
+    transform: matrix(.71,.71,-.71,.71,0,0);
+    position: absolute;
+    right: 0;
+    top:calc(50% - 4px);
+    margin-right: 15px;
+}
+
+.weui-select-new {
+    -webkit-appearance: none;
+    border: 0;
+    outline: 0;
+    background-color: transparent;
+    width: 100%;
+    font-size: inherit;
+    position: relative;
+    z-index: 1;
+    padding-left: 15px;
+    color: #999;
+    font-size: 0.5rem;
+    margin-right: 30px;
+}
+
+.weui-loadmore{
+    display: none;
+}
+
+.nogoods{
+    background: url(../image/nogoods.png);
+    background-size: cover;
+}
+
+.icon-sort{
+    width: 11%;
+    padding-top: 11%;
+}

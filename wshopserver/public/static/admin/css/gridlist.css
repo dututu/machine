@@ -1,0 +1,104 @@
+.ui-jqgrid .ui-jqgrid-view {
+    font-size: 14px;
+}
+
+.ui-jqgrid tr.jqgrow td {
+    font-size: 14px;
+}
+
+.table-bordered th, .table-bordered td {
+    border-left: 0px;
+
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    font-size: 14px;
+}
+
+.ui-jqgrid tr.ui-row-ltr td {
+    border-right-color: #DDDDDD;
+}
+
+.ui-jqgrid .ui-jqgrid-view {
+    border-top: 1px solid #DDDDDD;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    background-color: white;
+}
+
+.ui-widget-content {
+    border-left: 0px;
+    border-right: 0px;
+    border-bottom: 1px solid #DDDDDD;
+    border-top: 0px;
+}
+
+.ui-jqgrid .ui-jqgrid-hbox {
+    padding-right: 0px;
+}
+
+.ui-jqgrid .ui-jqgrid-htable {
+    width: 100% !important;
+}
+
+.ui-jqgrid .ui-jqgrid-btable {
+    width: 100% !important;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    border-bottom: 1px solid #DDDDDD;
+    border-right: 0px solid #DDDDDD;
+}
+
+.ui-th-ltr, .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr {
+    border-left: 1px solid #dddddd;
+}
+
+td a {
+    color: white !important;
+}
+
+.ui-jqgrid .ui-jqgrid-pager {
+    padding: 5px 0px !important;
+}
+
+.ui-pg-selbox {
+    width: auto !important;
+}
+
+#pager2_left {
+    padding-left: 10px;
+}
+
+#pager2_right {
+    padding-right: 10px;
+}
+
+.ui-jqgrid .ui-pg-selbox, .ui-jqgrid .ui-jqgrid-toppager .ui-pg-selbox {
+    border: 1px solid #dddddd;
+}
+.responsive-table .scrollable-area{
+    overflow:hidden !important;
+}
+/*::-webkit-scrollbar*/
+/*{*/
+    /*width: 12px;*/
+    /*height: 12px;*/
+    /*background-color: #F5F5F5;*/
+/*}*/
+/*!*定义滚动条轨道 内阴影+圆角*!*/
+/*::-webkit-scrollbar-track*/
+/*{*/
+    /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);*/
+    /*border-radius: 10px;*/
+    /*background-color: #F5F5F5;*/
+/*}*/
+
+/*!*定义滑块 内阴影+圆角*!*/
+/*::-webkit-scrollbar-thumb*/
+/*{*/
+    /*border-radius: 10px;*/
+    /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);*/
+    /*background-color: #555;*/
+/*}*/

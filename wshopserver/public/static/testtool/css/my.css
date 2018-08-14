@@ -1,0 +1,70 @@
+body {
+    background-color: #f6f6f6;
+}
+.contianor {
+    width: 100%;
+    margin: auto;
+    position: relative;
+    margin-bottom: 100px;
+    /*margin-right:10px; */
+    /* height: 1000px; */
+}
+.tit {
+    font-size: 1rem;
+    margin: 10px 0;
+}
+
+.dev_search {
+    margin-top: 30px;
+    width: 120px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 1rem;
+}
+.dev_detail {
+    border: 1px solid #c4c4c4;
+    background-color: #ffffff;
+    border-radius: 10px;
+    margin: 15px 10px 5px 10px;
+    padding: 4px;
+}
+.dev_detail_tit {
+    font-size: 0.8rem;
+    color: #c4c4c4;
+}
+.dev_detail_info {
+    margin: 7px 15px;
+    font-size: 0.7rem;
+}
+.border {
+    background-color: #ffffff;
+    border-top:1px solid #c4c4c4;
+    border-bottom:1px solid #c4c4c4;
+}
+.footer {
+    position: fixed;
+    bottom:0;
+    /* height: 150px; */
+    width: 100%;
+    background-color: #f6f6f6;
+}
+.footerbtn {
+    font-size: 0.5rem;
+    width: 110px;
+    height: 30px;
+    line-height: 30px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+/* 底部按钮样式 ing为正在进行 uned为检测过或者未通过检测 finish为通过检测 */
+.ing {
+    background-color: #1AAD19;
+}
+.uned {
+    background-color: #757575;
+}
+.finish {
+    background-color: #f8f8f8;
+    border: 1px solid #1aad19;
+    color: #1aad19;
+}
