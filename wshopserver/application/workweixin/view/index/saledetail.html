@@ -18,9 +18,9 @@
 <div id="container" class="container">
     <div class="weui-search weui-flex">
         <div class="icon fa-calendar"></div>
-        <input class="weui-input weui-input_5" id="start_date" type="text" value="{$date}" readonly>
+        <input class="weui-input weui-input_5" id="start_date" type="text" value="{$start}" readonly>
         <span>&nbsp ~ &nbsp</span>
-        <input class="weui-input weui-input_5" id="end_date" type="text" value="{$date}" readonly>
+        <input class="weui-input weui-input_5" id="end_date" type="text" value="{$end}" readonly>
     </div>
     <div class="content">
         <div class="header">
@@ -28,27 +28,43 @@
         </div>
         <div class="grids">
             <div class="weui-flex">
-                <div class="weui-flex__title">流水总额：<span class="font-color-red">888888</span></div>
+                <div class="weui-flex__title">流水总额：<span class="font-color-red totalsales">0</span></div>
             </div>
             <div class="weui-flex">
-                <div class="weui-flex__item">
-                    1000<p class="">订单数量（笔）</p>
+                <div class="weui-flex__item ">
+                    <span class="totalpens"></span>
+                    <p class=''> 订单数量（笔）</p>
                 </div>
-                <div class="weui-flex__item">33.5<p class="">人均消费（元）</p></div>
+                <div class="weui-flex__item ">
+                    <span class="perconsumption"></span>
+                    <p class=''> 客单价（元）</p>
+                </div>
             </div>
             <div class="weui-flex">
-                <div class="weui-flex__item">weui<p class="">代扣支付（元）</p></div>
-                <div class="weui-flex__item">weui<p class="">储值支付（元）</p></div>
+                <div class="weui-flex__item ">
+                    <span class="wxdeductedamount"></span>
+                    <p class=''> 代扣支付（元）</p>
+                </div>
+                <div class="weui-flex__item ">
+                    <span class="amountstoredvalue"></span>
+                    <p class=''> 储值支付（元）</p>
+                </div>
             </div>
             <div class="weui-flex">
-                <div class="weui-flex__item">weui<p class="">欠费订单（笔）</p></div>
-                <div class="weui-flex__item">weui<p class="">补缴订单（笔）</p></div>
+                <div class="weui-flex__item ">
+                    <span class="numarrears"></span>
+                    <p class=''> 欠费订单（笔）</p>
+                </div>
+                <div class="weui-flex__item ">
+                    <span class="wxpaymentpens"></span>
+                    <p class=''> 补缴订单（笔）</p>
+                </div>
             </div>
         </div>
     </div>
     <div class="content">
         <div class="header">
-            近7日销售走势图
+            销售趋势
         </div>
         <hr>
         <div id="echart_1" class="echart">
@@ -101,6 +117,7 @@
         var start = '{$start}';
         var end = '{$end}';
         var obj = common.init('{$start}', '{$end}');
+        var getsalesstat = "{:url('order/getsalesstat')}";//概览
         var getrecent7days = "{:url('order/getrecent7days')}";//七日销售走势
         var ordercomposition = "{:url('order/ordercomposition')}";//订单构成
         var goodsclassification = "{:url('order/goodsclassification')}";//订单构成
@@ -111,16 +128,27 @@
             onChange: function (p, values) {
                 start = values[0];
             },
+            onClose: function (p) {
+                //$("#start_date").calendar('destroy');
+                //_this.get_sdate();
+                window.location.href = "{:url('index/saledetail')}" + '?start=' + start + '&end=' + end;
+            }
         });
         $("#end_date").calendar({
             dateFormat:'yyyy-mm-dd',
             value : [end],
             minDate: start,
             onChange: function (p, values) {
-                start = values[0];
+                end = values[0];
             },
+            onClose: function (p) {
+                //$("#start_date").calendar('destroy');
+                //_this.get_sdate();
+                window.location.href = "{:url('index/saledetail')}" + '?start=' + start + '&end=' + end;
+            }
         });
-        
+        //概览
+        obj.get_saledtotal(getsalesstat)
         // 基于准备好的dom，初始化echarts实例
         var myChart_1 = echarts.init(document.getElementById('echart_1'));
         var myChart_2 = echarts.init(document.getElementById('echart_2'));
@@ -134,107 +162,9 @@
         myChart_3.setOption(option_3, true);
         $('.weui-select').on('change', function () {
             var select = $(this)
-            var option_3 = obj.get_machinetrend(goodsclassification, select.val())
+            var option_3 = obj.get_circle(goodsclassification, select.val())
             myChart_3.setOption(option_3, true);
         })
-        // var option_2 = {
-        //     title: {
-        //         text: ''
-        //     },
-        //     tooltip : {
-        //         trigger: 'axis',
-        //         axisPointer: {
-        //             type: 'cross',
-        //             label: {
-        //                 backgroundColor: '#6a7985'
-        //             }
-        //         }
-        //     },
-        //     legend: {
-        //         data:['有效订单','未支付订单','0元订单']
-        //     },
-        //     grid: {
-        //         left: '3%',
-        //         right: '4%',
-        //         bottom: '3%',
-        //         containLabel: true
-        //     },
-        //     xAxis : [
-        //         {
-        //             type : 'category',
-        //             boundaryGap : false,
-        //             data : ['周一','周二','周三','周四','周五','周六','周日']
-        //         }
-        //     ],
-        //     yAxis : [
-        //         {
-        //             type : 'value'
-        //         }
-        //     ],
-        //     series : [
-        //         {
-        //             name:'有效订单',
-        //             type:'line',
-        //             stack: '总量',
-        //             areaStyle: {normal: {}},
-        //             data:[120, 132, 101, 134, 90, 230, 210]
-        //         },
-        //         {
-        //             name:'未支付订单',
-        //             type:'line',
-        //             stack: '总量',
-        //             areaStyle: {normal: {}},
-        //             data:[220, 182, 191, 234, 290, 330, 310]
-        //         },
-        //         {
-        //             name:'0元订单',
-        //             type:'line',
-        //             stack: '总量',
-        //             areaStyle: {normal: {}},
-        //             data:[150, 232, 201, 154, 190, 330, 410]
-        //         },
-
-        //     ]
-        // };
-        //myChart_2.setOption(option_2,true);
-
-        // var option_3 = {
-            
-        //     tooltip : {
-        //         trigger: 'item',
-        //         formatter: "{a} <br/>{b} : {c} ({d}%)"
-        //     },
-        //     legend: {
-        //         orient: 'vertical',
-        //         left: 'left',
-        //         data: ['饮料','牛奶','果汁','其他']
-        //     },
-        //     series : [
-        //         {
-        //             name: '访问来源',
-        //             type: 'pie',
-        //             radius : '55%',
-        //             center: ['50%', '60%'],
-        //             data:[
-        //                 {value:335, name:'饮料1'},
-        //                 {value:310, name:'饮料2'},
-        //                 {value:234, name:'饮料3'},
-        //                 {value:135, name:'饮料4'},
-        //             ],
-        //             itemStyle: {
-        //                 emphasis: {
-        //                     shadowBlur: 10,
-        //                     shadowOffsetX: 0,
-        //                     shadowColor: 'rgba(0, 0, 0, 0.5)'
-        //                 }
-        //             }
-        //         }
-        //     ]
-        // };
-        // option_3.legend.data= ['饮料1', '饮料2', '饮料3', '饮料4'];
-        
-        //myChart_3.setOption(option_3,true);
-        
     })
 
 </script>

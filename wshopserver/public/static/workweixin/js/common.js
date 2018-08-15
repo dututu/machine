@@ -135,7 +135,8 @@ var common = {
     //饼图
     get_circle:function(url,type) {
         this.url_trend = url;
-        var search = {type:type}
+        var search = this.get_search();
+        search.type = type
         var option = {};
         $.ajaxSetup({
             async: false
@@ -162,15 +163,21 @@ var common = {
                     },
                     legend: {
                         orient: 'vertical',
-                        left: 'left',
+                        left: 'right',
                         data: classname
                     },
                     series: [
                         {
-                            name: a.data.arr[0].t,
+                            name: d.data.arr[0].t,
                             type: 'pie',
                             radius: '55%',
                             center: ['50%', '60%'],
+                            label: {
+                                normal: {
+                                    formatter: '{b}:{d}% ',
+                                    //position: 'inner'
+                                }
+                            },
                             data: series,
                             itemStyle: {
                                 emphasis: {
@@ -417,6 +424,28 @@ var common = {
 
         return r;
     },
+    //销售概览
+    get_saledtotal:function(url) {
+        this.url_trend = url;
+        var search = this.get_search();
+        $.ajaxSetup({
+            async: false
+        });
+        $.post(url, search, function (d) {
+            if (d.errcode==0){
+                $('.totalsales').html(d.data.totalsales+'元')
+                $('.totalpens').html(d.data.totalpens)
+                $('.perconsumption').html(d.data.perconsumption)
+                $('.wxdeductedamount').html(d.data.wxdeductedamount)
+                $('.amountstoredvalue').html(d.data.amountstoredvalue)
+                $('.numarrears').html(d.data.numarrears)
+                $('.wxpaymentpens').html(d.data.wxpaymentpens)
+                
+            } else {
+                $.alert(d.errmsg);
+            }
+        })
+    }
 }
 
 
