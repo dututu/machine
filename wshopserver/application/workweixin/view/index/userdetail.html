@@ -13,9 +13,9 @@
 <div id="container" class="container">
     <div class="weui-search weui-flex">
         <div class="icon fa-calendar"></div>
-        <input class="weui-input weui-input_5" id="start_date" type="text" value="{$date}" readonly>
+        <input class="weui-input weui-input_5" id="start_date" type="text" value="{$start}" readonly>
         <span>&nbsp ~ &nbsp</span>
-        <input class="weui-input weui-input_5" id="end_date" type="text" value="{$date}" readonly>
+        <input class="weui-input weui-input_5" id="end_date" type="text" value="{$end}" readonly>
     </div>
     <div class="content">
         <div class="header">
@@ -23,15 +23,15 @@
         </div>
         <div class="grids">
             <div class="weui-flex">
-                <div class="weui-flex__title">用户总量：<span class="font-color-red">10000</span></div>
+                <div class="weui-flex__title">购买/总用户总数(位)：<span class="font-color-red totalnumusers"></span></div>
             </div>
             <div class="weui-flex">
-                <div class="weui-flex__item">1000（10%）<p class="">新增用户（个）</p></div>
-                <div class="weui-flex__item">200（20%）<p class="">新开通储值用户（个）</p></div>
+                <div class="weui-flex__item"><span class="newusers"></span><p class="">新增用户（个）</p></div>
+                <div class="weui-flex__item"><span class="newstoredvalueusers"></span><p class="">新开通储值用户（个）</p></div>
             </div>
             <div class="weui-flex">
-                <div class="weui-flex__item">200<p class="">充值金额（元）</p></div>
-                <div class="weui-flex__item">25<p class="">人均消费</p></div>
+                <div class="weui-flex__item"><span class="newstoredvalue"></span><p class="">充值总金额（元）</p></div>
+                <div class="weui-flex__item"><span class="perconsumption"></span><p class="">人均消费</p></div>
             </div>
         </div>
     </div>
@@ -57,6 +57,10 @@
     $(function(){
         var start = '{$start}';
         var end = '{$end}';
+        var obj = common.init('{$start}', '{$end}');
+        var getuserstat = "{:url('user/getuserstat')}";//概览
+        var userpurchasefrequency = "{:url('user/userpurchasefrequency')}";//pie图
+
         $("#start_date").calendar({
             dateFormat:'yyyy-mm-dd',
             value : [start],
@@ -64,55 +68,29 @@
             onChange: function (p, values) {
                 start = values[0];
             },
+             onClose: function (p) {
+                //$("#start_date").calendar('destroy');
+                //_this.get_sdate();
+                window.location.href = "{:url('index/userdetail')}" + '?start=' + start + '&end=' + end;
+            }
         });
         $("#end_date").calendar({
             dateFormat:'yyyy-mm-dd',
             value : [end],
             minDate: start,
             onChange: function (p, values) {
-                start = values[0];
+                end = values[0];
             },
+             onClose: function (p) {
+                //$("#start_date").calendar('destroy');
+                //_this.get_sdate();
+                window.location.href = "{:url('index/userdetail')}" + '?start=' + start + '&end=' + end;
+            }
         });
+         obj.get_usertotal(getuserstat)//概览
         // 基于准备好的dom，初始化echarts实例
         var myChart_3 = echarts.init(document.getElementById('echart_3'));
-        var option_3 = {
-            title : {
-                text: '某站点用户访问来源',
-                subtext: '纯属虚构',
-                x:'center'
-            },
-            tooltip : {
-                trigger: 'item',
-                formatter: "{a} <br/>{b} : {c} ({d}%)"
-            },
-            legend: {
-                orient: 'vertical',
-                left: 'left',
-                data: ['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
-            },
-            series : [
-                {
-                    name: '访问来源',
-                    type: 'pie',
-                    radius : '55%',
-                    center: ['50%', '60%'],
-                    data:[
-                        {value:335, name:'直接访问'},
-                        {value:310, name:'邮件营销'},
-                        {value:234, name:'联盟广告'},
-                        {value:135, name:'视频广告'},
-                        {value:1548, name:'搜索引擎'}
-                    ],
-                    itemStyle: {
-                        emphasis: {
-                            shadowBlur: 10,
-                            shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-                        }
-                    }
-                }
-            ]
-        };
+        var option_3 = obj.get_circle(userpurchasefrequency, 1)
         myChart_3.setOption(option_3,true);
     })
 

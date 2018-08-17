@@ -72,7 +72,7 @@ class Index extends Base
      */
     public function userDetail()
     {
-        return $this->fetch();
+        return $this->fetch('userdetail');
     }
 
 }

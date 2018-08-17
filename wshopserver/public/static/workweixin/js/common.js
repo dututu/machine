@@ -174,7 +174,7 @@ var common = {
                             center: ['50%', '60%'],
                             label: {
                                 normal: {
-                                    formatter: '{b}:{d}% ',
+                                    formatter: '{b}:\n{d}% ',
                                     //position: 'inner'
                                 }
                             },
@@ -433,7 +433,7 @@ var common = {
         });
         $.post(url, search, function (d) {
             if (d.errcode==0){
-                $('.totalsales').html(d.data.totalsales+'元')
+                $('.totalsales').html('¥' + d.data.totalsales + '/' + d.data.soldnum)
                 $('.totalpens').html(d.data.totalpens)
                 $('.perconsumption').html(d.data.perconsumption)
                 $('.wxdeductedamount').html(d.data.wxdeductedamount)
@@ -441,6 +441,28 @@ var common = {
                 $('.numarrears').html(d.data.numarrears)
                 $('.wxpaymentpens').html(d.data.wxpaymentpens)
                 
+            } else {
+                $.alert(d.errmsg);
+            }
+        })
+    },
+    //用户概览
+    get_usertotal:function(url) {
+        this.url_trend = url;
+        var search = this.get_search();
+        $.ajaxSetup({
+            async: false
+        });
+        $.post(url, search, function (d) {
+            if (d.errcode == 0) {
+                $('.totalnumusers').html(d.data.numpurchased+'/'+d.data.totalnumusers)
+                $('.newusers').html(d.data.newusers + '(' + d.data.newusersratio + '%)')
+                $('.newstoredvalueusers').html(d.data.newstoredvalueusers + '(' + d.data.newstoredvalueusersratio+'%)')
+                $('.newstoredvalue').html(d.data.newstoredvalue)
+                $('.amountincome').html(d.data.amountincome)
+                $('.numpurchased').html(d.data.numpurchased)
+                $('.perconsumption').html(d.data.perconsumption)
+
             } else {
                 $.alert(d.errmsg);
             }
