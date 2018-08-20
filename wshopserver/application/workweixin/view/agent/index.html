@@ -13,13 +13,13 @@
 <div id="container" class="container">
     <div class="weui-search weui-flex">
         <div class="icon fa-calendar"></div>
-        <input class="weui-input weui-input_5" id="start_date" type="text" value="{$date}" readonly>
+        <input class="weui-input weui-input_5" id="start_date" type="text" value="{$start}" readonly>
         <span>&nbsp ~ &nbsp</span>
-        <input class="weui-input weui-input_5" id="end_date" type="text" value="{$date}" readonly>
+        <input class="weui-input weui-input_5" id="end_date" type="text" value="{$end}" readonly>
         <a class="icon icon-menu menu open-popup" data-target="#select"></a>
     </div>
     <div class="content ranking">
-        <a href="{:url('agent/detail')}" class="weui-flex rank">
+        <!-- <a href="{:url('agent/detail')}" class="weui-flex rank">
             <div class="rank-left">排名<br>10</div>
             <div class="weui-flex__item">
                 <div class="">商户名称:AFSafavdsv AScaVSih;mnlk</div>
@@ -32,7 +32,7 @@
                     <div class=" weui-flex__item">交易金额：8000.00</div>
                 </div>
             </div>
-        </a>
+        </a> -->
 
     </div>
     <div id="select" class="weui-popup__container popup-bottom">
@@ -42,11 +42,12 @@
             <div class="weui-cells">
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">qq</label>
+                        <label class="weui-label">平台商务</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <select class="weui-select" name="select1">
-                            <option selected="" value="1">微信号</option>
+                        <select class="weui-select selectop" name="select1">
+                            <option selected="" value="0">全部</option>
+                            <option value="1">微信号</option>
                             <option value="2">QQ号</option>
                             <option value="3">Email</option>
                         </select>
@@ -56,13 +57,13 @@
                     <div class="weui-cell__hd">
                         <label class="weui-label">排序方式：</label>
                     </div>
-                    <div class="weui-cell__bd ">
+                    <div class="weui-cell__bd order1">
                         <!--<a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">商户数量</a>-->
                         <!--<a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">机柜数量</a>-->
                         <!--<a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">机柜数量</a>-->
-                        <button class="select-btn btn-choose">商户数量</button>
-                        <button class="select-btn btn-cancel">机柜数量</button>
-                        <button class="select-btn btn-cancel">机柜数量</button>
+                        <button class="select-btn btn-choose" data-name="1">商户数量</button>
+                        <button class="select-btn btn-cancel" data-name="2">机柜数量</button>
+                        <button class="select-btn btn-cancel" data-name="0">流水总额</button>
 
                     </div>
                 </div>
@@ -70,12 +71,12 @@
                     <div class="weui-cell__hd">
                         <label class="weui-label">排序方式：</label>
                     </div>
-                    <div class="weui-cell__bd ">
+                    <div class="weui-cell__bd order2">
                         <!--<a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">商户数量</a>-->
                         <!--<a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">机柜数量</a>-->
                         <!--<a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">机柜数量</a>-->
-                        <button class="select-btn btn-choose">从高到低</button>
-                        <button class="select-btn btn-cancel">从低到高</button>
+                        <button class="select-btn btn-choose" data-name="desc">从高到低</button>
+                        <button class="select-btn btn-cancel" data-name="asc">从低到高</button>
                     </div>
                 </div>
             </div>
@@ -84,7 +85,7 @@
                     <a href="javascript:;" class="weui-btn weui-btn_plain-default close-popup">取消</a>
                 </div>
                 <div class="weui-flex__item">
-                    <a href="javascript:;" class="weui-btn weui-btn_plain-primary ">确定</a>
+                    <a href="javascript:;" class="weui-btn weui-btn_plain-primary popselect">确定</a>
                 </div>
             </div>
         </div>
@@ -95,7 +96,56 @@
 </body>
 
 <script>
-
+    $(function () {
+        var start = '{$start}';
+        var end = '{$end}';
+        var obj = common.init('{$start}', '{$end}');
+        var agentranking = "{:url('agent/agentranking')}";//概览
+        
+        $("#start_date").calendar({
+            dateFormat: 'yyyy-mm-dd',
+            value: [start],
+            maxDate: end,
+            onChange: function (p, values) {
+                start = values[0];
+            },
+            onClose: function (p) {
+                //$("#start_date").calendar('destroy');
+                //_this.get_sdate();
+                window.location.href = "{:url('index/saledetail')}" + '?start=' + start + '&end=' + end;
+            }
+        });
+        $("#end_date").calendar({
+            dateFormat: 'yyyy-mm-dd',
+            value: [end],
+            minDate: start,
+            onChange: function (p, values) {
+                end = values[0];
+            },
+            onClose: function (p) {
+                //$("#start_date").calendar('destroy');
+                //_this.get_sdate();
+                window.location.href = "{:url('index/saledetail')}" + '?start=' + start + '&end=' + end;
+            }
+        });
+        $('.popselect').on('click',function() {
+            var order1 = $('.order1 .btn-choose').data("name")
+            var order2 = $('.order2 .btn-choose').data("name")
+            var shangwuid = $('.selectop').val()
+        })
+        $('.order2 .select-btn').on('click', function () {
+            var _this = $(this)
+            _this.siblings().removeClass('btn-choose').addClass('btn-cancel')
+            _this.removeClass('btn-cancel').addClass('btn-choose')
+        })
+        $('.order1 .select-btn').on('click',function(){
+            var _this = $(this)
+            _this.siblings().removeClass('btn-choose').addClass('btn-cancel')
+            _this.removeClass('btn-cancel').addClass('btn-choose')
+        })
+        //概览
+        obj.get_transactionRanking(agentranking)
+    })
 
 </script>
 
