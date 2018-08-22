@@ -30,7 +30,11 @@ class Index extends Base
      */
     public function saleDetail()
     {
-        return $this->fetch('saledetail');
+
+        $start = input('start',$this->start);
+        $end = input('end',$this->end);
+        return $this->fetch('saledetail',array('start'=>$start,'end'=>$end));
+
     }
 
     /**
@@ -72,7 +76,7 @@ class Index extends Base
      */
     public function userDetail()
     {
-        return $this->fetch('userdetail');
+        return $this->fetch();
     }
 
 }

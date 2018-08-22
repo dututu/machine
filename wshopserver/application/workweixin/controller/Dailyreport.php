@@ -11,7 +11,7 @@ class Dailyreport extends Controller
     /**
      * 每日商户统计
      */
-    public function dailyMerchant( $date = '' )
+    public function dailyMerchantold( $date = '' )
     {
         $date = $date ? : date( "Y-m-d",strtotime( '-1 day' ) );
         $now = date( "Y-m-d H:i:s" );
@@ -260,8 +260,229 @@ where pay.paystatus=1
         foreach( $data_list as $k => $v ) {
             $this->dailyMachine( $v );
             $this->dailyOrder( $v );
+            $this->dailyUser( $v );
+            $this->dailygoods( $v );
             Log::write('111');
         }
     }
 
+    /**
+     * 用户每日统计
+     */
+    public function dailyUser( $date = '' )
+    {
+        $date = $date ? : date( "Y-m-d",strtotime( '-1 day' ) );
+        $now = date( "Y-m-d H:i:s" );
+        $result = Db::query("
+select 
+-- 储值总额(元)
+( 
+select ifnull(sum(fee),0) from `user`
+where status=0
+) as totalstoredvalue,
+-- 新开通储值用户数
+(
+select ifnull(count(DISTINCT(r.userid)),0) from user u INNER JOIN rechargeorder r
+on u.userid= r.userid
+where DATE_FORMAT(u.createTime, '%Y-%m-%d') ='".$date."'
+and r.`status` in (2,4)
+) as newstoredvalueusers,
+-- 新储值金额(元)
+(
+select ifnull(sum(realfee),0) from rechargeorder 
+where 
+ DATE_FORMAT(createtime, '%Y-%m-%d')='".$date."'
+and `status` in (2,4)
+) as newstoredvalue,
+-- 开通免密用户数
+(
+select ifnull(count(*),0) from `user`
+where status=0 and contractid is not null
+) as opennumsecretusers,
+-- 用户总数
+(
+select ifnull(count(*),0) from `user`
+where status=0
+) as totalnumusers,
+-- newusers新增用户
+(
+select ifnull(count(*),0) from `user`
+where status=0 
+and  DATE_FORMAT(createTime, '%Y-%m-%d')='".$date."'
+)as newusers,
+-- 欠费用户数
+(
+select ifnull(count(*),0) from `user`
+where status=0 and havearrears=1
+
+) as numusersarrears
+            
+            ");
+        foreach( $result as $k => $v ) {
+            $result[$k]['dailyuserid'] = uuid();
+            $result[$k]['statdate'] = $date;
+            $result[$k]['exetime'] = $now;
+        }
+
+       Db::table( 'statdailyuser' )->insertAll( $result );
+
+    }
+    
+    
+    /**
+     * 商品每日统计
+     */
+    public function dailygoods( $date = '' )
+    {
+        $date = $date ? : date( "Y-m-d",strtotime( '-1 day' ) );
+        $now = date( "Y-m-d H:i:s" );
+        $result = Db::query("
+            
+
+
+select d.goodsid as goodsid,ca.categoryname as goodsclass,sum(d.amount) as purchasequantity ,
+ifnull(
+(
+select sum(newd.amount)
+from goodsorderdetail newd
+where newd.detailid=d.detailid
+and isrefund=1
+)
+,0) as returnquantity
+, sum(d.totalfee) as totalamount 
+
+ from goodsorderpay p INNER JOIN  goodsorderdetail d
+on p.orderid=d.orderid 
+INNER JOIN goods g
+on d.goodsid=g.goodsid
+INNER JOIN goodscategory ca
+on g.goodscategoryid=ca.categoryid
+where 
+DATE_FORMAT(p.paytime, '%Y-%m-%d') ='".$date."'
+and p.paystatus=1 and isrefund=0
+GROUP BY DATE_FORMAT(p.paytime, '%Y-%m-%d') ,goodsclass ;   
+
+    
+            ");
+        foreach( $result as $k => $v ) {
+            $result[$k]['dailygoodsid'] = uuid();
+            $result[$k]['statdate'] = $date;
+            $result[$k]['exetime'] = $now;
+        }
+    
+        Db::table( 'statdailygoods' )->insertAll( $result );
+    
+    }
+    
+    /**
+     * 商户每日统计
+     */
+    public function dailymerchant( $date = '' )
+    {
+        $date = $date ? : date( "Y-m-d",strtotime( '-1 day' ) );
+        $now = date( "Y-m-d H:i:s" );
+        $result = Db::query("
+
+            
+select 
+ifnull(me.agencyid,'') as agentid,
+me.merchantid as merchantid,
+-- 机柜总数量
+(
+select count(*) from machine ma
+where ma.merchantid=me.merchantid 
+and ma.businessstatus=4 and ma.status in( 1,2,3,4,10) 
+and DATE_FORMAT(ma.createtime, '%Y-%m-%d')<='".$date."'
+)
+as totalnummachine,
+-- 商品数量 
+ifnull(
+
+(
+select sum(d.amount) 
+from goodsorderpay p INNER JOIN goodsorder o 
+on p.orderid=o.orderid
+INNER JOIN goodsorderdetail d
+on d.orderid=p.orderid
+where p.paystatus=1
+and   DATE_FORMAT(p.paytime, '%Y-%m-%d')<='".$date."'
+and o.orderstatus in (4,5,6,7,8)
+and o.machineid in(
+
+select ma.machineid from machine ma
+where ma.merchantid=me.merchantid 
+and ma.businessstatus=4
+and  DATE_FORMAT(ma.createtime, '%Y-%m-%d')<='".$date."'
+)
+)
+
+,0)
+as quantitygoods,
+-- 新增机柜数
+(
+select count(*) from machine ma
+where ma.merchantid=me.merchantid 
+and ma.businessstatus=4
+and  DATE_FORMAT(ma.createtime, '%Y-%m-%d')='".$date."'
+)
+as numnewmachine,
+--  当日总销售额(元)扩大100倍
+ifnull(
+
+(
+select sum(p.payfee) 
+from goodsorderpay p INNER JOIN goodsorder o
+on p.orderid=o.orderid
+where p.paystatus=1
+and   DATE_FORMAT(p.paytime, '%Y-%m-%d')<='".$date."'
+and o.orderstatus in (4,5,6,7,8)
+and o.machineid in(
+
+select ma.machineid from machine ma
+where ma.merchantid=me.merchantid 
+and ma.businessstatus=4
+and  DATE_FORMAT(ma.createtime, '%Y-%m-%d')<='".$date."'
+)
+)
+
+,0)
+as totalsales,
+
+-- 购买用户数
+ifnull((
+select count(DISTINCT userid) 
+from goodsorderpay p INNER JOIN goodsorder o
+on p.orderid=o.orderid
+where p.paystatus=1
+and   DATE_FORMAT(p.paytime, '%Y-%m-%d')<='".$date."'
+and o.orderstatus in (4,5,6,7,8)
+and o.machineid in(
+
+select ma.machineid from machine ma
+where ma.merchantid=me.merchantid 
+and ma.businessstatus=4
+and  DATE_FORMAT(ma.createtime, '%Y-%m-%d')<='".$date."'
+)
+)
+,0)
+as purchasedusersnum
+
+
+ from merchant me
+where  DATE_FORMAT(me.approvertime, '%Y-%m-%d')<='".$date."'
+and  me.status=2 
+            
+   
+    
+            ");
+        foreach( $result as $k => $v ) {
+            $result[$k]['dailymerchantid'] = uuid();
+            $result[$k]['statdate'] = $date;
+            $result[$k]['exetime'] = $now;
+        }
+    
+        Db::table( 'statdailymerchant' )->insertAll( $result );
+    
+    }
+    
 }

@@ -36,7 +36,7 @@ class Order extends Base
         $this->assign( 'start',$start );
         $this->assign( 'end',$end );
         $this->assign( 'machineid',$machineid );
-        return $this->fetch('saleList');
+        return $this->fetch();
     }
 
 
@@ -299,7 +299,7 @@ ON `a`.`agencyid`=`so`.`agentid`
  ".$sqlWherestr.$sqlGroupstr.$sqlHavingstr.$sqlOrderstr;
              $result =Db::query($sqlstr)->paginate( 10,false,$this->config );
              */
-            log::write( "==========================" . $model->getLastSql()."-------");// .$model->getDbError());
+            //log::write( "==========================" . $model->getLastSql()."-------");// .$model->getDbError());
             $data = $this->getPaginator( $result );
             /*$newarr = array();
             foreach( $data['data'] as $k => $v ) {
@@ -394,5 +394,209 @@ LIMIT 1) as totalnumonline ')
             return ajaxReturn( 101,'提交方式错误' );
         }
     }
+    
+    
+    /**
+     * 近七日销售
+     * @return array|\think\response\Json
+     */
+    public function getrecent7days()
+    {
+      // if( Request()->isGet() ) {
+            $start = input( 'start' );
+            $end = input( 'end' );
+            if( !$start || !$end )
+                return returnErr( 100,'时间参数错误' );
+            $days = (int) getDateDays( $start,$end );
+            if( $days < 7 )
+                $start = date( 'Y-m-d',strtotime( '-6 days',strtotime( $start ) ) );
+            
+            $result = Db::table( 'statdailyorder' )
+            ->where( 'statdate','between',[ "$start","$end" ] )
+            ->field('sum((amountincome-amountrefund)/100) as totalsales,statdate')
+            ->group('statdate')
+            ->select();
+            
+            $arr = [ ]; //走势图
+            $arr[0]['t'] = '销售趋势';
+            $arr[0]['n'] = [ ];
+            foreach( $result as $k => $v ) {
+                $arr[0]['n'][$v['statdate']] = $v['totalsales'];
+
+            }
+            $arr[0]['n'] = array_values( $arr[0]['n'] );
+            $arr_x = getDateList( $start,$end );
+            $data = [ ];
+            $data['arr_x'] = $arr_x;
+            $data['arr'] = $arr;
+            return ajaxReturn( 0,'',$data );
+      //  } else {
+       //     return ajaxReturn( 101,'提交方式错误' );
+       // }
+    }
+    
+    /**
+     * 订单构成
+     * @return array|\think\response\Json
+     */
+    public function ordercomposition()
+    {
+       // if( Request()->isGet() ) {
+            $start = input( 'start' );
+            $end = input( 'end' );
+            if( !$start || !$end )
+                return returnErr( 100,'时间参数错误' );
+            $days = (int) getDateDays( $start,$end );
+            if( $days < 7 )
+                $start = date( 'Y-m-d',strtotime( '-6 days',strtotime( $start ) ) );
+    
+            $result = Db::table( 'statdailyorder' )
+            ->where( 'statdate','between',[ "$start","$end" ] )
+            ->field('sum(numarrears) as numarrears,sum(totaltorderspens) totaltorderspens,sum(0) as "0orderpend", statdate')
+            ->group('statdate')
+            ->select();
+           
+            $arr = [ ]; //走势图
+            $arr[0]['t'] = '有效订单';
+            $arr[0]['n'] = [ ];
+            $arr[1]['t'] = '0元订单';
+            $arr[1]['n'] = [ ];
+            $arr[2]['t'] = '欠费订单';
+            $arr[2]['n'] = [ ];
+            foreach( $result as $k => $v ) {
+                $arr[0]['n'][$v['statdate']] = $v['totaltorderspens'];
+                $arr[1]['n'][$v['statdate']] = $v['numarrears'];
+                $arr[2]['n'][$v['statdate']] = $v['0orderpend'];
+    
+            }
+    
+            $arr[0]['n'] = array_values( $arr[0]['n'] );
+            $arr_x = getDateList( $start,$end );
+            $data = [ ];
+            $data['arr_x'] = $arr_x;
+            $data['arr'] = $arr;
+            return ajaxReturn( 0,'',$data );
+       // } else {
+      ///      return ajaxReturn( 101,'提交方式错误' );
+      //  }
+    }
+    
+    /**
+     * 销售商品分类占比
+     * @return array|\think\response\Json
+     * Sales goods classification ratio
+     */
+    public function goodsclassification()
+    {
+        // if( Request()->isGet() ) {
+        $start = input( 'start' );
+        $end = input( 'end' );
+        $orderby = input( 'type' );
+        if( !$start || !$end )
+            return returnErr( 100,'时间参数错误' );
+        $days = (int) getDateDays( $start,$end );
+
+        $orderbystr = "";
+        if(empty($orderby)){
+            $orderbystr = " 1 desc ";
+        }else{
+           
+            if($orderby=='2'){
+                $orderbystr=" 2 desc ";
+            }else{
+                $orderbystr=" 1 desc ";
+            }
+        }
+
+        $result = Db::table( 'statdailygoods' )
+        ->where( 'statdate','between',[ "$start","$end" ] )
+        ->field('goodsclass,sum(purchasequantity) as purchasequantity,sum(totalamount) totalamount,statdate')
+        ->group('goodsclass')
+        ->order($orderbystr)
+        ->select();
+        
+        $arr = [ ]; //走势图
+        $arr[0]['t'] = '商品分类销售占比';
+        $arr[0]['n'] = [ ];
+            if($orderby&&$orderby==2){
+                foreach( $result as $k => $v ) {
+                    $arr[0]['n'][$k] = array($v['goodsclass'],$v['purchasequantity']);
+                }
+            }else{
+                foreach( $result as $k => $v ) {
+                    $arr[0]['n'][$k] = array($v['goodsclass'],bcdiv($v['totalamount'],100,2));
+                }
+
+            }
+
+    
+        $arr[0]['n'] = array_values( $arr[0]['n'] );
+        $arr_x = getDateList( $start,$end );
+        $data = [ ];
+        $data['arr_x'] = $arr_x;
+        $data['arr'] = $arr;
+        return ajaxReturn( 0,'',$data );
+        // } else {
+        ///      return ajaxReturn( 101,'提交方式错误' );
+        //  }
+    }
+    
+    /**
+     * 获取销售统计信息
+     *
+     * @param $start
+     * @param $end
+     *Sales statistics
+     * @return array
+     */
+    public function getsalesstat( $start,$end )
+    {
+        if( !$start || !$end )
+            return returnErr( 100,'时间参数错误' );
+        //交易总额
+        $salesinfo = Db::table( 'statdailyorder' )->whereBetween( 'statdate',[ "$start","$end" ] )
+        ->field( 'ifnull(sum(totalsales),0) as totalsales,ifnull(sum(totalpens),0) as totalpens,
+            ifnull(sum(numpurchased),0) as numpurchased,ifnull(sum(wxdeductedamount),0) as wxdeductedamount,
+            ifnull(sum(amountstoredvalue),0) as amountstoredvalue,ifnull(sum(numarrears),0) as numarrears,
+            ifnull(sum(wxpaymentpens),0) as wxpaymentpens,
+            ifnull(sum(amountincome),0) as amountincome,ifnull(sum(amountrefund),0) as amountrefund,
+            ifnull(sum(totalnumgoods),0) as totalnumgoods
+            ' )
+        ->find();
+        $result = Db::table( 'statdailyorder' )
+            ->where( 'statdate','between',[ "$start","$end" ] )
+            ->select();
+        $data = [ ];
+        //交易总额
+        $data['totalsales'] = bcdiv(bcsub($salesinfo["amountincome"],$salesinfo["amountrefund"],2),100);
+        //销售商品件数soldnum
+        $data['soldnum'] = $salesinfo["totalnumgoods"];
+        //订单数量
+        $data['totalpens'] = $salesinfo["totalpens"];
+        //用户数量
+        $data['numpurchased'] = $salesinfo["numpurchased"];
+        //人均消费（元）  改成客单价
+       $data['perconsumption'] = ($data['totalpens']&&$data['totalpens'] >0)?bcdiv($data['totalsales'] ,$data['totalpens'],2):0;
+      // dump($data['perconsumption'] );
+        //微信代扣金额
+       $data['wxdeductedamount'] = bcdiv($salesinfo["wxdeductedamount"],100);
+       $data['wxdeductedamountratio'] = ($data['totalsales']&&$data['totalsales']>0)?bcdiv($data['wxdeductedamount'] ,$data['totalsales'],2):0;
+       $data['wxdeductedamount'] = number_format(bcdiv($salesinfo["wxdeductedamount"],100),2);
+       //使用储值金额
+       $data['amountstoredvalue']=  bcdiv($salesinfo["amountstoredvalue"],100);
+       $data['amountstoredvalueratio'] = ($data['totalsales']&&$data['totalsales']>0)?number_format(bcdiv($data['amountstoredvalue'],$data['totalsales'],2),2):0;
+       $data['amountstoredvalue']=  number_format(bcdiv($salesinfo["amountstoredvalue"],100),2);
+       //欠费笔数
+       $data['numarrears'] =  $salesinfo["numarrears"];
+       $data['amountstoredvalueratio'] = ($data['totalsales']&&$data['totalsales']>0)?number_format(bcdiv($data['numarrears'],$data['totalpens'],2),2):0;
+       //微信支付（补缴）笔数
+       $data['wxpaymentpens'] = $salesinfo["wxpaymentpens"];
+       
+       $data['totalsales'] = number_format($data['totalsales'],2);
+      // dump($data);
+
+        return ajaxReturn( 0,'',$data );
+    }
+    
 
 }
